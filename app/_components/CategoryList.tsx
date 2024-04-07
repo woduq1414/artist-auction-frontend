@@ -63,7 +63,7 @@ export default function CategoryList() {
                     {categories.map((category, index) => {
                         return (
               
-                            <div className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[75vh] bg-white transition ease-in-out duration-300
+                            <div key={index} className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[75vh] bg-white transition ease-in-out duration-300
                          ${canChangeCategory ? '' : ''}
                         `}
 
