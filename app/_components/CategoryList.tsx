@@ -47,6 +47,14 @@ export default function CategoryList() {
         return ''
     }
 
+    function getBackgroundImageStyle(index: number) {
+        if(index == 0) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://cdn.logojoy.com/wp-content/uploads/20200612115158/AdobeStock_88222430-1-min-scaled.jpeg')]"
+        else if(index == 1) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://www.kdanmobile.com/blog/wp-content/uploads/2022/03/balazs-ketyi-byoBbHSlP5U-unsplash.jpg')]"
+        else if(index == 2) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://dimg.donga.com/wps/NEWS/IMAGE/2022/02/03/111561272.2.jpg')]"
+        else if(index == 3) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://blog.native-instruments.com/wp-content/uploads/dynamic/2023/04/how-to-write-song-lyrics-2-1200x0-c-default.jpg')]"
+        else if(index == 4) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://as2.ftcdn.net/v2/jpg/02/02/96/41/1000_F_202964122_Ia4oFHOgm7Iy5yHvP9GbzECsRDOX9FZH.jpg')]"
+    }
+
     return (
         <div className='min-w-full min-h-screen bg-white px-[5%] py-0 flex flex-col'>
             <div className='flex-shrink-0 mt-16 text-6xl font-bold text-gray-600'>주요 카테고리</div>
@@ -85,7 +93,9 @@ export default function CategoryList() {
                                         <div className='font-bold text-[20rem] leading-[18rem]'>{category.en[0]}</div>
                                         <div className='text-2xl font-bold text-gray-600'>{category.ko}</div>
                                     </div>
-                                    <div className="absolute flex flex-col items-center justify-center w-full h-full overflow-hidden shadow-lg my-rotate-y-180 backface-hidden bg-primary-light"
+                                    <div className={`absolute flex flex-col items-center justify-center w-full h-full overflow-hidden shadow-lg my-rotate-y-180 backface-hidden 
+                                    ${getBackgroundImageStyle(index)} bg-no-repeat bg-cover bg-center 
+                                    `}
                                         onClick={() => {
                                             if (selectedCategory === index) {
                                                 setSelectedCategory(-1)
@@ -95,7 +105,7 @@ export default function CategoryList() {
                                         }}
                                     >
                                         <div className='font-bold text-[20rem] leading-[18rem] text-white'>{category.en[0]}</div>
-                                        <div className='text-2xl font-bold text-gray-200'>{category.ko}</div>
+                                        <div className='text-2xl font-bold text-gray-100'>{category.ko}</div>
                                     </div>
                                 </div>
                             </div>
