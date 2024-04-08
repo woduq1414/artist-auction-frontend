@@ -37,6 +37,9 @@ module.exports = {
           DEFAULT: '#F53333',
           'light': '#F26f6f',
           'dark': '#962121',
+        },
+        'pro' : {
+          DEFAULT : '#63adff'
         }
       }
     },

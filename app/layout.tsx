@@ -1,7 +1,11 @@
+'use client'
+
 import './globals.css'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
-
+import { useEffect, useState } from 'react';
+import Link from "next/link"
+import Image from "next/image"
 
 export const metadata = {
   title: 'Create Next App',
@@ -17,9 +21,68 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isWhiteNav, setIsWhiteNav] = useState(false);
+  useEffect(() => {
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 100) {
+        setIsWhiteNav(true);
+      } else {
+        setIsWhiteNav(false); 
+      }
+      // 마지막 스크롤 위치 업데이트
+      setLastScrollY(currentScrollY);
+    };
+
+    // 스크롤 이벤트 리스너 등록
+    window.addEventListener('scroll', handleScroll);
+
+    // 클린업 함수에서 이벤트 리스너 제거
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]); // lastScrollY가 변경될 때마다 useEffect가 실행됩니다.
   return (
     <html lang="en">
-      <body className={pretendard.className}>{children}</body>
+      <body className={pretendard.className}>
+
+        <div className={`fixed top-0 z-10 flex flex-no-wrap items-center justify-between w-full h-20 py-8  lg:flex-wrap lg:justify-start lg:py-4
+        transition ease-in-out duration-300
+        ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
+        `}>
+          <div className="flex items-center w-[250px] ml-6">
+
+
+            <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
+
+
+
+          </div>
+          <div className="flex items-center gap-8 ml-auto mr-10">
+            <Link className="text-xl font-semibold text-pro" href="#">
+              Pro
+            </Link>
+            <Link className={`text-xl font-semibold  ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+              Info
+            </Link>
+            <Link className={`text-xl font-semibold  ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+              구인
+            </Link>
+            <Link className={`text-xl font-semibold  ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+              구직
+            </Link>
+            <Link className={`text-xl font-semibold  ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+              로그인
+            </Link>
+            <button type="button" className={`text-xl ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none  focus:ring-4 font-bold rounded-lg px-4 py-2.5 `}>
+              회원가입
+            </button>
+          </div>
+        </div>
+
+        {children}
+      </body>
     </html>
   )
 }

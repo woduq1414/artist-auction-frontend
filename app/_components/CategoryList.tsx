@@ -57,13 +57,13 @@ export default function CategoryList() {
 
     return (
         <div className='min-w-full min-h-screen bg-white px-[5%] py-0 flex flex-col'>
-            <div className='flex-shrink-0 mt-16 text-6xl font-bold text-gray-600'>주요 카테고리</div>
+            <div className='flex-shrink-0 mt-8 text-6xl font-bold text-gray-600'>주요 카테고리</div>
             <div className='relative'>
                 <div className='flex flex-row items-center flex-grow py-8'>
                     {categories.map((category, index) => {
                         return (
               
-                            <div key={index} className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[75vh] bg-white transition ease-in-out duration-300
+                            <div key={index} className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[70vh] bg-white transition ease-in-out duration-300
                          ${canChangeCategory ? '' : ''}
                         `}
 
