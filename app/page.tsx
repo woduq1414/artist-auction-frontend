@@ -29,12 +29,24 @@ export default async function Home() {
     <main className="flex flex-col items-center justify-between min-h-screen">
       <div className="min-w-full min-h-screen bg-primary">
         <div className="flex flex-row items-center justify-between">
-          <div className="flex items-center flex-shrink-0 min-h-screen">
-            {/* <Image src="next.svg" alt="logo" width={100} height={100} /> */}
+
+
+          <div className="relative flex items-center flex-shrink-0 min-h-screen ">
+
+            <div className="absolute bottom-[8vh] ml-[3vw] w-[90vh]">
+              <Image src={'/images/brush.png'} alt='logo' width={1600} height={1600} />
+            </div>
+
+
+
           </div>
           <div className="flex flex-col items-end justify-center flex-grow min-h-screen">
             <div className="mt-[10vh] mr-12 flex flex-col items-end ">
-              <div className="text-right text-8xl">
+
+
+
+
+              <div className="z-20 text-right text-8xl">
                 BROWSE ARTIST<br />BID INSTANTLY
               </div>
 
