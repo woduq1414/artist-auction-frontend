@@ -1,5 +1,7 @@
 'use client'
 import React from 'react'
+import Image from "next/image"
+
 
 export default function CategoryList() {
 
@@ -26,6 +28,8 @@ export default function CategoryList() {
     const [showDetail, setShowDetail] = React.useState(false);
     const [canChangeCategory, setCanChangeCategory] = React.useState(true);
 
+    const [mouseOverState, setMouseOverState] = React.useState(-1);
+
     function getTransformStyle(index: number) {
 
         if (selectedCategory === index) {
@@ -48,11 +52,11 @@ export default function CategoryList() {
     }
 
     function getBackgroundImageStyle(index: number) {
-        if(index == 0) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://cdn.logojoy.com/wp-content/uploads/20200612115158/AdobeStock_88222430-1-min-scaled.jpeg')]"
-        else if(index == 1) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://www.kdanmobile.com/blog/wp-content/uploads/2022/03/balazs-ketyi-byoBbHSlP5U-unsplash.jpg')]"
-        else if(index == 2) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://dimg.donga.com/wps/NEWS/IMAGE/2022/02/03/111561272.2.jpg')]"
-        else if(index == 3) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://blog.native-instruments.com/wp-content/uploads/dynamic/2023/04/how-to-write-song-lyrics-2-1200x0-c-default.jpg')]"
-        else if(index == 4) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://as2.ftcdn.net/v2/jpg/02/02/96/41/1000_F_202964122_Ia4oFHOgm7Iy5yHvP9GbzECsRDOX9FZH.jpg')]"
+        if (index == 0) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://cdn.logojoy.com/wp-content/uploads/20200612115158/AdobeStock_88222430-1-min-scaled.jpeg')]"
+        else if (index == 1) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://www.kdanmobile.com/blog/wp-content/uploads/2022/03/balazs-ketyi-byoBbHSlP5U-unsplash.jpg')]"
+        else if (index == 2) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://dimg.donga.com/wps/NEWS/IMAGE/2022/02/03/111561272.2.jpg')]"
+        else if (index == 3) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://blog.native-instruments.com/wp-content/uploads/dynamic/2023/04/how-to-write-song-lyrics-2-1200x0-c-default.jpg')]"
+        else if (index == 4) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://as2.ftcdn.net/v2/jpg/02/02/96/41/1000_F_202964122_Ia4oFHOgm7Iy5yHvP9GbzECsRDOX9FZH.jpg')]"
     }
 
     return (
@@ -62,7 +66,7 @@ export default function CategoryList() {
                 <div className='flex flex-row items-center flex-grow py-8'>
                     {categories.map((category, index) => {
                         return (
-              
+
                             <div key={index} className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[70vh] bg-white transition ease-in-out duration-300
                          ${canChangeCategory ? '' : ''}
                         `}
@@ -77,16 +81,22 @@ export default function CategoryList() {
 
                                             setCanChangeCategory(false)
                                             if (selectedCategory === index) {
-                                                setSelectedCategory(-1)
-                                                setShowDetail(false);
-                                                setCanChangeCategory(true)
+                                                // setMouseOverState(-1);
+                                                // setSelectedCategory(-1)
+                                                // setShowDetail(false);
+                                                // setCanChangeCategory(true)
                                             } else {
                                                 setSelectedCategory(index)
                                                 setTimeout(() => {
+
                                                     setCanChangeCategory(true)
                                                     setShowDetail(true);
 
                                                 }, 300)
+                                                setTimeout(() => {
+                                                    setMouseOverState(0);
+                                                }, 1800)
+
                                             }
 
                                         }}>
@@ -98,6 +108,7 @@ export default function CategoryList() {
                                     `}
                                         onClick={() => {
                                             if (selectedCategory === index) {
+                                                setMouseOverState(-1);
                                                 setSelectedCategory(-1)
                                                 setShowDetail(false);
                                                 setCanChangeCategory(true)
@@ -118,10 +129,70 @@ export default function CategoryList() {
                 ${showDetail ? 'visible opacity-100' : 'invisible opacity-0'
 
                     }`}>
-                    <div className={`flex w-full
-                        shadow-2xl h-full bg-white text-xl text-gray-600 font-bold  justify-center items-center
+                    <div className={`relative flex w-full
+                        shadow-2xl h-full bg-white text-xl text-gray-600 font-bold  items-center
+                        group
                         `}>
-                        <div>{selectedCategory != -1 ? categories[selectedCategory]["ko"]: ' '} 포트폴리오</div>
+                        <div className={`absolute top-0 left-0  w-full h-full
+                      transition duration-[800ms] ease-in-out  group-hover:blur-none blur-[3px]
+                        flex flex-col flex-wrap  justify-center overflow-x-scroll 
+                        gap-3
+                        `}>
+                            {
+                                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((x, idx) => {
+                                    let price = 500000 + x * 100;
+                                    return (
+                                        <>
+                                            <div className='h-[32%] flex justify-center items-center
+                                            relative overflow-hidden group/label
+                                            transition duration-[400ms] ease-in-out
+                                            hover:shadow-xl
+                                            '>
+                                                <img src={'/images/sample-pf.jpg'} alt='sample-pf'
+                                                    className='h-full'
+
+                                                />
+                                                <div className="
+                                                w-full bg-white bg-opacity-95
+                                                absolute left-[0] top-[100%] bottom-[0%] right-[0]
+                                                
+                                                origin-center transform duration-[800ms] ease-in-out
+                                                group-hover/label:top-[70%] group-hover/label:bottom-[0]
+                                                text-[1rem] font-extrabold
+                                                px-6 py-0
+
+                                                ">
+                                                    리얼리굿{selectedCategory != -1 ? categories[selectedCategory]["ko"] : ''}
+                                                    <br />
+                                                    From {price.toLocaleString()}원
+                                                </div>
+                                            </div>
+
+                                        </>
+                                    );
+                                })
+                            }
+
+                        </div>
+                        <div className={`absolute top-0 left-0 flex items-center w-full h-full transition duration-[800ms] ease-in-out
+                            group-hover:opacity-0 opacity-1 z-60
+                            group-hover:invisible 
+                            ${showDetail ? 'visible' : 'invisible'
+
+                            }
+                            
+                            `} >
+                            <div className={`font-bold text-[18rem] leading-[18rem] text-gray-700 
+                 
+                        `}>
+                                {selectedCategory != -1 ? categories[selectedCategory]["en"].substring(1) : ' '}
+                            </div>
+
+                        </div>
+
+
+
+                        {/* <div>{selectedCategory != -1 ? categories[selectedCategory]["ko"]: ' '} 포트폴리오</div> */}
                     </div>
                 </div>
             </div>

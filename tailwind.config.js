@@ -38,12 +38,12 @@ module.exports = {
           'light': '#F26f6f',
           'dark': '#962121',
         },
-        'pro' : {
-          DEFAULT : '#63adff'
+        'pro': {
+          DEFAULT: '#63adff'
         }
       }
     },
 
   },
-  plugins: [Myclass],
+  plugins: [Myclass, require('tailwindcss-animated')],
 }
