@@ -142,12 +142,12 @@ export default function CategoryList() {
                                 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((x, idx) => {
                                     let price = 500000 + x * 100;
                                     return (
-                                        <>
+                                        
                                             <div className='h-[32%] flex justify-center items-center
                                             relative overflow-hidden group/label
                                             transition duration-[400ms] ease-in-out
                                             hover:shadow-xl
-                                            '>
+                                            '  key={idx}>
                                                 <img src={'/images/sample-pf.jpg'} alt='sample-pf'
                                                     className='h-full'
 
@@ -168,7 +168,7 @@ export default function CategoryList() {
                                                 </div>
                                             </div>
 
-                                        </>
+                                        
                                     );
                                 })
                             }
