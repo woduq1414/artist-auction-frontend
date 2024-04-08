@@ -63,10 +63,14 @@ export default async function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-row items-center h-20 min-w-full px-30% bg-gray-400">
-        <div className="text-2xl font-bold px-[20%] text-white">
+      <div className="flex flex-row justify-center gap gap-6  items-center h-20 min-w-full px-30% bg-gray-400">
+        <div className="text-2xl font-bold text-white">
           협력사
         </div>
+        <img src={"/images/company-toss.png"} alt="companylogo" className="h-24" />
+        <img src={"/images/company-samsung.png"} alt="companylogo" className="h-12 pr-3" />
+        <img src={"/images/company-kakaopay.png"} alt="companylogo" className="h-8 pr-3"/>
+        <img src={"/images/company-modusign.png"} alt="companylogo" className="h-14" />
       </div>
       <CategoryList />
 
