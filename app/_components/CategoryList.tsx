@@ -75,7 +75,7 @@ export default function CategoryList() {
                                 <div className={` transform relative w-full h-full duration-1000 preserve-3d 
                              ${getTransformStyle(index)}
                             `}>
-                                    <div className="absolute flex flex-col items-center justify-center w-full h-full transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110"
+                                    <div className="absolute flex flex-col items-center justify-center w-full h-full overflow-hidden transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110"
                                         onClick={() => {
                                             if (!canChangeCategory) return;
 
@@ -100,7 +100,11 @@ export default function CategoryList() {
                                             }
 
                                         }}>
-                                        <div className='font-bold text-[20rem] leading-[18rem]'>{category.en[0]}</div>
+                                        <div className='font-bold text-[18rem] leading-[18rem]
+                                        
+                                        md:text-[8rem]
+                                        
+                                        '>{category.en[0]}</div>
                                         <div className='text-2xl font-bold text-gray-600'>{category.ko}</div>
                                     </div>
                                     <div className={`absolute flex flex-col items-center justify-center w-full h-full overflow-hidden shadow-lg my-rotate-y-180 backface-hidden 
@@ -182,7 +186,12 @@ export default function CategoryList() {
                             }
                             
                             `} >
-                            <div className={`font-bold text-[18rem] leading-[18rem] text-gray-700 
+                            <div className={`font-bold text-[10rem] leading-[18rem] text-gray-700 
+                            tracking-tight    
+
+                            md:text-[8rem] md:leading-[8rem] 
+                            sm:text-[3rem] sm:leading-[3rem]
+                            
                  
                         `}>
                                 {selectedCategory != -1 ? categories[selectedCategory]["en"].substring(1) : ' '}
