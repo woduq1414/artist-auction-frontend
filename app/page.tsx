@@ -46,7 +46,7 @@ export default async function Home() {
 
 
 
-              <div className="z-20 text-right text-8xl">
+              <div className="z-10 text-right text-8xl">
                 BROWSE ARTIST<br />BID INSTANTLY
               </div>
 
