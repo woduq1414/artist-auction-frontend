@@ -120,6 +120,10 @@ export default function CategoryList() {
                                                 setSelectedCategory(-1)
                                                 setShowDetail(false);
                                                 setCanChangeCategory(true)
+
+                                                if(pfContainerRef.current != null){
+                                                    pfContainerRef.current.scrollLeft = 0;
+                                                }
                                             }
                                         }}
                                     >
