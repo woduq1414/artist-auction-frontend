@@ -87,7 +87,7 @@ export default function RootLayout({
           </div>
         </div> */}
 
-        <div className={`fixed top-0 z-[90] flex items-center justify-center w-full h-20 py-4 flex-wrap md:flex-row md:flex-nowrap md:h-16 md:px-4 md:justify-between md:py-4 transition ease-in-out duration-300 ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
+        <div className={`fixed top-0 z-[9000] flex items-center justify-center w-full h-20 py-4 flex-wrap md:flex-row md:flex-nowrap md:h-16 md:px-4 md:justify-between md:py-4 transition ease-in-out duration-300 ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
         md:bg-white md:bg-opacity-85 md:shadow-md md:shadow-black/5
         
         `}>

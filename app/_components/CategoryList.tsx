@@ -2,6 +2,7 @@
 import React from 'react'
 import Image from "next/image"
 
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 
 export default function CategoryList() {
 
@@ -29,6 +30,9 @@ export default function CategoryList() {
     const [canChangeCategory, setCanChangeCategory] = React.useState(true);
 
     const [mouseOverState, setMouseOverState] = React.useState(-1);
+
+    const pfRef = React.useRef<HTMLDivElement>(null);
+    const pfContainerRef = React.useRef<HTMLDivElement>(null);
 
     function getTransformStyle(index: number) {
 
@@ -141,22 +145,33 @@ export default function CategoryList() {
                       transition duration-[800ms] ease-in-out  group-hover:blur-none blur-[3px]
                         flex flex-col flex-wrap  justify-center overflow-x-scroll 
                         gap-3
-                        `}>
+                        `}
+                        ref={pfContainerRef}
+                        
+                        >
                             {
-                                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((x, idx) => {
+                                Array(24).fill(null).map((_, i) => i + 1).map((x, idx) => {
                                     let price = 500000 + x * 100;
                                     return (
-                                        
-                                            <div className='h-[32%] flex justify-center items-center
+
+                                        <div className='h-[32%] flex justify-center items-center
                                             relative overflow-hidden group/label
                                             transition duration-[400ms] ease-in-out
                                             hover:shadow-xl
-                                            '  key={idx}>
-                                                <img src={'/images/sample-pf.jpg'} alt='sample-pf'
-                                                    className='h-full'
+                                            '  key={idx}
+                                            
+                                        ref={idx == 0 ? pfRef : undefined}
 
-                                                />
-                                                <div className="
+                                        onClick={()=>{
+                                            console.log(pfRef.current?.offsetWidth);
+                                        }}
+                                        
+                                            >
+                                            <img src={'/images/sample-pf.jpg'} alt='sample-pf'
+                                                className='h-full'
+
+                                            />
+                                            <div className="
                                                 w-full bg-white bg-opacity-95
                                                 absolute left-[0] top-[100%] bottom-[0%] right-[0]
                                                 
@@ -166,24 +181,68 @@ export default function CategoryList() {
                                                 px-6 py-0
 
                                                 ">
-                                                    리얼리굿{selectedCategory != -1 ? categories[selectedCategory]["ko"] : ''}
-                                                    <br />
-                                                    From {price.toLocaleString()}원
-                                                </div>
+                                                리얼리굿{selectedCategory != -1 ? categories[selectedCategory]["ko"] : ''}
+                                                <br />
+                                                From {price.toLocaleString()}원
                                             </div>
+                                        </div>
 
-                                        
+
                                     );
                                 })
                             }
 
                         </div>
+                        <div className={`absolute top-[-50px] right-[0] flex items-center justify-between  h-[30px] transition duration-[800ms] ease-in-out
+                             z-[200] gap gap-6
+                             
+                            ${showDetail ? 'visible' : 'invisible'
+
+                            }
+                            
+                            `} >
+                            <div>
+                                <ChevronLeftIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
+                                    onClick={() => {
+                                        if(pfContainerRef.current != null && pfRef.current != null){
+                                            let pfContainerScrollX = pfContainerRef.current.scrollLeft;
+                                            let pfWIdth = pfRef.current.offsetWidth
+
+                                            let targetScrollX = (Math.ceil(pfContainerScrollX / (pfWIdth + 12)) - 1) * (pfWIdth + 12)
+
+                                            pfContainerRef.current.scrollTo({top:0, left:targetScrollX, behavior:'smooth'})
+                                    
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <ChevronRightIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
+                                    onClick={() => {
+                                        if(pfContainerRef.current != null && pfRef.current != null){
+                                            let pfContainerScrollX = pfContainerRef.current.scrollLeft;
+                                            let pfWIdth = pfRef.current.offsetWidth
+
+                                            let targetScrollX = (Math.floor(pfContainerScrollX / (pfWIdth + 12)) + 1) * (pfWIdth + 12)
+
+                                            pfContainerRef.current.scrollTo({top:0, left:targetScrollX, behavior:'smooth'})
+                                    
+                                        }
+                                    }}
+                                />
+                            </div>
+
+                        </div>
+
                         <div className={`absolute top-0 left-0 flex items-center w-full h-full transition duration-[800ms] ease-in-out
                             group-hover:opacity-0 opacity-1 z-60
                             group-hover:invisible 
                             ${showDetail ? 'visible' : 'invisible'
 
                             }
+
+                            bg-[linear-gradient(90deg,hsla(0,0%,100%,0.0)75%,hsla(0,0%,22%,0.5)100%)]
+                        
                             
                             `} >
                             <div className={`font-bold text-[10rem] leading-[18rem] text-gray-700 
