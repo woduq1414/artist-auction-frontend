@@ -51,6 +51,9 @@ export default function RootLayout({
   }, [lastScrollY]); // lastScrollY가 변경될 때마다 useEffect가 실행됩니다.
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      </head>
       <body className={pretendard.className}>
 
         {/* <div className={`fixed top-0 z-[90] flex flex-no-wrap items-center justify-between w-full h-20 py-8  lg:flex-wrap lg:justify-start lg:py-4

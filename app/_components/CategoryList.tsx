@@ -34,17 +34,26 @@ export default function CategoryList() {
     const pfRef = React.useRef<HTMLDivElement>(null);
     const pfContainerRef = React.useRef<HTMLDivElement>(null);
 
-    function getTransformStyle(index: number) {
+    function getTransformStyle(index: number, mode: string) {
 
         if (selectedCategory === index) {
             if (!showDetail) {
                 return `[transform:rotateY(180deg)]`
             } else {
-                if (index == 0) return `[transform:rotateY(180deg)]`
-                else if (index == 1) return `[transform:translateX(calc(-100%-24px))rotateY(180deg)]`
-                else if (index == 2) return `[transform:translateX(calc(-200%-48px))rotateY(180deg)]`
-                else if (index == 3) return `[transform:translateX(calc(-300%-72px))rotateY(180deg)]`
-                else if (index == 4) return `[transform:translateX(calc(-400%-96px))rotateY(180deg)]`
+                if (mode == 'pc') {
+                    if (index == 0) return `[transform:rotateY(180deg)]`
+                    else if (index == 1) return `[transform:translateX(calc(-100%-24px))rotateY(180deg)]`
+                    else if (index == 2) return `[transform:translateX(calc(-200%-48px))rotateY(180deg)]`
+                    else if (index == 3) return `[transform:translateX(calc(-300%-72px))rotateY(180deg)]`
+                    else if (index == 4) return `[transform:translateX(calc(-400%-96px))rotateY(180deg)]`
+                } else if (mode == 'mobile') {
+                    if (index == 0) return `sm:[transform:rotateY(180deg)]`
+                    else if (index == 1) return `sm:[transform:translateY(-96px)rotateY(180deg)]`
+                    else if (index == 2) return `sm:[transform:translateY(-192px)rotateY(180deg)]`
+                    else if (index == 3) return `sm:[transform:translateY(-288px)rotateY(180deg)]`
+                    else if (index == 4) return `sm:[transform:translateY(-384px)rotateY(180deg)]`
+                }
+
             }
         } else {
             if (showDetail) {
@@ -65,21 +74,24 @@ export default function CategoryList() {
 
     return (
         <div className='min-w-full min-h-screen bg-white px-[5%] py-0 flex flex-col'>
-            <div className='flex-shrink-0 mt-8 text-6xl font-bold text-gray-600'>주요 카테고리</div>
+            <div className='flex-shrink-0 mt-8 text-6xl font-bold text-gray-600 sm:text-4xl'>주요 카테고리</div>
             <div className='relative'>
-                <div className='flex flex-row items-center flex-grow py-8'>
+                <div className='flex flex-row items-center flex-grow py-8 sm:flex-col sm:gap-4 '>
                     {categories.map((category, index) => {
                         return (
 
                             <div key={index} className={`cursor-pointer group perspective flex flex-col items-center justify-center w-1/5 mx-3 rounded-lg  h-[70vh] bg-white transition ease-in-out duration-300
                          ${canChangeCategory ? '' : ''}
+
+                         sm:w-[90%] sm:h-[80px]
                         `}
 
                             >
                                 <div className={` transform relative w-full h-full duration-1000 preserve-3d 
-                             ${getTransformStyle(index)}
+                             ${getTransformStyle(index, 'pc')}
+                             ${getTransformStyle(index, 'mobile')}
                             `}>
-                                    <div className="absolute flex flex-col items-center justify-center w-full h-full overflow-hidden transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110"
+                                    <div className="absolute flex flex-col items-center justify-center w-full h-full overflow-hidden transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110 "
                                         onClick={() => {
                                             if (!canChangeCategory) return;
 
@@ -106,10 +118,12 @@ export default function CategoryList() {
                                         }}>
                                         <div className='font-bold text-[18rem] leading-[18rem]
                                         
-                                        md:text-[8rem]
+                                        md:text-[8rem] sm:text-[3rem] sm:leading-[3rem]
                                         
                                         '>{category.en[0]}</div>
-                                        <div className='text-2xl font-bold text-gray-600'>{category.ko}</div>
+                                        <div className='text-2xl font-bold text-gray-600
+                                        sm:text-[0.8em] sm:leading-[0.8rem]
+                                        '>{category.ko}</div>
                                     </div>
                                     <div className={`absolute flex flex-col items-center justify-center w-full h-full overflow-hidden shadow-lg my-rotate-y-180 backface-hidden 
                                     ${getBackgroundImageStyle(index)} bg-no-repeat bg-cover bg-center 
@@ -121,14 +135,21 @@ export default function CategoryList() {
                                                 setShowDetail(false);
                                                 setCanChangeCategory(true)
 
-                                                if(pfContainerRef.current != null){
+                                                if (pfContainerRef.current != null) {
                                                     pfContainerRef.current.scrollLeft = 0;
                                                 }
                                             }
                                         }}
                                     >
-                                        <div className='font-bold text-[20rem] leading-[18rem] text-white'>{category.en[0]}</div>
-                                        <div className='text-2xl font-bold text-gray-100'>{category.ko}</div>
+                                        <div className='font-bold text-[18rem] leading-[18rem]
+                                        text-white
+                                        md:text-[8rem] sm:text-[3rem] sm:leading-[3rem]
+                                        
+                                        '>{category.en[0]}</div>
+                                        <div className='text-2xl font-bold text-gray-100
+                                        sm:text-[0.8em] sm:leading-[0.8rem]
+                                        
+                                        '>{category.ko}</div>
                                     </div>
                                 </div>
                             </div>
@@ -138,6 +159,8 @@ export default function CategoryList() {
 
                 <div className={`absolute top-0 left-[calc(20%+12px)] w-[80%] py-8 h-full 
                 transition ease-in-out duration-[1000ms]
+
+                sm:left-[5%] sm:top-[88px] sm:w-[90%] sm:h-[75vh]
                 ${showDetail ? 'visible opacity-100' : 'invisible opacity-0'
 
                     }`}>
@@ -148,10 +171,12 @@ export default function CategoryList() {
                         <div className={`absolute top-0 left-0  w-full h-full
                       transition duration-[800ms] ease-in-out  group-hover:blur-none blur-[3px]
                         flex flex-col flex-wrap  justify-center overflow-x-scroll 
+                        sm:overflow-x-hidden sm:overflow-y-scroll
                         gap-3
+                        sm:flex-row
                         `}
-                        ref={pfContainerRef}
-                        
+                            ref={pfContainerRef}
+
                         >
                             {
                                 Array(24).fill(null).map((_, i) => i + 1).map((x, idx) => {
@@ -162,17 +187,18 @@ export default function CategoryList() {
                                             relative overflow-hidden group/label
                                             transition duration-[400ms] ease-in-out
                                             hover:shadow-xl
+                                            sm:w-[100%] sm:h-auto
                                             '  key={idx}
-                                            
-                                        ref={idx == 0 ? pfRef : undefined}
 
-                                        onClick={()=>{
-                                            console.log(pfRef.current?.offsetWidth);
-                                        }}
-                                        
-                                            >
+                                            ref={idx == 0 ? pfRef : undefined}
+
+                                            onClick={() => {
+                                                console.log(pfRef.current?.offsetWidth);
+                                            }}
+
+                                        >
                                             <img src={'/images/sample-pf.jpg'} alt='sample-pf'
-                                                className='h-full'
+                                                className='h-full sm:w-full sm:h-auto'
 
                                             />
                                             <div className="
@@ -203,19 +229,20 @@ export default function CategoryList() {
                             ${showDetail ? 'visible' : 'invisible'
 
                             }
+                            sm:invisible
                             
                             `} >
                             <div>
                                 <ChevronLeftIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
                                     onClick={() => {
-                                        if(pfContainerRef.current != null && pfRef.current != null){
+                                        if (pfContainerRef.current != null && pfRef.current != null) {
                                             let pfContainerScrollX = pfContainerRef.current.scrollLeft;
                                             let pfWIdth = pfRef.current.offsetWidth
 
                                             let targetScrollX = (Math.ceil(pfContainerScrollX / (pfWIdth + 12)) - 1) * (pfWIdth + 12)
 
-                                            pfContainerRef.current.scrollTo({top:0, left:targetScrollX, behavior:'smooth'})
-                                    
+                                            pfContainerRef.current.scrollTo({ top: 0, left: targetScrollX, behavior: 'smooth' })
+
                                         }
                                     }}
                                 />
@@ -223,14 +250,14 @@ export default function CategoryList() {
                             <div>
                                 <ChevronRightIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
                                     onClick={() => {
-                                        if(pfContainerRef.current != null && pfRef.current != null){
+                                        if (pfContainerRef.current != null && pfRef.current != null) {
                                             let pfContainerScrollX = pfContainerRef.current.scrollLeft;
                                             let pfWIdth = pfRef.current.offsetWidth
 
                                             let targetScrollX = (Math.floor(pfContainerScrollX / (pfWIdth + 12)) + 1) * (pfWIdth + 12)
 
-                                            pfContainerRef.current.scrollTo({top:0, left:targetScrollX, behavior:'smooth'})
-                                    
+                                            pfContainerRef.current.scrollTo({ top: 0, left: targetScrollX, behavior: 'smooth' })
+
                                         }
                                     }}
                                 />
@@ -241,23 +268,38 @@ export default function CategoryList() {
                         <div className={`absolute top-0 left-0 flex items-center w-full h-full transition duration-[800ms] ease-in-out
                             group-hover:opacity-0 opacity-1 z-60
                             group-hover:invisible 
+                            sm:justify-center
                             ${showDetail ? 'visible' : 'invisible'
 
                             }
 
                             bg-[linear-gradient(90deg,hsla(0,0%,100%,0.0)75%,hsla(0,0%,22%,0.5)100%)]
                         
-                            
+                            sm:bg-[linear-gradient(180deg,hsla(0,0%,100%,0.0)75%,hsla(0,0%,22%,0.5)100%)]
                             `} >
                             <div className={`font-bold text-[10rem] leading-[18rem] text-gray-700 
                             tracking-tight    
 
                             md:text-[8rem] md:leading-[8rem] 
-                            sm:text-[3rem] sm:leading-[3rem]
+                    
                             
+                            sm:hidden
                  
                         `}>
                                 {selectedCategory != -1 ? categories[selectedCategory]["en"].substring(1) : ' '}
+                            </div>
+                            <div className={`font-bold  text-gray-700 
+                            tracking-tight    
+
+                            text-[3rem] leading-[3rem] 
+                            
+                            hidden
+                            sm:flex
+                        
+                           
+                 
+                        `}>
+                                {selectedCategory != -1 ? categories[selectedCategory]["en"] : ' '}
                             </div>
 
                         </div>
