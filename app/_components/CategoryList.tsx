@@ -137,6 +137,7 @@ export default function CategoryList() {
 
                                                 if (pfContainerRef.current != null) {
                                                     pfContainerRef.current.scrollLeft = 0;
+                                                    pfContainerRef.current.scrollTop = 0;
                                                 }
                                             }
                                         }}
