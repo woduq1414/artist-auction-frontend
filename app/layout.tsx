@@ -3,9 +3,10 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from "next/link"
 import Image from "next/image"
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 // export const metadata = {
 //   title: 'Create Next App',
@@ -25,10 +26,10 @@ export default function RootLayout({
   const [isWhiteNav, setIsWhiteNav] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => {
-    // setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen(!isMenuOpen);
   };
 
-
+  const modalBackgroundRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
 
     const handleScroll = () => {
@@ -52,7 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={pretendard.className}>
 
@@ -97,7 +98,9 @@ export default function RootLayout({
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
             <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
           </div>
-          <div className={`flex flex-row items-center gap-8 md:flex-col lg:gap-5 ml-auto mr-10 ${isMenuOpen ? 'md:flex' : 'md:hidden'}`}>
+          <div className={`flex flex-row items-center gap-8 md:flex-col lg:gap-5 ml-auto mr-10 
+           md:hidden
+          `}>
             <Link className="text-xl font-semibold text-pro" href="#">
               Pro
             </Link>
@@ -119,18 +122,61 @@ export default function RootLayout({
           </div>
           {/* 햄버거 메뉴 아이콘 */}
           <button className="hidden md:flex" onClick={toggleMenu}>
-            {isMenuOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
-              </svg>
-            )}
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
           </button>
         </div>
 
+        <div className={`fixed top-0 z-[9000] items-center justify-center w-full h-full transition ease-in-out duration-300 
+        bg-gray-800 bg-opacity-50 shadow-md shadow-black/5 backdrop-blur-sm
+        
+      
+        ${isMenuOpen ? 'visible' : 'invisible'}
+        
+        `}
+          ref={modalBackgroundRef}
+          onClick={(e) => {
+            if (e.target === modalBackgroundRef.current) {
+              toggleMenu();
+            }
+          }}
+        >
+          <div className={`
+          absolute
+          w-[250px] max-w-[90%] top-0 right-0 bg-white h-full
+          flex flex-col items-end
+          transition ease-in-out duration-300 
+          ${isMenuOpen ? '[transform:translateX(0px)]' : '[transform:translateX(300px)]'}
+          `}>
+            <XMarkIcon className='w-8 m-4 cursor-pointer' onClick={toggleMenu} />
+            <div className='flex flex-col w-full gap-3 px-4 py-4'>
+              <Link className="text-lg font-semibold text-pro " href="#">
+                Pro
+              </Link>
+              <hr />
+              <Link className={`text-lg font-semibold text-black`} href="#">
+                Info
+              </Link>
+              <hr />
+              <Link className={`text-lg font-semibold text-black`} href="#">
+                구인
+              </Link>
+              <hr />
+              <Link className={`text-lg font-semibold text-black`} href="#">
+                구직
+              </Link>
+              <hr />
+              <Link className={`text-lg font-semibold text-black`} href="#">
+                로그인
+              </Link>
+              <button type="button" className={`text-lg text-black hover:bg-gray-100 border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 `}>
+                회원가입
+              </button>
+            </div>
+
+          </div>
+        </div>
         {children}
       </body>
     </html>
