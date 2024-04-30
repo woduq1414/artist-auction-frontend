@@ -33,8 +33,13 @@ export default async function Home() {
 
           <div className="relative flex items-center flex-shrink-0 min-h-screen ">
 
-            <div className="absolute bottom-[8vh] ml-[3vw] w-[90vh] max-w-[95vw] sm:invisible">
+            <div className="absolute bottom-[8vh] ml-[3vw] w-[90vh] max-w-[95vw] sm:hidden">
               <Image src={'/images/brush.png'} alt='logo' width={1600} height={1600} />
+            </div>
+            <div className="absolute bottom-[25vh] ml-[12vw] w-[90vw] max-w-[80vw] hidden sm:flex
+            
+            ">
+              <Image src={'/images/brush.png'} alt='logo' width={400} height={400} />
             </div>
 
 
@@ -44,9 +49,9 @@ export default async function Home() {
             <div className="mt-[10vh] mr-12 flex flex-col items-end sm:items-center sm:mr-0">
 
 
+            {/* sm:[text-shadow:-0px_0_white,0_1px_white,0px_0_white,0_-0px_white] */}
 
-
-              <div className="z-10 font-semibold text-right text-8xl md:text-6xl sm:text-5xl sm:text-center">
+              <div className="z-10 font-semibold text-right text-8xl md:text-6xl sm:text-5xl sm:text-center ">
                 BROWSE ARTIST<br />BID INSTANTLY
               </div>
 

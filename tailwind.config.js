@@ -24,6 +24,7 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    'node_modules/preline/dist/*.js',
   ],
   theme: {
     screens: {
@@ -61,5 +62,5 @@ module.exports = {
     },
 
   },
-  plugins: [Myclass, require('tailwindcss-animated')],
+  plugins: [Myclass, require('tailwindcss-animated'),   require('preline/plugin'), ],
 }
