@@ -43,6 +43,16 @@ module.exports = {
       'sm': { 'max': '639px' },
       // => @media (max-width: 639px) { ... }
     },
+    letterSpacing: {
+      tightest: '-.125em',
+      tighter: '-.1em',
+      tight: '-.075em',
+      normal: '-.05em',
+      wide: '.025em',
+      wider: '.05em',
+      widest: '.1em',
+      widest: '.25em',
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -62,5 +72,5 @@ module.exports = {
     },
 
   },
-  plugins: [Myclass, require('tailwindcss-animated'),   require('preline/plugin'), ],
+  plugins: [Myclass, require('tailwindcss-animated'), require('preline/plugin'),],
 }
