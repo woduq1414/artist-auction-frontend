@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 function CategoryListContainer(): JSX.Element {
 
-  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory }= useCategory();
+  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory } = useCategory();
   useEffect(() => {
     getCategoryList();
   }, [])
@@ -26,6 +26,11 @@ function CategoryListContainer(): JSX.Element {
               text-[1rem] font-semibold
               "
               aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
+
+              onClick={() => {
+                setSelectedCategory(category);
+
+              }}
             >
               {category.name}
               <svg
@@ -65,13 +70,13 @@ function CategoryListContainer(): JSX.Element {
               <ul className="hs-accordion-content-inner">
                 {category.list.map((item: any) => {
                   return (
-                    <li className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={()=>
+                    <li className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
                       setSelectedCategory(item)
                     }
                     >
-                     
+
                       {item.name}
-                  
+
                     </li>
                   )
                 })}
@@ -85,6 +90,39 @@ function CategoryListContainer(): JSX.Element {
   );
 }
 
+function CategoryItemContainer(): JSX.Element {
+  const { selectedCategory } = useCategory();
+
+  return (
+    <div className="w-full ">
+      {selectedCategory !== null && (
+        <div className="flex flex-col w-full gap-3 ml-4">
+          {[1, 2, 3, 4, 5].map((item: any) => {
+            return (
+              <div className="w-full  h-[270px] shadow-md">
+                <div className="h-[200px] flex flex-row">
+                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className="h-[200px] w-[355px] flex-shrink-0" />
+                  <div className="flex items-center justify-center flex-grow h-full bg-gray-300">
+                    <div className="">
+                      더보기
+                    </div>
+                  </div>
+                </div>
+                <div className="h-[20px] ">
+                  <div className="text-lg font-bold">{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
+
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  );
+
+
+}
+
 
 
 export default function Market() {
@@ -96,8 +134,8 @@ export default function Market() {
     <main className="w-[80%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
       {/* <div className="mx-auto mt-6 text-4xl font-bold">
       </div> */}
-      <div className="flex flex-row w-[100%] mt-6">
-        <div className="w-[270px] h-full bg-red shrink-0">
+      <div className="flex flex-row w-[100%] mt-6 h-full">
+        <div className="w-[270px] h-full bg-red shrink-0   grow-1">
           <div className="text-lg font-bold">
             카테고리
             <CategoryListContainer />
@@ -105,8 +143,8 @@ export default function Market() {
 
           </div>
         </div>
-        <div className="grow-1">
-          asdasㄴㄴㅁㅁㅁ
+        <div className="w-full ml-5 border-l-2 border-gray-300">
+          <CategoryItemContainer />
         </div>
       </div>
 
