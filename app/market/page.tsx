@@ -95,19 +95,22 @@ function CategoryListContainer(): JSX.Element {
 
 function CategoryItemContainer(): JSX.Element {
   const { selectedCategory, listviewType } = useCategory();
-
+  // {``}
   return (
     <div className="w-full ">
       {selectedCategory !== null && (
-        <div className={`flex  w-full gap-6 py-3 pl-4
-        ${listviewType === 'column' ? 'flex-col' : 'flex-wrap'}
+        <div className={`flex  w-full  py-3 pl-4
+        ${listviewType === 'column' ? 'flex-col gap-6' : 'flex-wrap flex-row gap-3'}
         `}>
-          {[1, 2, 3, 4, 5].map((item: any) => {
+          {[1, 2, 3, 4, 5, 6, 7,8, 9].map((item: any) => {
             return (
-              <div className="w-full shadow-md">
-                <div className="h-[300px] flex flex-row">
-                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className="h-[300px] w-[532px] flex-shrink-0" />
-                  <div className="flex items-center justify-center flex-grow h-full bg-gray-300">
+              <div className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md`}>
+                <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
+                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
+                  <div className={`
+                  ${listviewType === 'column' ? "flex items-center justify-center flex-grow h-full bg-gray-300" : "hidden"} 
+                  
+                  `}>
                     <div className="">
 
                     </div>
@@ -116,24 +119,23 @@ function CategoryItemContainer(): JSX.Element {
                 <div className="px-6 py-3 ">
                   <div>
                   </div>
-                  <div className="flex flex-row justify-between">
-                    <div className="text-2xl font-bold text-gray-800">{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
+                  <div className={`${listviewType === 'column' ? "flex flex-row justify-between" : "flex flex-col gap-2"} `}>
+                    <div className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'} font-bold text-gray-800`}>{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
                     <div>
                       <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증</span>
                     </div>
                   </div>
-
-                  <div className="flex flex-row items-center justify-between mt-2">
-                    <div className="text-gray-600">
+                  <div className={`${listviewType === 'column' ? "flex flex-row items-center justify-between mt-2" : "flex flex-col mt-2"} `}>
+                    <div className={`text-gray-600 ${listviewType === 'column' ? 'display-block' : 'hidden'}`}>
                       {`저만 믿고 맡겨 주시면 엄청난 ${selectedCategory.name}를 만들어드리겠습니다.`}
                     </div>
                     <div>
-                      <span className="text-xl font-light text-gray-800">{`1일 후 종료`}</span>
-                      <span className="text-xl font-light text-gray-800">{` | `}</span>
-                      <span className="text-2xl font-semibold text-gray-800">{`150,000`}</span>
-                      <span className="text-2xl font-light text-gray-800">{` ~ `}</span>
-                      <span className="text-2xl font-semibold text-gray-800">{`200,000`}</span>
-                      <span className="text-2xl font-light text-gray-800">{`원`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`1일 후 종료`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{` | `}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{`150,000`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-light text-gray-800`}>{` ~ `}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{`200,000`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-light text-gray-800`}>{`원`}</span>
                     </div>
                   </div>
 
