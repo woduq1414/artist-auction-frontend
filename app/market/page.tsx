@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCategory } from "../_store/useCategory";
 import { useEffect } from "react";
 
-import { Squares2X2Icon } from "@heroicons/react/24/solid";
+import { MagnifyingGlassIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 
 function CategoryListContainer(): JSX.Element {
@@ -102,7 +102,7 @@ function CategoryItemContainer(): JSX.Element {
         <div className={`flex  w-full  py-3 pl-4
         ${listviewType === 'column' ? 'flex-col gap-6' : 'flex-wrap flex-row gap-3'}
         `}>
-          {[1, 2, 3, 4, 5, 6, 7,8, 9].map((item: any) => {
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
             return (
               <div className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md`}>
                 <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
@@ -158,7 +158,7 @@ export default function Market() {
 
   // const data = await Data();
   // console.log(data);
-  const { listviewType, setListViewType } = useCategory();
+  const { listviewType, setListViewType, setSelectedCategory } = useCategory();
   return (
     <main className="w-[80%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
       {/* <div className="mx-auto mt-6 text-4xl font-bold">
@@ -166,10 +166,28 @@ export default function Market() {
       <div className="flex flex-row w-[100%] mt-6 h-full">
         <div className="w-[270px] h-full bg-red shrink-0   grow-1">
           <div className="text-lg font-bold">
-            카테고리
+            <span className="cursor-pointer" onClick={
+              () => setSelectedCategory({
+                id: 0,
+                name: '전체',
+                list: []
+
+              })
+            }>전체</span>
             <CategoryListContainer />
 
 
+          </div>
+
+          <div className="flex w-full mt-3 sm:mt-8" >
+            <input className="w-full h-12 pl-2  text-md rounded-l-[20px] placeholder:font-bold
+                sm:text-sm sm:h-14 sm:pl-8 border-2 border-r-0
+                " type="text" placeholder="검색어" />
+            <button className="w-12 h-12 sm:h-14 bg-gray-700 rounded-r-[20px] flex justify-center items-center
+                sm:w-14
+                ">
+              <MagnifyingGlassIcon className="w-6 h-6 text-white sm:w-7" />
+            </button>
           </div>
         </div>
         <div className="w-full ml-5 border-l-2 border-gray-300">
@@ -182,14 +200,14 @@ export default function Market() {
                 () => {
                   setListViewType('column')
                 }
-              
+
               } />
               <Squares2X2Icon className={`w-8 h-8 ${listviewType === 'grid' ? 'text-gray-700' : 'text-gray-500'} cursor-pointer`} onClick={
                 () => {
                   setListViewType('grid')
                 }
-              
-              }/>
+
+              } />
 
             </div>
           </div>

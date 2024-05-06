@@ -30,7 +30,12 @@ export const useCategory = create<Category>((set) => ({
     ]
     set({ categoryList: data })
   },
-  selectedCategory: null,
+  selectedCategory: {
+    id: 0,
+    name: '전체',
+    list: []
+  
+  },
   setSelectedCategory: (selectedCategory: any) => set({ selectedCategory }),
   listviewType: 'column',
   setListViewType: (listviewType: string) => set({ listviewType })
