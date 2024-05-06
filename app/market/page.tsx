@@ -5,9 +5,12 @@ import Link from "next/link";
 import { useCategory } from "../_store/useCategory";
 import { useEffect } from "react";
 
+import { Squares2X2Icon } from "@heroicons/react/24/solid";
+import { QueueListIcon } from "@heroicons/react/24/solid";
+
 function CategoryListContainer(): JSX.Element {
 
-  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory } = useCategory();
+  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory, listviewType, setListViewType } = useCategory();
   useEffect(() => {
     getCategoryList();
   }, [])
@@ -91,25 +94,49 @@ function CategoryListContainer(): JSX.Element {
 }
 
 function CategoryItemContainer(): JSX.Element {
-  const { selectedCategory } = useCategory();
+  const { selectedCategory, listviewType } = useCategory();
 
   return (
     <div className="w-full ">
       {selectedCategory !== null && (
-        <div className="flex flex-col w-full gap-3 ml-4">
+        <div className={`flex  w-full gap-6 py-3 pl-4
+        ${listviewType === 'column' ? 'flex-col' : 'flex-wrap'}
+        `}>
           {[1, 2, 3, 4, 5].map((item: any) => {
             return (
-              <div className="w-full  h-[270px] shadow-md">
-                <div className="h-[200px] flex flex-row">
-                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className="h-[200px] w-[355px] flex-shrink-0" />
+              <div className="w-full shadow-md">
+                <div className="h-[300px] flex flex-row">
+                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className="h-[300px] w-[532px] flex-shrink-0" />
                   <div className="flex items-center justify-center flex-grow h-full bg-gray-300">
                     <div className="">
-                      더보기
+
                     </div>
                   </div>
                 </div>
-                <div className="h-[20px] ">
-                  <div className="text-lg font-bold">{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
+                <div className="px-6 py-3 ">
+                  <div>
+                  </div>
+                  <div className="flex flex-row justify-between">
+                    <div className="text-2xl font-bold text-gray-800">{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
+                    <div>
+                      <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-row items-center justify-between mt-2">
+                    <div className="text-gray-600">
+                      {`저만 믿고 맡겨 주시면 엄청난 ${selectedCategory.name}를 만들어드리겠습니다.`}
+                    </div>
+                    <div>
+                      <span className="text-xl font-light text-gray-800">{`1일 후 종료`}</span>
+                      <span className="text-xl font-light text-gray-800">{` | `}</span>
+                      <span className="text-2xl font-semibold text-gray-800">{`150,000`}</span>
+                      <span className="text-2xl font-light text-gray-800">{` ~ `}</span>
+                      <span className="text-2xl font-semibold text-gray-800">{`200,000`}</span>
+                      <span className="text-2xl font-light text-gray-800">{`원`}</span>
+                    </div>
+                  </div>
+
 
                 </div>
               </div>
@@ -129,7 +156,7 @@ export default function Market() {
 
   // const data = await Data();
   // console.log(data);
-
+  const { listviewType, setListViewType } = useCategory();
   return (
     <main className="w-[80%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
       {/* <div className="mx-auto mt-6 text-4xl font-bold">
@@ -144,6 +171,26 @@ export default function Market() {
           </div>
         </div>
         <div className="w-full ml-5 border-l-2 border-gray-300">
+          <div className="flex flex-row justify-between w-full">
+            <div>
+
+            </div>
+            <div className="flex flex-row">
+              <QueueListIcon className={`w-8 h-8 ${listviewType === 'column' ? 'text-gray-700' : 'text-gray-500'} cursor-pointer`} onClick={
+                () => {
+                  setListViewType('column')
+                }
+              
+              } />
+              <Squares2X2Icon className={`w-8 h-8 ${listviewType === 'grid' ? 'text-gray-700' : 'text-gray-500'} cursor-pointer`} onClick={
+                () => {
+                  setListViewType('grid')
+                }
+              
+              }/>
+
+            </div>
+          </div>
           <CategoryItemContainer />
         </div>
       </div>
