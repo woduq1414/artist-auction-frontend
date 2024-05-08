@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 import Link from "next/link";
-
+import { useRouter } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
 import { useEffect } from "react";
 
@@ -94,6 +94,7 @@ function CategoryListContainer(): JSX.Element {
 }
 
 function CategoryItemContainer(): JSX.Element {
+  const router = useRouter();
   const { selectedCategory, listviewType } = useCategory();
   // {``}
   return (
@@ -104,7 +105,13 @@ function CategoryItemContainer(): JSX.Element {
         `}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
             return (
-              <div className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md`}>
+              <div className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md cursor-pointer`} 
+              onClick={() => {
+                console.log('click');
+                router.push('/market/' + item)
+
+              }}
+              >
                 <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
                   <img src={'/images/sample-pf.jpg'} alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
                   <div className={`
