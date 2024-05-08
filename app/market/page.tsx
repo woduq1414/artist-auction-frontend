@@ -21,6 +21,7 @@ function CategoryListContainer(): JSX.Element {
       {categoryList.map((category, index) => {
         return (
           <div
+            key={index}
             className="hs-accordion active"
             id={`hs-basic-with-title-and-arrow-stretched-heading-${index}`}
           >
@@ -73,7 +74,7 @@ function CategoryListContainer(): JSX.Element {
               <ul className="hs-accordion-content-inner">
                 {category.list.map((item: any) => {
                   return (
-                    <li className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
+                    <li key={index} className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
                       setSelectedCategory(item)
                     }
                     >
@@ -105,12 +106,12 @@ function CategoryItemContainer(): JSX.Element {
         `}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
             return (
-              <div className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md cursor-pointer`} 
-              onClick={() => {
-                console.log('click');
-                router.push('/market/' + item)
+              <div key={item} className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md cursor-pointer`}
+                onClick={() => {
+                  console.log('click');
+                  router.push('/market/' + item)
 
-              }}
+                }}
               >
                 <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
                   <img src={'/images/sample-pf.jpg'} alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />

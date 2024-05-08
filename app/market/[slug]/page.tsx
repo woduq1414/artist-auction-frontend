@@ -55,7 +55,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               {
                 backgroundList.map((background: string | undefined, index: any) => {
                   return (
-                    <div className="hs-carousel-slide">
+                    <div className="hs-carousel-slide" key={index}>
                       <div className={"flex justify-center h-[480px] "} >
                         <img src={background} alt='samplepf' className={`relative top-[20px]`} ref={imageRefList[index]} />
                       </div>
@@ -113,7 +113,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             {
               backgroundList.map((background: string | undefined, index: any) => {
                 return (
-                  <span className="border-4 border-gray-400 rounded-full cursor-pointer hs-carousel-active:bg-black hs-carousel-active:border-black size-5 " />
+                  <span key={index} className="border-4 border-gray-400 rounded-full cursor-pointer hs-carousel-active:bg-black hs-carousel-active:border-black size-5 " />
 
                 );
               })
@@ -203,7 +203,11 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
             <p className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>{content}</p>
-            <div ref={priceRef}></div>
+            <div ref={priceRef}>
+              
+
+
+            </div>
             <div ref={reviewRef}></div>
           </div>
         </div>
