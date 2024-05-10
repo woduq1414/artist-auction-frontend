@@ -30,10 +30,10 @@ div::-webkit-scrollbar-track {
   background: rgba(5, 5, 5, 0.1);  /*스크롤바 뒷 배경 색상*/
 }
 
+
 body {
   letter-spacing: -0.5px;
 }
-
 /* 
 :root {
   --foreground-rgb: 0, 0, 0;

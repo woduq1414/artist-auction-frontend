@@ -58,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-       
+
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={pretendard.className}>
@@ -70,7 +70,9 @@ export default function RootLayout({
         
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
-            <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
+            <Link  href="#">
+              <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
+            </Link>
           </div>
           <div className={`flex flex-row items-center gap-8 md:flex-col lg:gap-5 ml-auto mr-10 
            md:hidden
