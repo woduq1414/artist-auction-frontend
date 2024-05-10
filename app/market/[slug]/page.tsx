@@ -3,7 +3,9 @@
 import { useGoods } from "@/app/_store/useGoods";
 import { FastAverageColor } from "fast-average-color";
 import { useEffect, useRef, useState } from "react";
-
+import Chart from "react-apexcharts";
+//Or 
+import ApexCharts from "react-apexcharts";
 
 export default function Page({ params }: { params: { slug: string } }) {
   let slug = params.slug;
@@ -40,7 +42,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   }, [backgroundList]);
 
   return (
-    <main className="w-[80%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
+    <main className="w-[100%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
       <>
         {/* Slider */}
         <div
@@ -180,7 +182,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                   role="tabpanel"
                   aria-labelledby="horizontal-alignment-item-1"
                 >
-           
+
                 </div>
                 <div
                   id="horizontal-alignment-2"
@@ -188,7 +190,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                   role="tabpanel"
                   aria-labelledby="horizontal-alignment-item-2"
                 >
-                 
+
                 </div>
                 <div
                   id="horizontal-alignment-3"
@@ -196,16 +198,74 @@ export default function Page({ params }: { params: { slug: string } }) {
                   role="tabpanel"
                   aria-labelledby="horizontal-alignment-item-3"
                 >
-               
+
                 </div>
               </div>
             </>
 
 
             <p className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>{content}</p>
-            <div ref={priceRef}>
-              
+            <div ref={priceRef} className="flex flex-row w-full px-[6%] py-8 my-8 bg-white shadow-lg rounded-2xl shadow-black/2 ">
+              <div className="flex flex-col flex-shrink-0 gap-10 mr-[2rem] justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <h3 className="mr-3 text-2xl font-light">시작가</h3>
+                  <h3 className="text-4xl font-semibold">150,000</h3>
+                  <h3 className="ml-2 text-2xl font-light">원</h3>
+                </div>
+                <div className="flex flex-row items-center justify-center">
+                  <h3 className="mr-3 text-2xl font-light">최고가</h3>
+                  <h3 className="text-4xl font-semibold">270,000</h3>
+                  <h3 className="ml-2 text-2xl font-light">원</h3>
+                </div>
+                <div className="flex flex-col items-start gap-2">
+                  <h3 className="mr-3 font-light text-gray-800 text-md">최근 거래 성사일 : 2024. 05. 27.</h3>
+                  <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : 220,000원</h3>
+                </div>
+              </div>
+              <div className="flex-grow">
+                <ApexCharts
+                  type="line"
+                  series={[
+                    {
+                      name: "거래가",
+                      data: [150000, 180000, 240000, 270000, 220000, 220000, 260000],
+                    },
 
+                  ]}
+
+
+                  options={{
+
+                    chart: {
+
+                      width: '100%',
+                      toolbar: { show: false },
+                      zoom: { enabled: false },
+                      fontFamily: 'Pretendard',
+
+                    },
+                    xaxis: {
+                      categories: ["5/10", "5/16", "5/17", "5/22", "5/24", "5/26", "5/27"],
+                    },
+
+                    yaxis: {
+                      labels: {
+                        formatter: function (value) {
+                          return value.toLocaleString('ko-KR') + "원";
+                        }
+                      },
+                    },
+
+                    theme: {
+                      mode: 'light',
+                      palette: 'palette7',
+
+                    }
+
+
+                  }}>
+                </ApexCharts>
+              </div>
 
             </div>
             <div ref={reviewRef}></div>
