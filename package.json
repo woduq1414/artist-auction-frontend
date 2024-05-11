@@ -21,6 +21,7 @@
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
     "fast-average-color": "^9.4.0",
+    "jodit-react": "^4.1.2",
     "lodash": "^4.17.21",
     "next": "13.4.4",
     "postcss": "8.4.23",
