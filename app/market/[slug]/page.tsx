@@ -4,6 +4,7 @@ import { useGoods } from "@/app/_store/useGoods";
 import { FastAverageColor } from "fast-average-color";
 import { useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
+import { debounce, set, throttle } from 'lodash';
 //Or 
 import ApexCharts from "react-apexcharts";
 
@@ -17,11 +18,51 @@ export default function Page({ params }: { params: { slug: string } }) {
   let priceRef = useRef<any>(null);
   let reviewRef = useRef<any>(null);
 
+  let mainRef = useRef<any>(null);
+
+  const [isSectionMovingAllowed, setIsSectionMovingAllowed] = useState(true);
+
+
+  const [currentSection, setCurrentSection] = useState(0);
+
   const { backgroundList, getGoods, title, description, content } = useGoods();
   useEffect(() => {
     getGoods();
 
 
+  }, []);
+
+
+
+  const handleScroll = throttle(() => {
+    if (!isSectionMovingAllowed) return;
+    const currentScrollY = window.scrollY;
+    // console.log(currentScrollY, reviewRef.current.offsetTop, priceRef.current.offsetTop, contentRef.current.offsetTop, currentSection);
+    console.log(-(mainRef.current.clientHeight - currentScrollY - window.innerHeight));
+    if (currentScrollY + 126 >= reviewRef.current.offsetTop || -(mainRef.current.clientHeight - currentScrollY - window.innerHeight) >= 78) {
+      setCurrentSection(2);
+    } else if (currentScrollY + 126 >= priceRef.current.offsetTop) {
+      setCurrentSection(1);
+    } else {
+
+      setCurrentSection(0);
+
+
+
+
+    }
+
+  }, 30);
+
+  useEffect(() => {
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+
+
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
 
@@ -44,7 +85,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   }, [backgroundList]);
 
   return (
-    <main className="w-[100%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
+    <main className="w-[100%] h-full mx-auto mt-20 md:mt-16  flex flex-col " ref={mainRef}>
       <>
         {/* Slider */}
         <div
@@ -130,7 +171,9 @@ export default function Page({ params }: { params: { slug: string } }) {
           <h1 className="mt-6 text-4xl font-bold">{title}</h1>
           <p className="mt-5 text-lg">{description}</p>
           <div className="px-[15%] mt-5">
-            <>
+
+
+            <div className="sticky z-50 bg-white top-20">
               <div className="border-b border-gray-200 dark:border-neutral-700">
                 <nav
                   className="-mb-0.5 flex justify-center space-x-6"
@@ -138,40 +181,61 @@ export default function Page({ params }: { params: { slug: string } }) {
                   role="tablist"
                 >
                   <button
+
                     type="button"
-                    className="w-[30%] justify-center inline-flex items-center px-1 py-2 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 active"
+                    className={`w-[30%] justify-center inline-flex items-center px-1 py-3 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none  disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400  
+                    ${currentSection == 0 ? ' active' : ''}`}
                     id="horizontal-alignment-item-1"
                     data-hs-tab="#horizontal-alignment-1"
                     aria-controls="horizontal-alignment-1"
                     role="tab"
                     onClick={() => {
-                      contentRef.current.scrollIntoView({ behavior: 'smooth' });
+                      setIsSectionMovingAllowed(false);
+                      setTimeout(() => {
+                        setIsSectionMovingAllowed(true);
+                      }, 1000);
+                      setCurrentSection(0);
+                      window.scrollTo({ top: contentRef.current.offsetTop - 126, behavior: 'smooth' });
                     }}
                   >
                     상품 설명
                   </button>
                   <button
+
                     type="button"
-                    className="w-[30%] justify-center inline-flex items-center px-1 py-2 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 "
+                    className={`w-[30%] justify-center inline-flex items-center px-1 py-3 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none  disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400  
+                    ${currentSection == 1 ? ' active' : ''}`}
                     id="horizontal-alignment-item-2"
                     data-hs-tab="#horizontal-alignment-2"
                     aria-controls="horizontal-alignment-2"
                     role="tab"
                     onClick={() => {
-                      priceRef.current.scrollIntoView({ behavior: 'smooth' });
+                      setIsSectionMovingAllowed(false);
+                      setTimeout(() => {
+                        setIsSectionMovingAllowed(true);
+                      }, 1000);
+                      setCurrentSection(1);
+                      window.scrollTo({ top: priceRef.current.offsetTop - 126, behavior: 'smooth' });
                     }}
                   >
                     가격
                   </button>
                   <button
+
                     type="button"
-                    className="w-[30%] justify-center inline-flex items-center px-1 py-2 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 "
+                    className={`w-[30%] justify-center inline-flex items-center px-1 py-3 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none  disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400  
+                    ${currentSection == 2 ? ' active' : ''}`}
                     id="horizontal-alignment-item-3"
                     data-hs-tab="#horizontal-alignment-3"
                     aria-controls="horizontal-alignment-3"
                     role="tab"
                     onClick={() => {
-                      reviewRef.current.scrollIntoView({ behavior: 'smooth' });
+                      setIsSectionMovingAllowed(false);
+                      setTimeout(() => {
+                        setIsSectionMovingAllowed(true);
+                      }, 1000);
+                      setCurrentSection(2);
+                      window.scrollTo({ top: reviewRef.current.offsetTop - 126, behavior: 'smooth' });
                     }}
                   >
                     후기
@@ -203,7 +267,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 </div>
               </div>
-            </>
+            </div>
 
 
             <p className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>{content}</p>
@@ -223,15 +287,15 @@ export default function Page({ params }: { params: { slug: string } }) {
                   안녕하세요 저는 김민수입니다. 그리고 세상을 뒤흔들어놓고 뒤집어놓을 디자이너라고 자부합니다. 저는 디자인을 통해 세상을 놀라게 할 수 있는 무언가를 만들어드리겠습니다. 그리고 엄청나게 기가 막힌 디자인을 매일 같이 뽑아내는 것이 저의 일상이니 많은 관심 부탁드립니다. 그럼 오늘도 좋은 하루 보내세요.
                 </div>
                 <div className="flex items-center justify-end w-full">
-                <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                  포트폴리오로 이동
-                  <ArrowRightIcon className="w-4 h-4" />
-                </button>
-              </div>
+                  <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                    포트폴리오로 이동
+                    <ArrowRightIcon className="w-4 h-4" />
+                  </button>
+                </div>
 
               </div>
 
-          
+
             </div>
 
             <div ref={priceRef} className="flex flex-row w-full px-[6%] py-8 my-8 bg-gray-50  rounded-2xl shadow-black/2 ">
@@ -251,6 +315,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                   <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : 220,000원</h3>
                 </div>
               </div>
+
               <div className="flex-grow">
                 <ApexCharts
                   type="line"
@@ -298,7 +363,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             </div>
 
-            <div className="flex gap-3 my-5">
+            <div className="sticky flex gap-3 my-2 top-[calc(100vh-56px)] z-50">
               <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                 아티스트에게 1:1 문의
               </button>
@@ -310,7 +375,12 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
 
-            <div ref={reviewRef}></div>
+            <div ref={reviewRef} className="w-full h-[600px]  translate-y-[-44px]">
+              <div className="w-full h-[560px] mb-10 bg-gray-50 rounded-2xl ">
+
+              </div>
+
+            </div>
           </div>
         </div>
       </>
