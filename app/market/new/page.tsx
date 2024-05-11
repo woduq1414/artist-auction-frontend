@@ -2,11 +2,18 @@
 
 import { useCategory } from '@/app/_store/useCategory';
 import JoditEditor from 'jodit-react';
-import { HSSelect, HSStaticMethods, HSStepper } from 'preline/preline';
+
+import dynamic from 'next/dynamic';
+
+
+
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
+// import { HSSelect, HSSelect } from 'preline';
+
+
 
 const NewMarketPage: React.FC = () => {
 
@@ -58,36 +65,47 @@ const NewMarketPage: React.FC = () => {
     // ...
 
     useEffect(() => {
-        if (subCategoryList.length > 0) {
-            const select: HSSelect = HSSelect.getInstance('#secondCategorySelect') as HSSelect;
-            console.log(select, subCategoryList);
+        import('preline/preline').then((module) => {
 
-            setSecondCategory(null);
+            const { HSStaticMethods, HSSelect } = module;
+            // type HSSelect = import('preline/preline').HSSelect;
+
+            if (subCategoryList.length > 0) {
 
 
-            for (let i = 0; i < preSubCategoryList.length; i++) {
-                select?.removeOption(preSubCategoryList[i].id.toString());
+                const select = HSSelect.getInstance('#secondCategorySelect');
+
+                if(!(select instanceof HSSelect)){
+                    return;
+                }
+
+
+                console.log(select, subCategoryList);
+
+                setSecondCategory(null);
+
+                for (let i = 0; i < preSubCategoryList.length; i++) {
+                    (select)?.removeOption(preSubCategoryList[i].id.toString());
+                }
+
+                for (let i = 0; i < subCategoryList.length; i++) {
+                    (select)?.addOption({
+                        val: subCategoryList[i].id.toString(),
+                        title: subCategoryList[i].name
+                    });
+                }
+
+                setPreSubCategoryList(subCategoryList);
+                HSStaticMethods.autoInit(['select']);
+
+                document.getElementById('secondCategoryButton')?.classList.remove('hidden');
+                document.getElementById('secondCategoryExtra')?.classList.remove('hidden');
+
+                select.open();
+
             }
+        });
 
-            for (let i = 0; i < subCategoryList.length; i++) {
-                select?.addOption({
-                    val: subCategoryList[i].id.toString(),
-                    title: subCategoryList[i].name
-
-                });
-
-
-            }
-
-            setPreSubCategoryList(subCategoryList);
-            HSStaticMethods.autoInit(['select']);
-
-            document.getElementById('secondCategoryButton')?.classList.remove('hidden');
-            document.getElementById('secondCategoryExtra')?.classList.remove('hidden');
-
-            select.open();
-
-        }
     }, [subCategoryList])
 
     const editor = useEditor({
@@ -285,7 +303,7 @@ const NewMarketPage: React.FC = () => {
                             // style={{ display: "none" }}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
-                                    <CustomEditor/>
+                                    <CustomEditor />
 
                                 </div>
                             </div>

@@ -322,22 +322,8 @@ export default function CustomEditor() {
                             type="button"
                             data-hs-editor-blockquote=""
                         >
-                            <svg
-                                className="flex-shrink-0 size-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width={20}
-                                height={20}
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M17 6H3" />
-                                <path d="M21 12H8" />
-                                <path d="M21 18H8" />
-                                <path d="M3 12v6" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+                                <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
                             </svg>
                             <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
                                 인용문
@@ -352,8 +338,8 @@ export default function CustomEditor() {
                         >
                             <input
                                 type="color"
-                          
-                                
+
+
                                 className='w-8 h-8 text-sm font-semibold text-gray-800 bg-transparent border border-transparent rounded-full cursor-pointer gap-x-2 disabled:opacity-50 disabled:pointer-events-none'
                             />
                             <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
