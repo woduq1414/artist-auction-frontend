@@ -1,9 +1,12 @@
 'use client'
 
 import { useCategory } from '@/app/_store/useCategory';
-import { HSSelect, HSStaticMethods } from 'preline/preline';
-
-import React, { useEffect, useRef, useState } from 'react';
+import JoditEditor from 'jodit-react';
+import { HSSelect, HSStaticMethods, HSStepper } from 'preline/preline';
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import CustomEditor from '@/app/_components/CustomEditor';
 
 const NewMarketPage: React.FC = () => {
 
@@ -32,7 +35,6 @@ const NewMarketPage: React.FC = () => {
         getCategoryList();
 
 
-
     }, [])
 
     useEffect(() => {
@@ -45,6 +47,10 @@ const NewMarketPage: React.FC = () => {
         secondCategoryRef.current.addEventListener('change.hs.select', (e: any) => {
             setSecondCategory(e.detail.payload);
         });
+
+        // let e = document.querySelector('#stepper') as HTMLElement;
+        // const stepper = new HSStepper(e);
+        // stepper.setProcessedNavItem(1);
     }, [categoryList])
 
 
@@ -84,13 +90,21 @@ const NewMarketPage: React.FC = () => {
         }
     }, [subCategoryList])
 
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+        ],
+        content: '<p>Hello World! 🌎️</p>',
+    })
 
     return (
         <main className="w-[80%] h-[calc(100vh-80px)] mx-auto mt-20 md:mt-16  flex flex-col justify-center items-center">
             <div className="w-[100%] rounded-xl bg-slate-50">
                 <div className='mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper="">
+                    <div data-hs-stepper='{
+                    "currentIndex": 2
+                    }' id="stepper">
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center mx-auto gap-x-2">
                             {
@@ -144,7 +158,7 @@ const NewMarketPage: React.FC = () => {
                             <div
                                 data-hs-stepper-content-item='{
 "index": 1
-    }'
+    }'                          style={{ display: "none" }}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
                                     <div className='flex flex-col gap-2'>
@@ -268,12 +282,11 @@ const NewMarketPage: React.FC = () => {
                                 data-hs-stepper-content-item='{
 "index": 2
     }'
-                                style={{ display: "none" }}
+                            // style={{ display: "none" }}
                             >
-                                <div className="flex items-center justify-center h-48 p-4 border border-gray-200 border-dashed bg-gray-50 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-                                    <h3 className="text-gray-500 dark:text-neutral-500">
-                                        Second content
-                                    </h3>
+                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
+                                    <CustomEditor/>
+
                                 </div>
                             </div>
                             {/* End First Contnet */}
