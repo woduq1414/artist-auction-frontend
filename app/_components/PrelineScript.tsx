@@ -46,9 +46,8 @@ export default function PrelineScript() {
 //     setTimeout(() => {
 //       if (isBrowser) {
 //         // if this component is rendered on a browser, import relevant preline plugins
-//         import("preline/preline").then(({ HSSelect, HSStepper}) => {
-//           HSSelect.autoInit();
-//           HSStepper.autoInit();
+//         import("preline/preline").then(({ HSStaticMethods}) => {
+//           HSStaticMethods.autoInit();
 //         })
 //       }
 //     }, 100)

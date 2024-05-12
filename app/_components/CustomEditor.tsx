@@ -28,12 +28,12 @@ export default function CustomEditor() {
             extensions: [
                 Placeholder.configure({
                     placeholder: 'Add a message, if you\'d like.',
-                    emptyNodeClass: 'text-gray-800 dark:text-neutral-200'
+                    emptyNodeClass: 'text-gray-800 '
                 }),
                 StarterKit,
                 Paragraph.configure({
                     HTMLAttributes: {
-                        class: 'text-gray-800 dark:text-neutral-200'
+                        class: 'text-gray-800 '
                     }
                 }),
                 Bold.configure({
@@ -49,18 +49,18 @@ export default function CustomEditor() {
                 // }),
                 BulletList.configure({
                     HTMLAttributes: {
-                        class: 'list-disc list-inside text-gray-800 dark:text-white'
+                        class: 'list-disc list-inside text-gray-800 '
                     }
                 }),
                 OrderedList.configure({
                     HTMLAttributes: {
-                        class: 'list-decimal list-inside text-gray-800 dark:text-white'
+                        class: 'list-decimal list-inside text-gray-800 '
                     }
                 }),
                 ListItem,
                 Blockquote.configure({
                     HTMLAttributes: {
-                        class: 'text-gray-800 sm:text-xl dark:text-white'
+                        class: 'text-gray-800 sm:text-xl '
                     }
                 }),
                 Color,
@@ -123,12 +123,12 @@ export default function CustomEditor() {
     }, [])
 
     return (
-        <div className="overflow-hidden border border-gray-200 rounded-xl dark:border-neutral-700">
+        <div className="overflow-hidden border border-gray-200 rounded-xl ">
             <div id="hs-editor-tiptap">
-                <div className="flex px-3 py-2 align-middle border-b border-gray-200 gap-x-1 dark:border-neutral-700">
+                <div className="flex px-3 py-2 align-middle border-b border-gray-200 gap-x-1 ">
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-bold=""
                         >
@@ -147,7 +147,7 @@ export default function CustomEditor() {
                                 <path d="M14 12a4 4 0 0 0 0-8H6v8" />
                                 <path d="M15 20a4 4 0 0 0 0-8H6v8Z" />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 굵게
                             </span>
                         </button>
@@ -155,7 +155,7 @@ export default function CustomEditor() {
 
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-italic=""
                         >
@@ -175,14 +175,14 @@ export default function CustomEditor() {
                                 <line x1={14} x2={5} y1={20} y2={20} />
                                 <line x1={15} x2={9} y1={4} y2={20} />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 이탤릭
                             </span>
                         </button>
                     </div>
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-underline=""
                         >
@@ -201,14 +201,14 @@ export default function CustomEditor() {
                                 <path d="M6 4v6a6 6 0 0 0 12 0V4" />
                                 <line x1={4} x2={20} y1={20} y2={20} />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 밑줄
                             </span>
                         </button>
                     </div>
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-strike=""
                         >
@@ -228,7 +228,7 @@ export default function CustomEditor() {
                                 <path d="M14 12a4 4 0 0 1 0 8H6" />
                                 <line x1={4} x2={20} y1={12} y2={12} />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 취소선
                             </span>
                         </button>
@@ -258,7 +258,7 @@ export default function CustomEditor() {
 </div> */}
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-ol=""
                         >
@@ -281,14 +281,14 @@ export default function CustomEditor() {
                                 <path d="M4 10h2" />
                                 <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 숫자 글머리
                             </span>
                         </button>
                     </div>
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-ul=""
                         >
@@ -311,21 +311,21 @@ export default function CustomEditor() {
                                 <line x1={3} x2="3.01" y1={12} y2={12} />
                                 <line x1={3} x2="3.01" y1={18} y2={18} />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 기호 글머리
                             </span>
                         </button>
                     </div>
                     <div className="inline-block hs-tooltip">
                         <button
-                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-blockquote=""
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
                                 <path d="M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z" />
                             </svg>
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 인용문
                             </span>
                         </button>
@@ -342,7 +342,7 @@ export default function CustomEditor() {
 
                                 className='w-8 h-8 text-sm font-semibold text-gray-800 bg-transparent border border-transparent rounded-full cursor-pointer gap-x-2 disabled:opacity-50 disabled:pointer-events-none'
                             />
-                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700" role="tooltip">
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 글자 색상
                             </span>
                         </button>

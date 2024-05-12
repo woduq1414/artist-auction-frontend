@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     if (!isSectionMovingAllowed) return;
     const currentScrollY = window.scrollY;
     // console.log(currentScrollY, reviewRef.current.offsetTop, priceRef.current.offsetTop, contentRef.current.offsetTop, currentSection);
-    console.log(-(mainRef.current.clientHeight - currentScrollY - window.innerHeight));
+    // console.log(-(mainRef.current.clientHeight - currentScrollY - window.innerHeight));
     if (currentScrollY + 126 >= reviewRef.current.offsetTop || -(mainRef.current.clientHeight - currentScrollY - window.innerHeight) >= 78) {
       setCurrentSection(2);
     } else if (currentScrollY + 126 >= priceRef.current.offsetTop) {
