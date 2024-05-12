@@ -142,7 +142,7 @@ const NewMarketPage: React.FC = () => {
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex": 3 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -581,9 +581,9 @@ const NewMarketPage: React.FC = () => {
                                                     let imageList: { src: string | ArrayBuffer | null | undefined; }[] = [];
                                                     if (!fileList) return;
                                                     let newFileList
-                                                    if(fileList.length + exampleImageList.length > 9) {
+                                                    if (fileList.length + exampleImageList.length > 9) {
                                                         newFileList = Array.from(fileList).slice(0, 9 - exampleImageList.length);
-                                                    }else{
+                                                    } else {
                                                         newFileList = Array.from(fileList);
                                                     }
 
@@ -608,7 +608,7 @@ const NewMarketPage: React.FC = () => {
                                                     Promise.all(promises).then(() => {
                                                         setExampleImageList([...exampleImageList, ...imageList]);
                                                     });
-                                                    
+
 
                                                     // for (let i = 0; i < fileList.length; i++) {
                                                     //     const file = fileList[i];
@@ -621,7 +621,7 @@ const NewMarketPage: React.FC = () => {
                                                     //             if (exampleImageList.length >= 9) return;
 
                                                     //             imageList.push({ src: src });
-                                                             
+
                                                     //             // cropperModalOpenRef.current.click();
 
 
@@ -632,7 +632,7 @@ const NewMarketPage: React.FC = () => {
                                                     //     }
                                                     // }
                                                     // setTimeout(() => {
-                                                                    
+
                                                     //     setExampleImageList([...exampleImageList, ...imageList]);
                                                     // }, 300);
 
@@ -653,8 +653,9 @@ const NewMarketPage: React.FC = () => {
     }'
                                 style={{ display: "none" }}
                             >
-                                <div className="flex items-center justify-center h-48 p-4 border border-gray-200 border-dashed bg-gray-50 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-                                    <h3 className="text-gray-500 dark:text-neutral-500">Final content</h3>
+                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
+                                    <div className='text-2xl font-semibold'>"{title}" 상품의 접수가 완료되었습니다.</div>
+                                    <div className='text-lg font-medium'>3일 이내로 접수 결과를 안내해드리겠습니다.</div>
                                 </div>
                             </div>
                             {/* End Final Contnet */}
@@ -718,8 +719,11 @@ const NewMarketPage: React.FC = () => {
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
                                 data-hs-stepper-reset-btn=""
                                 style={{ display: "none" }}
+                                onClick={() => {
+
+                                }}
                             >
-                                Reset
+                                Reset(임시)
                             </button>
                         </div>
                         {/* End Stepper Content */}
