@@ -35,6 +35,8 @@ const NewMarketPage: React.FC = () => {
     const [description, setDescription] = useState<string>('');
     const [price, setPrice] = useState<number>(0);
 
+    const [endDate, setEndDate] = useState<string>('');
+
 
     let firstCategoryRef = useRef<any>(null);
     let secondCategoryRef = useRef<any>(null);
@@ -121,7 +123,7 @@ const NewMarketPage: React.FC = () => {
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex":  2 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -186,7 +188,7 @@ const NewMarketPage: React.FC = () => {
                                             상품 제목
                                         </label>
                                         <input
-                                            type="email"
+                                            type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="상품 제목을 입력해주세요."
@@ -208,7 +210,7 @@ const NewMarketPage: React.FC = () => {
                                             한 줄 설명
                                         </label>
                                         <input
-                                            type="email"
+                                            type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="한 줄 설명을 입력해주세요."
@@ -306,12 +308,12 @@ const NewMarketPage: React.FC = () => {
                                                 onChange={(e) => {
                                                     const value: string = e.target.value;
                                                     const removedCommaValue: number = Number(value.replaceAll(",", ""));
-                                                    if(removedCommaValue < 10000){
+                                                    if (removedCommaValue < 10000) {
                                                         setPrice(removedCommaValue);
                                                     }
-                                                   
-                                                 }}
-                                                 value = {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+
+                                                }}
+                                                value={price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                             />
                                             <div className="absolute inset-y-0 z-20 flex items-center pointer-events-none start-0 ps-4">
                                                 <svg
@@ -320,7 +322,7 @@ const NewMarketPage: React.FC = () => {
                                                     viewBox="0 0 24 24"
                                                     fill="none"
                                                     xmlns="http://www.w3.org/2000/svg"
-                                                    
+
                                                 >
                                                     <path
                                                         d="M6 12L8 19L10 12M6 12L4 5M6 12H3M6 12H10M14 12L16 19L18 12M14 12L12 5L10 12M14 12H10M14 12H18M18 12L20 5M18 12H21"
@@ -342,6 +344,33 @@ const NewMarketPage: React.FC = () => {
                                             id="hs-inline-input-helper-text"
                                         >
                                             10,000원 단위로만 입력 가능합니다.
+                                        </p>
+                                    </div>
+                                    <div className='flex flex-col gap-2'>
+                                        <label
+                                            htmlFor="inline-input-label-with-helper-text"
+                                            className="block text-lg font-semibold "
+                                        >
+                                            경매 종료일
+                                        </label>
+                                     
+
+                                        <input
+                                            type="date"
+                                            id="inline-input-label-with-helper-text"
+                                            className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
+                                            // placeholder="상품 제목을 입력해주세요."
+                                            aria-describedby="hs-inline-input-helper-text"
+                                            onChange={(e) => setTitle(e.target.value)}
+                                            min={new Date().toISOString().split('T')[0]}
+                                            max={(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]}
+                                        />
+
+                                        <p
+                                            className="text-gray-500 text-md dark:text-neutral-500"
+                                            id="hs-inline-input-helper-text"
+                                        >
+                                            경매는 4주까지 진행 가능합니다. {`( ~ ${(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]})`}
                                         </p>
                                     </div>
                                 </div>
