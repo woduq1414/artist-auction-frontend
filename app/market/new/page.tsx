@@ -116,15 +116,13 @@ const NewMarketPage: React.FC = () => {
     })
 
     return (
-        <main className="w-[80%] h-[calc(100vh-80px)] mx-auto mt-20 md:mt-16  flex flex-col justify-center items-center">
-            <div className="w-[100%] rounded-xl bg-slate-50">
-                <div className='mx-5 my-5'>
+        <main className="w-[80%]  mx-auto mt-20 md:mt-16  flex flex-col justify-center items-center">
+            <div className="w-[100%] rounded-xl  h-full">
+                <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{
-                    "currentIndex": 2
-                    }' id="stepper">
+                    <div data-hs-stepper='{"currentIndex":  2 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
-                        <ul className="relative flex flex-row justify-center mx-auto gap-x-2">
+                        <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
                                 [1, 2, 3].map((item, index) => (
                                     <li
@@ -171,12 +169,12 @@ const NewMarketPage: React.FC = () => {
                         </ul>
                         {/* End Stepper Nav */}
                         {/* Stepper Content */}
-                        <div className="mt-5 sm:mt-8">
+                        <div className="flex-grow mt-2 overflow-y-auto">
                             {/* First Contnet */}
                             <div
                                 data-hs-stepper-content-item='{
 "index": 1
-    }'                          style={{ display: "none" }}
+    }'                          style={{ display: "none" }} className=''
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
                                     <div className='flex flex-col gap-2'>
@@ -223,6 +221,7 @@ const NewMarketPage: React.FC = () => {
                                             ({description.length} / 40)
                                         </p>
                                     </div>
+                                    {/* <div className='h-[14rem]'></div> */}
                                     <div className='flex flex-col gap-2'>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
@@ -339,7 +338,10 @@ const NewMarketPage: React.FC = () => {
                             </div>
                             {/* End Final Contnet */}
                             {/* Button Group */}
-                            <div className="flex items-center justify-between mt-5 gap-x-2">
+                            
+                            {/* End Button Group */}
+                        </div>
+                        <div className="flex items-center justify-between flex-shrink-0 h-[3rem] mt-5 gap-x-2 mx-5 my-5">
                                 <button
                                     type="button"
                                     className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-1 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
@@ -399,8 +401,6 @@ const NewMarketPage: React.FC = () => {
                                     Reset
                                 </button>
                             </div>
-                            {/* End Button Group */}
-                        </div>
                         {/* End Stepper Content */}
                     </div>
                     {/* End Stepper */}
