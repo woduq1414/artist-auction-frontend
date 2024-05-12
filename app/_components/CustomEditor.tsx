@@ -16,6 +16,7 @@ import Color from '@tiptap/extension-color';
 
 import TextStyle from '@tiptap/extension-text-style';
 import FontSize from 'tiptap-extension-font-size';
+import TextAlign from '@tiptap/extension-text-align';
 
 import '@tiptap/extension-text-style';
 
@@ -67,7 +68,12 @@ export default function CustomEditor() {
                 }),
                 Color,
                 TextStyle,
-                FontSize
+                FontSize,
+                TextAlign.configure({
+                    types: ['heading', 'paragraph'],
+                    alignments: ['left', 'center', 'right', 'justify'],
+                    defaultAlignment: 'left'
+                })
 
             ]
         });
@@ -106,6 +112,18 @@ export default function CustomEditor() {
             {
                 id: '#hs-editor-tiptap [data-hs-editor-blockquote]',
                 fn: () => editor.chain().focus().toggleBlockquote().run()
+            },
+            {
+                id: '#hs-editor-tiptap [data-hs-editor-leftalign]',
+                fn: () => editor.chain().focus().setTextAlign('left').run()
+            },
+            {
+                id: '#hs-editor-tiptap [data-hs-editor-centeralign]',
+                fn: () => editor.chain().focus().setTextAlign('center').run()
+            },
+            {
+                id: '#hs-editor-tiptap [data-hs-editor-rightalign]',
+                fn: () => editor.chain().focus().setTextAlign('right').run()
             },
             ...fontSizeList.map((size) => {
                 return {
@@ -391,6 +409,110 @@ export default function CustomEditor() {
                             </svg>
                             <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
                                 기호 글머리
+                            </span>
+                        </button>
+                    </div>
+                    <div className="inline-block hs-tooltip">
+                        <button
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+                            type="button"
+                            data-hs-editor-leftalign=""
+                        >
+                            <svg
+                                fill="#000000"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={20}
+                                height={16}
+                                strokeWidth={1}
+                                viewBox="0 0 52 52"
+                                enableBackground="new 0 0 52 52"
+                                xmlSpace="preserve"
+                            >
+                                <path d="M48,6.5C48,5.7,47.3,5,46.5,5h-41C4.7,5,4,5.7,4,6.5v3C4,10.3,4.7,11,5.5,11h41c0.8,0,1.5-0.7,1.5-1.5V6.5z" />
+                                <path
+                                    d="M40,18.5c0-0.8-0.7-1.5-1.5-1.5h-33C4.7,17,4,17.7,4,18.5v3C4,22.3,4.7,23,5.5,23h33c0.8,0,1.5-0.7,1.5-1.5
+	V18.5z"
+                                />
+                                <path
+                                    d="M40,42.5c0-0.8-0.7-1.5-1.5-1.5h-33C4.7,41,4,41.7,4,42.5v3C4,46.3,4.7,47,5.5,47h33c0.8,0,1.5-0.7,1.5-1.5
+	V42.5z"
+                                />
+                                <path
+                                    d="M48,30.5c0-0.8-0.7-1.5-1.5-1.5h-41C4.7,29,4,29.7,4,30.5v3C4,34.3,4.7,35,5.5,35h41c0.8,0,1.5-0.7,1.5-1.5
+	V30.5z"
+                                />
+                            </svg>
+
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
+                                왼쪽 정렬
+                            </span>
+                        </button>
+                    </div>
+                    <div className="inline-block hs-tooltip">
+                        <button
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+                            type="button"
+                            data-hs-editor-centeralign=""
+                        >
+                            <svg
+                                width={20}
+                                height={18}
+                                viewBox="0 0 48 48"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                xmlnsXlink="http://www.w3.org/1999/xlink"
+                            >
+                                {/* Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools */}
+                                <title>align-text-center1</title>
+                                <desc>Created with Sketch.</desc>
+                                <g
+                                    id="align-text-center1"
+                                    stroke="none"
+                                    strokeWidth={1}
+                                    fill="none"
+                                    fillRule="evenodd"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <rect width={48} height={48} fill="white" fillOpacity="0.01" />
+                                    <g
+                                        id="编组"
+                                        transform="translate(6.000000, 8.000000)"
+                                        stroke="#000000"
+                                        strokeWidth={4}
+                                    >
+                                        <path d="M30,11 L6,11" id="路径"></path>
+                                        <path d="M36,1 L0,1" id="路径"></path>
+                                        <path d="M36,21 L0,21" id="路径"></path>
+                                        <path d="M30,31 L6,31" id="路径"></path>
+                                    </g>
+                                </g>
+                            </svg>
+
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
+                                가운데 정렬
+                            </span>
+                        </button>
+                    </div>
+                    <div className="inline-block hs-tooltip">
+                        <button
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+                            type="button"
+                            data-hs-editor-rightalign=""
+                        >
+                            <svg fill="#000000" xmlns="http://www.w3.org/2000/svg"
+                                width={20} height={16} viewBox="0 0 52 52" enableBackground="new 0 0 52 52" xmlSpace="preserve">
+                                <path d="M46.5,5h-41C4.7,5,4,5.7,4,6.5v3C4,10.3,4.7,11,5.5,11h41c0.8,0,1.5-0.7,1.5-1.5v-3C48,5.7,47.3,5,46.5,5z"
+                                />
+                                <path d="M46.5,17h-33c-0.8,0-1.5,0.7-1.5,1.5v3c0,0.8,0.7,1.5,1.5,1.5h33c0.8,0,1.5-0.7,1.5-1.5v-3
+	C48,17.7,47.3,17,46.5,17z"/>
+                                <path d="M46.5,41h-33c-0.8,0-1.5,0.7-1.5,1.5v3c0,0.8,0.7,1.5,1.5,1.5h33c0.8,0,1.5-0.7,1.5-1.5v-3
+	C48,41.7,47.3,41,46.5,41z"/>
+                                <path d="M46.5,29h-41C4.7,29,4,29.7,4,30.5v3C4,34.3,4.7,35,5.5,35h41c0.8,0,1.5-0.7,1.5-1.5v-3
+	C48,29.7,47.3,29,46.5,29z"/>
+                            </svg>
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
+                                오른쪽 정렬
                             </span>
                         </button>
                     </div>
