@@ -654,7 +654,7 @@ const NewMarketPage: React.FC = () => {
                                 style={{ display: "none" }}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
-                                    <div className='text-2xl font-semibold'>"{title}" 상품의 접수가 완료되었습니다.</div>
+                                    <div className='text-2xl font-semibold'>[{title}] 상품의 접수가 완료되었습니다.</div>
                                     <div className='text-lg font-medium'>3일 이내로 접수 결과를 안내해드리겠습니다.</div>
                                 </div>
                             </div>
