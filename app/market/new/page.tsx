@@ -91,7 +91,7 @@ const NewMarketPage: React.FC = () => {
             const { HSStaticMethods, HSSelect, HSOverlay } = module;
             // type HSSelect = import('preline/preline').HSSelect;
 
-        
+
             if (subCategoryList.length > 0) {
 
 
@@ -424,7 +424,7 @@ const NewMarketPage: React.FC = () => {
     }'
                                 style={{ display: "none" }}
                             >
-                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-1">
+                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
                                     <label
                                         htmlFor="inline-input-label-with-helper-text"
                                         className="block text-lg font-semibold "
@@ -433,13 +433,13 @@ const NewMarketPage: React.FC = () => {
                                     </label>
 
                                     <p
-                                        className="text-gray-500 text-md dark:text-neutral-500"
+                                        className="mt-2 text-gray-500 text-md "
                                         id="hs-inline-input-helper-text"
                                     >
                                         1920x1080 사이즈의 이미지가 권장됩니다.
                                     </p>
 
-                                    <div className='flex flex-row flex-wrap'>
+                                    <div className='flex flex-row flex-wrap mt-2'>
 
                                         {
                                             mainImageList.length >= 1 && (
@@ -456,8 +456,8 @@ const NewMarketPage: React.FC = () => {
                                             )
                                         }
                                         <button type="button" data-hs-overlay="#cropperModal"
-                                        className='hidden'
-                                        ref={cropperModalOpenRef}
+                                            className='hidden'
+                                            ref={cropperModalOpenRef}
                                         >
                                             Open modal
                                         </button>
@@ -466,7 +466,7 @@ const NewMarketPage: React.FC = () => {
                                                 () => {
                                                     // console.log(cropperModalInstance);
                                                     // cropperModalInstance?.open();
-                                                  
+
 
                                                     mainImageUploaderRef.current.click();
 
@@ -505,6 +505,136 @@ const NewMarketPage: React.FC = () => {
                                                             reader.readAsDataURL(file);
                                                         }
                                                     }
+
+                                                }
+                                                }
+                                            />
+                                            <PlusIcon className='w-10 h-10 m-auto text-gray-400' />
+                                        </div>
+                                    </div>
+
+
+                                    <label
+                                        htmlFor="inline-input-label-with-helper-text"
+                                        className="block mt-8 text-lg font-semibold"
+                                    >
+                                        작품 예시 이미지 등록
+                                    </label>
+
+                                    <p
+                                        className="mt-2 text-gray-500 text-md dark:text-neutral-500"
+                                        id="hs-inline-input-helper-text2"
+                                    >
+                                        9장까지 등록 가능합니다.
+                                    </p>
+
+                                    <div className='flex flex-row flex-wrap gap-3 mt-2'>
+
+                                        {
+                                            exampleImageList.length >= 1 && (
+                                                exampleImageList.map((image, index) => (
+                                                    <div key={index} className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
+                                                        <img src={exampleImageList[index].src} alt="" className='object-cover h-[130px] w-fit' />
+                                                        <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                            onClick={() => {
+                                                                setExampleImageList(exampleImageList.filter((_, i) => i !== index));
+                                                            }}
+                                                        >
+                                                            <TrashIcon className='w-5 h-5 text-white' />
+                                                        </div>
+                                                    </div>
+                                                )
+                                                )
+                                            )
+                                        }
+                                        <button type="button" data-hs-overlay="#cropperModal"
+                                            className='hidden'
+                                            ref={cropperModalOpenRef}
+                                        >
+                                            Open modal
+                                        </button>
+                                        <div className={`w-[130px] h-[130px] border-2 border-gray-400 border-dashed bg-white hover:bg-gray-50 cursor-pointer
+                                        flex justify-center items-center rounded-xl ${exampleImageList.length >= 9 ? 'hidden' : ' '}`} onClick={
+                                                () => {
+                                                    // console.log(cropperModalInstance);
+                                                    // cropperModalInstance?.open();
+
+
+                                                    exampleImageUploaderRef.current.click();
+
+                                                }
+                                            }>
+                                            <>
+
+
+                                            </>
+
+                                            <input
+                                                id="exampleImageUploader"
+                                                type="file"
+                                                style={{ display: 'none' }}
+                                                ref={exampleImageUploaderRef}
+                                                multiple
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    let fileList = (e.target as HTMLInputElement)?.files;
+                                                    let imageList: { src: string | ArrayBuffer | null | undefined; }[] = [];
+                                                    if (!fileList) return;
+                                                    let newFileList
+                                                    if(fileList.length + exampleImageList.length > 9) {
+                                                        newFileList = Array.from(fileList).slice(0, 9 - exampleImageList.length);
+                                                    }else{
+                                                        newFileList = Array.from(fileList);
+                                                    }
+
+
+                                                    const promises = Array.from(newFileList).map((file) => {
+                                                        return new Promise((resolve, reject) => {
+                                                            const reader = new FileReader();
+                                                            reader.onload = function (e2) {
+                                                                const src = e2.target?.result;
+                                                                console.log(src);
+
+                                                                if (exampleImageList.length >= 9) return;
+
+                                                                imageList.push({ src: src });
+                                                                resolve(true);
+                                                            };
+                                                            reader.readAsDataURL(file);
+                                                        });
+                                                    }
+                                                    );
+
+                                                    Promise.all(promises).then(() => {
+                                                        setExampleImageList([...exampleImageList, ...imageList]);
+                                                    });
+                                                    
+
+                                                    // for (let i = 0; i < fileList.length; i++) {
+                                                    //     const file = fileList[i];
+                                                    //     if (file) {
+                                                    //         const reader = new FileReader();
+                                                    //         reader.onload = function (e2) {
+                                                    //             const src = e2.target?.result;
+                                                    //             console.log(src);
+
+                                                    //             if (exampleImageList.length >= 9) return;
+
+                                                    //             imageList.push({ src: src });
+                                                             
+                                                    //             // cropperModalOpenRef.current.click();
+
+
+
+
+                                                    //         };
+                                                    //         console.log(reader.readAsDataURL(file));
+                                                    //     }
+                                                    // }
+                                                    // setTimeout(() => {
+                                                                    
+                                                    //     setExampleImageList([...exampleImageList, ...imageList]);
+                                                    // }, 300);
 
                                                 }
                                                 }
@@ -648,7 +778,7 @@ const NewMarketPage: React.FC = () => {
                                     // if(cropper){
                                     //     console.log(cropper.getCroppedCanvas().toDataURL());
                                     // }
-                              
+
                                 }}
                                 ref={cropperRef}
                             />
@@ -668,7 +798,7 @@ const NewMarketPage: React.FC = () => {
                                 onClick={() => {
                                     const cropper = cropperRef.current?.cropper;
                                     if (cropper) {
-                                       
+
                                         setMainImageList([...mainImageList, {
                                             'src': cropper.getCroppedCanvas().toDataURL(),
                                             'file': null
