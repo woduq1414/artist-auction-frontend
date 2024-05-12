@@ -58,6 +58,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light" />
+
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
@@ -70,7 +73,7 @@ export default function RootLayout({
         
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
-            <Link  href="#">
+            <Link href="#">
               <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>

@@ -15,12 +15,14 @@ import Blockquote from '@tiptap/extension-blockquote';
 import Color from '@tiptap/extension-color';
 
 import TextStyle from '@tiptap/extension-text-style';
+import FontSize from 'tiptap-extension-font-size';
 
 import '@tiptap/extension-text-style';
 
 
 
 export default function CustomEditor() {
+    const fontSizeList = [28, 20, 16, 12, 10];
 
     useEffect(() => {
         const editor = new Editor({
@@ -64,7 +66,9 @@ export default function CustomEditor() {
                     }
                 }),
                 Color,
-                TextStyle
+                TextStyle,
+                FontSize
+
             ]
         });
         const actions = [
@@ -103,7 +107,12 @@ export default function CustomEditor() {
                 id: '#hs-editor-tiptap [data-hs-editor-blockquote]',
                 fn: () => editor.chain().focus().toggleBlockquote().run()
             },
-
+            ...fontSizeList.map((size) => {
+                return {
+                    id: `#hs-font-size-${size}`,
+                    fn: () => editor.chain().focus().setFontSize(size.toString() + 'pt').run()
+                }
+            })
         ];
 
         actions.forEach(({ id, fn }) => {
@@ -125,7 +134,76 @@ export default function CustomEditor() {
     return (
         <div className="overflow-hidden border border-gray-200 rounded-xl ">
             <div id="hs-editor-tiptap">
-                <div className="flex px-3 py-2 align-middle border-b border-gray-200 gap-x-1 ">
+                <div className="flex items-center px-3 py-2 align-middle border-b border-gray-200 gap-x-1">
+
+
+                    <div className="relative inline-flex hs-dropdown">
+                        <button
+                            id="hs-dropdown-default"
+                            type="button"
+                            className="inline-flex items-center px-2 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-1 hs-dropdown-toggle hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
+                        >
+                            <svg
+                                width={16}
+                                height={16}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M7.93417 2C7.95604 2 7.97799 2 8 2L16.0658 2C16.9523 1.99995 17.7161 1.99991 18.3278 2.08215C18.9833 2.17028 19.6117 2.36902 20.1213 2.87868C20.631 3.38835 20.8297 4.0167 20.9179 4.67221C21.0001 5.28388 21.0001 6.0477 21 6.9342L21 7.95C21 8.50229 20.5523 8.95 20 8.95C19.4477 8.95 19 8.50229 19 7.95V7.00001C19 6.02893 18.9979 5.40122 18.9357 4.93871C18.8774 4.50497 18.7832 4.36902 18.7071 4.2929C18.631 4.21677 18.495 4.12263 18.0613 4.06431C17.5988 4.00213 16.9711 4 16 4H13V21C13 21.5523 12.5523 22 12 22C11.4477 22 11 21.5523 11 21V4H8C7.02893 4 6.40122 4.00213 5.93871 4.06431C5.50497 4.12263 5.36902 4.21677 5.2929 4.2929C5.21677 4.36902 5.12263 4.50497 5.06431 4.93871C5.00213 5.40122 5 6.02893 5 7.00001V7.95C5 8.50229 4.55229 8.95 4 8.95C3.44772 8.95 3 8.50229 3 7.95V7.00001C3 6.97799 3 6.95604 3 6.93418C2.99995 6.04769 2.99991 5.28387 3.08215 4.67221C3.17028 4.0167 3.36902 3.38835 3.87868 2.87868C4.38835 2.36902 5.0167 2.17028 5.67221 2.08215C6.28387 1.99991 7.04769 1.99995 7.93417 2Z"
+                                    fill="#1C274C"
+                                />
+                                <path
+                                    d="M7 21H17"
+                                    stroke="#333333"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+
+
+                            <svg
+                                className="hs-dropdown-open:rotate-180 size-4"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={10}
+                                height={10}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
+                        <div
+                            className="z-50 hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 after:h-4 after:absolute after:-bottom-4 after:start-0 after:w-full before:h-4 before:absolute before:-top-4 before:start-0 before:w-full"
+                            aria-labelledby="hs-dropdown-default"
+                        >
+                            {
+                                fontSizeList.map((size) => {
+                                    return (
+                                        <a key={size}
+                                            className={`flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100`}
+
+                                            id={`hs-font-size-${size}`}
+
+                                        >
+                                            {size}pt
+                                        </a>
+                                    )
+                                })
+                            }
+
+                        </div>
+                    </div>
+
+
                     <div className="inline-block hs-tooltip">
                         <button
                             className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
