@@ -11,8 +11,11 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 // import { HSSelect, HSSelect } from 'preline';
-
+import Cropper, { ReactCropperElement } from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import { HSOverlay, ICollectionItem } from 'preline';
 
 
 const NewMarketPage: React.FC = () => {
@@ -22,7 +25,7 @@ const NewMarketPage: React.FC = () => {
     const stepList = [
         "기본 정보 입력",
         "상세 정보 입력",
-        "예시 이미지 업로드"
+        "상품 이미지 등록"
     ];
     const { categoryList, getCategoryList } = useCategory();
 
@@ -37,9 +40,22 @@ const NewMarketPage: React.FC = () => {
 
     const [endDate, setEndDate] = useState<string>('');
 
+    const [mainImageList, setMainImageList] = useState<any[]>([]);
+    const [tempMainImage, setTempMainImage] = useState<string>('');
+    const [exampleImageList, setExampleImageList] = useState<any[]>([]);
+
+    const cropperRef = useRef<ReactCropperElement>(null);
+    const [cropperModalInstance, setCropperModalInstance] = useState<any>(null);
+
+    const cropperModalOpenRef = useRef<any>(null);
 
     let firstCategoryRef = useRef<any>(null);
     let secondCategoryRef = useRef<any>(null);
+
+    let mainImageUploaderRef = useRef<any>(null);
+    let exampleImageUploaderRef = useRef<any>(null);
+
+
 
     useEffect(() => {
         getCategoryList();
@@ -65,14 +81,17 @@ const NewMarketPage: React.FC = () => {
 
 
 
+
+
     // ...
 
     useEffect(() => {
         import('preline/preline').then((module) => {
 
-            const { HSStaticMethods, HSSelect } = module;
+            const { HSStaticMethods, HSSelect, HSOverlay } = module;
             // type HSSelect = import('preline/preline').HSSelect;
 
+        
             if (subCategoryList.length > 0) {
 
 
@@ -123,7 +142,7 @@ const NewMarketPage: React.FC = () => {
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div data-hs-stepper='{"currentIndex": 3 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -236,10 +255,10 @@ const NewMarketPage: React.FC = () => {
                                             <select data-hs-select='{
   "placeholder": "카테고리를 선택해주세요.",
   "toggleTag": "<button type=\"button\"></button>",
-  "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-3 px-4 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-blue-500 focus:ring-blue-500 before:absolute before:inset-0 before:z-[1] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400",
+  "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-3 px-4 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-primary focus:ring-primary before:absolute before:inset-0 before:z-[1] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400",
   "dropdownClasses": "mt-2 z-50 w-full max-h-72 p-1 space-y-0.5 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-neutral-900 dark:border-neutral-700",
   "optionClasses": "py-2 px-4 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:text-neutral-200 dark:focus:bg-neutral-800",
-  "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"hidden hs-selected:block\"><svg class=\"flex-shrink-0 size-3.5 text-blue-600 dark:text-blue-500\" xmlns=\"http:.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg></span></div>",
+  "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"hidden hs-selected:block\"><svg class=\"flex-shrink-0 size-3.5 text-primary dark:text-primary\" xmlns=\"http:.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg></span></div>",
   "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"flex-shrink-0 size-3.5 text-gray-500 dark:text-neutral-500\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
 }' className="hidden" ref={firstCategoryRef} id='firstCategorySelect'
                                                 onClick={(e) => { console.log(e) }}
@@ -259,10 +278,10 @@ const NewMarketPage: React.FC = () => {
                                             <select data-hs-select={JSON.stringify({
                                                 "placeholder": "세부 카테고리를 선택해주세요.",
                                                 "toggleTag": `<button id="secondCategoryButton" class="hidden" type=\"button\"></button>`,
-                                                "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-3 px-4 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-blue-500 focus:ring-blue-500 before:absolute before:inset-0 before:z-[1] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400",
+                                                "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-3 px-4 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-primary focus:ring-primary before:absolute before:inset-0 before:z-[1] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400",
                                                 "dropdownClasses": "mt-2 z-50 w-full max-h-72 p-1 space-y-0.5 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-neutral-900 dark:border-neutral-700",
                                                 "optionClasses": "py-2 px-4 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:text-neutral-200 dark:focus:bg-neutral-800",
-                                                "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"hidden hs-selected:block\"><svg class=\"flex-shrink-0 size-3.5 text-blue-600 dark:text-blue-500\" xmlns=\"http:.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg></span></div>",
+                                                "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"hidden hs-selected:block\"><svg class=\"flex-shrink-0 size-3.5 text-primary dark:text-primary\" xmlns=\"http:.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg></span></div>",
                                                 "extraMarkup": "<div id=\"secondCategoryExtra\" class=\"absolute top-1/2 end-3 -translate-y-1/2 hidden \"><svg class=\"flex-shrink-0 size-3.5 text-gray-500 dark:text-neutral-500\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
                                             })} className={`hidden`} ref={secondCategoryRef} id='secondCategorySelect'
 
@@ -303,7 +322,7 @@ const NewMarketPage: React.FC = () => {
                                                 type="text"
                                                 id="hs-input-with-leading-and-trailing-icon"
                                                 name="hs-input-with-leading-and-trailing-icon"
-                                                className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md ps-9 pe-16 focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                                className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md ps-9 pe-16 focus:z-10 focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                                 placeholder={price.toString()}
                                                 onChange={(e) => {
                                                     const value: string = e.target.value;
@@ -353,7 +372,7 @@ const NewMarketPage: React.FC = () => {
                                         >
                                             경매 종료일
                                         </label>
-                                     
+
 
                                         <input
                                             type="date"
@@ -384,7 +403,7 @@ const NewMarketPage: React.FC = () => {
                                 data-hs-stepper-content-item='{
 "index": 2
     }'
-                            // style={{ display: "none" }}
+                                style={{ display: "none" }}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-1">
                                     <label
@@ -405,8 +424,95 @@ const NewMarketPage: React.FC = () => {
     }'
                                 style={{ display: "none" }}
                             >
-                                <div className="flex items-center justify-center h-48 p-4 border border-gray-200 border-dashed bg-gray-50 rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-                                    <h3 className="text-gray-500 dark:text-neutral-500">Third content</h3>
+                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-1">
+                                    <label
+                                        htmlFor="inline-input-label-with-helper-text"
+                                        className="block text-lg font-semibold "
+                                    >
+                                        대표 이미지 등록
+                                    </label>
+
+                                    <p
+                                        className="text-gray-500 text-md dark:text-neutral-500"
+                                        id="hs-inline-input-helper-text"
+                                    >
+                                        1920x1080 사이즈의 이미지가 권장됩니다.
+                                    </p>
+
+                                    <div className='flex flex-row flex-wrap'>
+
+                                        {
+                                            mainImageList.length >= 1 && (
+                                                <div className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
+                                                    <img src={mainImageList[0].src} alt="" className='object-cover h-[130px] w-fit' />
+                                                    <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                        onClick={() => {
+                                                            setMainImageList([]);
+                                                        }}
+                                                    >
+                                                        <TrashIcon className='w-5 h-5 text-white' />
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+                                        <button type="button" data-hs-overlay="#cropperModal"
+                                        className='hidden'
+                                        ref={cropperModalOpenRef}
+                                        >
+                                            Open modal
+                                        </button>
+                                        <div className={`w-[130px] h-[130px] border-2 border-gray-400 border-dashed bg-white hover:bg-gray-50 cursor-pointer
+                                        flex justify-center items-center rounded-xl ${mainImageList.length >= 1 ? 'hidden' : ' '}`} onClick={
+                                                () => {
+                                                    // console.log(cropperModalInstance);
+                                                    // cropperModalInstance?.open();
+                                                  
+
+                                                    mainImageUploaderRef.current.click();
+
+                                                }
+                                            }>
+                                            <>
+
+
+                                            </>
+
+                                            <input
+                                                id="mainImageUploader"
+                                                type="file"
+                                                style={{ display: 'none' }}
+                                                ref={mainImageUploaderRef}
+
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const fileList = (e.target as HTMLInputElement)?.files;
+                                                    if (!fileList) return;
+                                                    for (let i = 0; i < fileList.length; i++) {
+                                                        const file = fileList[i];
+                                                        if (file) {
+                                                            const reader = new FileReader();
+                                                            reader.onload = function (e2) {
+                                                                const src = e2.target?.result;
+                                                                console.log(src);
+
+                                                                setTempMainImage(src as string);
+                                                                cropperModalOpenRef.current.click();
+
+
+
+
+                                                            };
+                                                            reader.readAsDataURL(file);
+                                                        }
+                                                    }
+
+                                                }
+                                                }
+                                            />
+                                            <PlusIcon className='w-10 h-10 m-auto text-gray-400' />
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             {/* End First Contnet */}
@@ -491,6 +597,91 @@ const NewMarketPage: React.FC = () => {
                     {/* End Stepper */}
                 </div>
 
+            </div>
+            <div
+                id="cropperModal"
+                className="hs-overlay hidden mx-auto w-[80%] h-full fixed top-[10%] start-[10%] z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
+            >
+                <div className="m-3 mt-0 transition-all ease-out opacity-0 hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 lg:max-w-4xl lg:w-full lg:mx-auto">
+                    <div className="flex flex-col bg-white border shadow-sm pointer-events-auto rounded-xl dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
+                        <div className="flex items-center justify-between px-4 py-3 border-b dark:border-neutral-700">
+                            <h3 className="font-bold text-gray-800 dark:text-white">
+                                이미지 자르기
+                            </h3>
+                            <button
+                                type="button"
+                                className="flex items-center justify-center text-sm font-semibold text-gray-800 border border-transparent rounded-full size-7 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                                data-hs-overlay="#cropperModal"
+                            >
+                                <span className="sr-only">취소</span>
+                                <svg
+                                    className="flex-shrink-0 size-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width={24}
+                                    height={24}
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M18 6 6 18" />
+                                    <path d="m6 6 12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="p-4 overflow-y-auto">
+                            <Cropper
+                                src={
+                                    tempMainImage
+                                }
+                                style={{ height: 500, width: "100%" }}
+                                // Cropper.js options
+                                initialAspectRatio={16 / 9}
+                                aspectRatio={16 / 9}
+                                autoCropArea={1}
+                                viewMode={1}
+                                guides={false}
+                                crop={() => {
+                                    // const cropper = cropperRef.current?.cropper;
+                                    // if(cropper){
+                                    //     console.log(cropper.getCroppedCanvas().toDataURL());
+                                    // }
+                              
+                                }}
+                                ref={cropperRef}
+                            />
+                        </div>
+                        <div className="flex items-center justify-end px-4 py-3 border-t gap-x-2 dark:border-neutral-700">
+                            <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                                data-hs-overlay="#cropperModal"
+                            >
+                                취소
+                            </button>
+                            <button
+                                type="button"
+                                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 hover:bg-primary-light disabled:opacity-50 disabled:pointer-events-none"
+                                data-hs-overlay="#cropperModal"
+                                onClick={() => {
+                                    const cropper = cropperRef.current?.cropper;
+                                    if (cropper) {
+                                       
+                                        setMainImageList([...mainImageList, {
+                                            'src': cropper.getCroppedCanvas().toDataURL(),
+                                            'file': null
+                                        }]);
+                                    }
+
+                                }}
+                            >
+                                업로드
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     );

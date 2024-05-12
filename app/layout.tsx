@@ -17,7 +17,7 @@ import PrelineScript from "./_components/PrelineScript";
 // }
 const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
-  display: 'optional',
+  display: 'auto',
 })
 
 export default function RootLayout({
@@ -70,11 +70,11 @@ export default function RootLayout({
 
         <div className={`fixed top-0 z-[9000] flex items-center justify-center w-full h-20 py-4 flex-wrap md:flex-row md:flex-nowrap md:h-16 md:px-4 md:justify-between md:py-4 transition ease-in-out duration-300 ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
         md:bg-white md:bg-opacity-85 md:shadow-md md:shadow-black/5
-        
+  
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
             <Link href="#">
-              <Image src={'/images/logo.png'} alt='logo' width={250} height={150} />
+              <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>
           <div className={`flex flex-row items-center gap-6 md:flex-col lg:gap-5 ml-auto mr-10 
