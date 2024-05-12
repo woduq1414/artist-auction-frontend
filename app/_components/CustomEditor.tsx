@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import Image from "next/image"
+// import Image from "next/image"
 import { Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -17,6 +17,8 @@ import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import FontSize from 'tiptap-extension-font-size';
 import TextAlign from '@tiptap/extension-text-align';
+import ImageResize from 'tiptap-extension-resize-image';
+import Image from '@tiptap/extension-image'
 
 import '@tiptap/extension-text-style';
 
@@ -24,6 +26,8 @@ import '@tiptap/extension-text-style';
 
 export default function CustomEditor() {
     const fontSizeList = [28, 20, 16, 12, 10];
+
+    const imageUploaderRef = React.useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const editor = new Editor({
@@ -73,7 +77,15 @@ export default function CustomEditor() {
                     types: ['heading', 'paragraph'],
                     alignments: ['left', 'center', 'right', 'justify'],
                     defaultAlignment: 'left'
-                })
+                }),
+                Image.configure({
+                    // inline: true,
+                    HTMLAttributes: {
+                        class: 'editor-image',
+                    },
+                    allowBase64: true,
+                }),
+                ImageResize
 
             ]
         });
@@ -125,6 +137,14 @@ export default function CustomEditor() {
                 id: '#hs-editor-tiptap [data-hs-editor-rightalign]',
                 fn: () => editor.chain().focus().setTextAlign('right').run()
             },
+            {
+                id: '#hs-editor-tiptap [data-hs-editor-image]',
+                fn: () => {
+                    imageUploaderRef.current?.click();
+                    // editor.chain().focus().setImage({ src: "http://127.0.0.1:3000/_next/image?url=%2Fimages%2Flogo.png&w=256&q=75" }).run()
+                }
+
+            },
             ...fontSizeList.map((size) => {
                 return {
                     id: `#hs-font-size-${size}`,
@@ -145,6 +165,43 @@ export default function CustomEditor() {
             console.log(e);
             if (!e.target || !(e.target as HTMLInputElement).value) return;
             editor.chain().focus().setColor((e.target as HTMLInputElement).value).run();
+
+        });
+
+        imageUploaderRef.current?.addEventListener('change', (e) => {
+            const fileList = (e.target as HTMLInputElement)?.files;
+            if (!fileList) return;
+            for (let i = 0; i < fileList.length; i++) {
+                const file = fileList[i];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e2) {
+                        const src = e2.target?.result;
+                        console.log(src);
+
+                        editor.chain().command(({ tr, dispatch }) => {
+                            const { selection } = tr;
+                            const { from, to } = selection;
+                            const node = editor.schema.text(' ');
+                            const image = editor.schema.nodes.image.create({
+                                src: src as string,
+                                alt: 'image',
+                                title: 'image'
+                            });
+                            const nodePos = from + 1;
+                            tr.insert(nodePos, node);
+                            tr.insert(nodePos + 1, image);
+                            dispatch?.(tr);
+                            return true;
+                        }).run();
+                        // editor.chain().focus().setImage({ src: src as string }).run();
+                        // editor.commands.setImage({ src: src as string });
+                     
+                       
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
 
         });
     }, [])
@@ -532,6 +589,42 @@ export default function CustomEditor() {
                     </div>
                     <div className="inline-block hs-tooltip">
                         <button
+                            className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none "
+                            type="button"
+                            data-hs-editor-image=""
+                        >
+                            <svg
+                                width={20}
+                                height={20}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M14.2647 15.9377L12.5473 14.2346C11.758 13.4519 11.3633 13.0605 10.9089 12.9137C10.5092 12.7845 10.079 12.7845 9.67922 12.9137C9.22485 13.0605 8.83017 13.4519 8.04082 14.2346L4.04193 18.2622M14.2647 15.9377L14.606 15.5991C15.412 14.7999 15.8149 14.4003 16.2773 14.2545C16.6839 14.1262 17.1208 14.1312 17.5244 14.2688C17.9832 14.4253 18.3769 14.834 19.1642 15.6515L20 16.5001M14.2647 15.9377L18.22 19.9628M18.22 19.9628C17.8703 20 17.4213 20 16.8 20H7.2C6.07989 20 5.51984 20 5.09202 19.782C4.7157 19.5903 4.40973 19.2843 4.21799 18.908C4.12583 18.7271 4.07264 18.5226 4.04193 18.2622M18.22 19.9628C18.5007 19.9329 18.7175 19.8791 18.908 19.782C19.2843 19.5903 19.5903 19.2843 19.782 18.908C20 18.4802 20 17.9201 20 16.8V13M11 4H7.2C6.07989 4 5.51984 4 5.09202 4.21799C4.7157 4.40973 4.40973 4.71569 4.21799 5.09202C4 5.51984 4 6.0799 4 7.2V16.8C4 17.4466 4 17.9066 4.04193 18.2622M18 9V6M18 6V3M18 6H21M18 6H15"
+                                    stroke="#000000"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                            <input
+                                id="myInput"
+                                type="file"
+                                style={{ display: 'none' }}
+                                ref={imageUploaderRef}
+                                multiple
+                                accept="image/*"
+
+                            />
+
+                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible " role="tooltip">
+                                이미지
+                            </span>
+                        </button>
+                    </div>
+                    <div className="inline-block hs-tooltip">
+                        <button
                             className="inline-flex items-center justify-center w-8 h-8 text-sm font-semibold text-gray-800 border border-transparent rounded-full gap-x-2 disabled:opacity-50 disabled:pointer-events-none "
                             type="button"
                             data-hs-editor-color=""
@@ -549,7 +642,7 @@ export default function CustomEditor() {
                     </div>
 
                 </div>
-                <div className="h-[25rem] overflow-auto px-3 py-2" data-hs-editor-field="" />
+                <div className="h-[25rem] bg-white overflow-auto px-3 py-2" data-hs-editor-field="" />
             </div>
         </div>
 

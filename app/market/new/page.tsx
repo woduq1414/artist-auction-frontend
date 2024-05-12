@@ -22,7 +22,7 @@ const NewMarketPage: React.FC = () => {
     const stepList = [
         "기본 정보 입력",
         "상세 정보 입력",
-        "가격 / 기간 설정"
+        "예시 이미지 업로드"
     ];
     const { categoryList, getCategoryList } = useCategory();
 
@@ -75,7 +75,7 @@ const NewMarketPage: React.FC = () => {
 
                 const select = HSSelect.getInstance('#secondCategorySelect');
 
-                if(!(select instanceof HSSelect)){
+                if (!(select instanceof HSSelect)) {
                     return;
                 }
 
@@ -302,7 +302,13 @@ const NewMarketPage: React.FC = () => {
     }'
                             // style={{ display: "none" }}
                             >
-                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
+                                <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-1">
+                                    <label
+                                        htmlFor="inline-input-label-with-helper-text"
+                                        className="block text-lg font-semibold "
+                                    >
+                                        상품 상세 설명
+                                    </label>
                                     <CustomEditor />
 
                                 </div>
