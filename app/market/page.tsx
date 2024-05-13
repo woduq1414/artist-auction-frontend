@@ -106,7 +106,7 @@ function CategoryItemContainer(): JSX.Element {
         `}>
           {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
             return (
-              <div key={item} className={`${listviewType === 'column' ? "w-full" : "w-[calc(33%-8px)]"} shadow-md cursor-pointer`}
+              <div key={item} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} shadow-md cursor-pointer`}
                 onClick={() => {
                   console.log('click');
                   router.push('/market/' + item)
@@ -130,7 +130,7 @@ function CategoryItemContainer(): JSX.Element {
                   <div className={`${listviewType === 'column' ? "flex flex-row justify-between" : "flex flex-col gap-2"} `}>
                     <div className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'} font-bold text-gray-800`}>{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
                     <div>
-                      <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증</span>
+                      <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증됨</span>
                     </div>
                   </div>
                   <div className={`${listviewType === 'column' ? "flex flex-row items-center justify-between mt-2" : "flex flex-col mt-2"} `}>

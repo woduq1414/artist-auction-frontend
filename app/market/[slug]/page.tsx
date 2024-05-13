@@ -158,7 +158,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             {
               backgroundList.map((background: string | undefined, index: any) => {
                 return (
-                  <span key={index} className="border-4 border-gray-400 rounded-full cursor-pointer hs-carousel-active:bg-black hs-carousel-active:border-black size-5 " />
+                  <span key={index} className="bg-opacity-50 border-8 border-gray-400 border-opacity-50 rounded-full cursor-pointer hs-carousel-active:bg-black hs-carousel-active:border-black hs-carousel-active:bg-opacity-50 hs-carousel-active:border-opacity-50 size-5 " />
 
                 );
               })
@@ -376,8 +376,96 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
             <div ref={reviewRef} className="w-full h-[600px]  translate-y-[-44px]">
-              <div className="w-full h-[560px] mb-10 bg-gray-50 rounded-2xl ">
+              <div className="w-full h-[560px] mb-10 bg-gray-50 rounded-2xl flex flex-row px-8 py-8">
+                <div className="flex flex-row flex-shrink-0 h-[fit-content] items-center gap-4">
+                  <svg className="flex-shrink-0 w-[2rem] h-[2rem] text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
+                  </svg>
+                  <span className="text-5xl">
+                    3.0
+                  </span>
 
+                </div>
+                <div className="flex-grow px-4 ml-20 overflow-y-auto border-l-2 border-gray-200">
+                  {
+                    [1, 2, 3, 4, 5, 6, 7].map((index) => (
+                      <div key={index} className="flex flex-row items-center gap-4 py-4 [&:not(:last-child)]:border-b border-gray-200">
+                        <div className="flex flex-col">
+                          <img className="w-[65px] rounded-full" src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg" alt="Image Description" />
+
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="flex flex-row">
+                            <>
+                              {/* Rating */}
+                              <div className="flex items-center">
+                                <svg
+                                  className="flex-shrink-0 text-primary size-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
+                                <svg
+                                  className="flex-shrink-0 text-primary size-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
+                                <svg
+                                  className="flex-shrink-0 text-primary size-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
+                                <svg
+                                  className="flex-shrink-0 text-gray-300 size-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
+                                <svg
+                                  className="flex-shrink-0 text-gray-300 size-5"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={16}
+                                  height={16}
+                                  fill="currentColor"
+                                  viewBox="0 0 16 16"
+                                >
+                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                </svg>
+                              </div>
+                              {/* End Rating */}
+                            </>
+                            <span className="ml-2 text-lg font-semibold">"정말 감동적인 결과물이 나왔어요!{index}"</span>
+                          </div>
+
+
+                          <div className="flex flex-row items-center gap-2">
+                            <h4 className="font-light text-md">@삼성전자</h4>
+                            <span className="font-light text-md">2024. 05. 27.</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+
+                  }
+                </div>
               </div>
 
             </div>
