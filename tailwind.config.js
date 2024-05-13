@@ -70,8 +70,10 @@ module.exports = {
         }
       }
     },
-    darkMode: false
+
 
   },
+  darkMode: 'false',
+  
   plugins: [Myclass, require('tailwindcss-animated'), require('preline/plugin'),],
 }
