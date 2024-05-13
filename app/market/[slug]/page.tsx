@@ -9,6 +9,7 @@ import { debounce, set, throttle } from 'lodash';
 import ApexCharts from "react-apexcharts";
 
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import { useSwipeable } from "react-swipeable";
 
 export default function Page({ params }: { params: { slug: string } }) {
   let slug = params.slug;
@@ -19,6 +20,9 @@ export default function Page({ params }: { params: { slug: string } }) {
   let reviewRef = useRef<any>(null);
 
   let mainRef = useRef<any>(null);
+
+  let carouselPrevRef = useRef<any>(null);
+  let carouselNextRef = useRef<any>(null);
 
   const [isSectionMovingAllowed, setIsSectionMovingAllowed] = useState(true);
 
@@ -71,6 +75,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     imageRefList.forEach((imageRef, index) => {
       if (imageRef.current) {
         const img = imageRef.current;
+        img.crossOrigin = "anonymous";
         fac.getColorAsync(img).then((color) => {
 
           if (imageRef.current) {
@@ -84,25 +89,43 @@ export default function Page({ params }: { params: { slug: string } }) {
     });
   }, [backgroundList]);
 
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      carouselNextRef.current.click();
+    },
+    onSwipedRight: () => {
+      carouselPrevRef.current.click();
+    },
+    swipeDuration: 500,
+    preventScrollOnSwipe: true,
+    trackMouse: true
+  });
+
+
   return (
     <main className="w-[100%] h-full mx-auto mt-20 md:mt-16  flex flex-col " ref={mainRef}>
       <>
         {/* Slider */}
-        <div
+        <div id="carousel"
           data-hs-carousel='{
     "loadingClasses": "opacity-0"
   }'
           className="relative"
+
         >
-          <div className="relative w-full overflow-x-hidden bg-white hs-carousel min-h-[500px] h-[500px] bg-red">
+          <div className="relative w-full overflow-x-hidden bg-white hs-carousel min-h-[500px] h-[500px] bg-red "  >
             <div className="absolute top-0 bottom-0 flex transition-transform duration-700 opacity-0 hs-carousel-body start-0 flex-nowrap">
 
               {
                 backgroundList.map((background: string | undefined, index: any) => {
                   return (
-                    <div className="hs-carousel-slide" key={index}>
-                      <div className={"flex justify-center h-[480px] "} >
-                        <img src={background} alt='samplepf' className={`relative top-[20px]`} ref={imageRefList[index]} />
+                    <div className="hs-carousel-slide" key={index}  >
+                      <div className={"flex justify-center h-[480px] "} {...handlers}>
+                        <div className="relative top-[20px] 
+                        w-full h-[480px]
+                        bg-contain
+                         bg-center bg-no-repeat" style={{ backgroundImage: `url(${background})` }}></div>
+                        <img src={background} alt='samplepf' className={`relative top-[20px] hidden`} ref={imageRefList[index]} />
                       </div>
                     </div>
                   );
@@ -113,6 +136,7 @@ export default function Page({ params }: { params: { slug: string } }) {
           <button
             type="button"
             className="hs-carousel-prev hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10  dark:text-white dark:hover:bg-white/10"
+            ref={carouselPrevRef}
           >
             <span className="text-2xl" aria-hidden="true">
               <svg
@@ -135,6 +159,7 @@ export default function Page({ params }: { params: { slug: string } }) {
           <button
             type="button"
             className="hs-carousel-next hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 dark:text-white dark:hover:bg-white/10"
+            ref={carouselNextRef}
           >
             <span className="sr-only">Next</span>
             <span className="text-2xl" aria-hidden="true">
@@ -237,6 +262,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                       setCurrentSection(2);
                       window.scrollTo({ top: reviewRef.current.offsetTop - 126, behavior: 'smooth' });
                     }}
+
                   >
                     후기
                   </button>
