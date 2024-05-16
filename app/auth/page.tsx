@@ -23,7 +23,7 @@ const AuthPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-
+    const [isEmailMode , setIsEmailMode] = useState<boolean>(false);
 
     useEffect(() => {
 
@@ -71,48 +71,16 @@ const AuthPage: React.FC = () => {
             <div className='h-[80px] flex flex-col justify-center items-center  '>
                 <img src="/images/logo.png" alt="logo" className="h-[35px]" />
             </div>
-            <div className="flex flex-col items-center justify-center  min-w-[500px] bg-slate-50 rounded-2xl px-4 pt-8 pb-3">
-                <div className="flex flex-col items-center justify-center w-full ">
+            <div className="flex flex-col items-center justify-center  min-w-[500px] bg-slate-50 rounded-2xl px-4 pt-8 pb-3 ">
+                <div className="flex flex-col items-center justify-center w-full mb-8">
                     <h1 className="text-2xl font-bold">로그인 / 회원가입</h1>
                     <p className="text-sm text-gray-400">로그인하여 더 많은 기능을 이용하세요.</p>
                 </div>
-                <div className='flex flex-col w-full mt-8'>
-                    <input
-                        type="text"
-                        id="inline-input-label-with-helper-text"
-                        className="block w-full max-w-lg px-4 py-3 mb-1 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                        placeholder="이메일을 입력해주세요."
-                        aria-describedby="hs-inline-input-helper-text"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                        type="text"
-                        id="inline-input-label-with-helper-text"
-                        className="block w-full max-w-lg px-4 py-3 mb-3 border border-gray-200 rouded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                        placeholder="비밀번호를 입력해주세요."
-                        aria-describedby="hs-inline-input-helper-text"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    <button
-                        type="button"
-                        className="w-full max-w-lg px-4 py-3 mb-3 font-semibold text-white rounded-lg bg-primary text-md"
-                    >
-                        로그인
-                    </button>
-
-                    <div className='flex flex-col justify-between'>
-
-                        <span className='text-center text-gray-700 underline cursor-pointer'>
-                            계정 찾기
-                        </span>
-                    </div>
-                </div>
-
-                <hr className="w-full my-3 border border-gray-200" />
-
-                <div className='flex flex-col w-full'>
+                
+                <div className={`flex flex-col w-full ${
+                    isEmailMode ? 'hidden' : ''
+                
+                }`}>
                     {
                         socialLoginList.map((item, index) => {
                             return (
@@ -138,7 +106,52 @@ const AuthPage: React.FC = () => {
                             이메일로 회원 가입하기
                         </Link>
                     </span>
+                    <hr className="w-full my-3 border border-gray-200" />
                 </div>
+
+
+   
+                <div className='flex flex-col w-full '>
+                    <input
+                        type="text"
+                        id="inline-input-label-with-helper-text"
+                        className="block w-full max-w-lg px-4 py-3 mb-1 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
+                        placeholder="이메일을 입력해주세요."
+                        aria-describedby="hs-inline-input-helper-text"
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+
+                    <input
+                        type="text"
+                        id="inline-input-label-with-helper-text"
+                        className={`block w-full max-w-lg px-4 py-3 mb-3 border border-gray-200 rouded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none 
+                        ${isEmailMode ? '' : 'hidden'}
+                        `}
+                        placeholder="비밀번호를 입력해주세요."
+                        aria-describedby="hs-inline-input-helper-text"
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+
+                    <button
+                        type="button"
+                        className="w-full max-w-lg px-4 py-3 mt-2 mb-3 font-semibold text-white rounded-lg bg-primary text-md"
+                        onClick={() => {
+                            setIsEmailMode(true);
+                        }}
+                    >
+                        {
+                            isEmailMode ? '로그인' : '이메일로 시작하기'
+                        }
+                    </button>
+
+                    <div className='flex flex-col justify-between'>
+
+                        <span className='text-center text-gray-700 underline cursor-pointer'>
+                            계정 찾기
+                        </span>
+                    </div>
+                </div>
+
 
             </div>
         </main>
