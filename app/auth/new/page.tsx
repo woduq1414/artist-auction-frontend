@@ -20,7 +20,7 @@ import "cropperjs/dist/cropper.css";
 import { HSOverlay, ICollectionItem } from 'preline';
 
 
-const NewMarketPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
 
     const [step, setStep] = useState(1);
 
@@ -149,12 +149,7 @@ const NewMarketPage: React.FC = () => {
 
     }, [subCategoryList])
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-        ],
-        content: '<p>Hello World! 🌎️</p>',
-    })
+
 
     return (
         <main className="w-[80%]  mx-auto   flex flex-col justify-center items-center">
@@ -164,7 +159,7 @@ const NewMarketPage: React.FC = () => {
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex": 3 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -719,4 +714,4 @@ const NewMarketPage: React.FC = () => {
     );
 };
 
-export default NewMarketPage;
+export default RegisterPage;

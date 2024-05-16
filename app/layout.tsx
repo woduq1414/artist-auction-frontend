@@ -35,19 +35,19 @@ export default function RootLayout({
   };
 
   const [isNavExist, setIsNavExist] = useState(false);
-  
+
   const pathname = usePathname();
 
   useEffect(() => {
-    
+
     if (pathname.startsWith("/auth")) {
       setIsNavExist(false);
     } else {
       setIsNavExist(true);
     }
   }
-  , [pathname])
-  
+    , [pathname])
+
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
   // useEffect(() => {
@@ -73,7 +73,7 @@ export default function RootLayout({
 
 
   return (
-   
+
     <html lang="en">
       <head>
         <meta name="color-scheme" content="light only" />
@@ -110,11 +110,11 @@ export default function RootLayout({
             <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/market">
               구직
             </Link>
-            <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
-              로그인
-            </Link>
+
             <button type="button" className={`text-lg ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 `}>
-              회원가입
+              <Link className={``} href="/auth">
+                로그인
+              </Link>
             </button>
           </div>
           {/* 햄버거 메뉴 아이콘 */}
@@ -164,11 +164,11 @@ export default function RootLayout({
                 구직
               </Link>
               <hr />
-              <Link className={`text-lg font-semibold text-black`} href="#">
-                로그인
-              </Link>
+
               <button type="button" className={`text-lg text-black hover:bg-gray-100 border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 `}>
-                회원가입
+                <Link className={``} href="/auth">
+                  로그인 / 회원가입
+                </Link>
               </button>
             </div>
 
