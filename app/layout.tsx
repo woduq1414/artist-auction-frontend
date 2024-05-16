@@ -1,6 +1,7 @@
 'use client'
 
 import './globals.css'
+import { usePathname } from 'next/navigation'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { useEffect, useState, useRef } from 'react';
@@ -10,6 +11,7 @@ import { XMarkIcon } from '@heroicons/react/24/solid';
 
 
 import PrelineScript from "./_components/PrelineScript";
+import path from 'path'
 
 // export const metadata = {
 //   title: 'Create Next App',
@@ -31,6 +33,21 @@ export default function RootLayout({
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const [isNavExist, setIsNavExist] = useState(false);
+  
+  const pathname = usePathname();
+
+  useEffect(() => {
+    
+    if (pathname.startsWith("/auth")) {
+      setIsNavExist(false);
+    } else {
+      setIsNavExist(true);
+    }
+  }
+  , [pathname])
+  
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
   // useEffect(() => {
@@ -56,6 +73,7 @@ export default function RootLayout({
 
 
   return (
+   
     <html lang="en">
       <head>
         <meta name="color-scheme" content="light only" />
@@ -70,7 +88,7 @@ export default function RootLayout({
 
         <div className={`fixed top-0 z-[9000] flex items-center justify-center w-full h-20 py-4 flex-wrap md:flex-row md:flex-nowrap md:h-16 md:px-4 md:justify-between md:py-4 transition ease-in-out duration-300 ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
         md:bg-white md:bg-opacity-85 md:shadow-md md:shadow-black/5
-  
+        ${!isNavExist ? 'hidden' : ''}
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
             <Link href="#">
@@ -110,7 +128,7 @@ export default function RootLayout({
         <div className={`fixed top-0 z-[9000] items-center justify-center w-full h-full transition ease-in-out duration-300 
         bg-gray-800 bg-opacity-50 shadow-md shadow-black/5 backdrop-blur-sm
         
-      
+        ${!isNavExist ? 'hidden' : ''}
         ${isMenuOpen ? 'visible' : 'invisible'}
         
         `}

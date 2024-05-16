@@ -75,5 +75,5 @@ module.exports = {
   },
   darkMode: 'false',
   
-  plugins: [Myclass, require('tailwindcss-animated'), require('preline/plugin'),],
+  plugins: [Myclass, require('tailwindcss-animated'), require('preline/plugin'),    require('@tailwindcss/forms'),],
 }
