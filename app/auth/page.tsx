@@ -7,15 +7,21 @@ import { useCategory } from '@/app/_store/useCategory';
 
 import dynamic from 'next/dynamic';
 
-
+import { Cookies } from "react-cookie";
 
 import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
 import { CheckCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import Config from '@/config/config.export';
 // import { HSSelect, HSSelect } from 'preline';
 
+declare global {
+    interface Window {
+        Kakao: any;
+    }
+}
 
 const AuthPage: React.FC = () => {
 
@@ -23,7 +29,9 @@ const AuthPage: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+
     const [isEmailMode , setIsEmailMode] = useState<boolean>(false);
+
 
     useEffect(() => {
 
@@ -36,7 +44,16 @@ const AuthPage: React.FC = () => {
             title: '카카오로 시작하기',
             icon: '/images/social/kakao.png',
             color: 'bg-[#FAE100]',
-            border: ''
+            border: '',
+            onClick : () => {
+                
+                const Rest_api_key='9a022bf07d96f5bd196f5223293c1f0e' //REST API KEY
+                const redirect_uri = Config().baseUrl + '/auth/social/kakao' // 리다이렉트 URI
+                console.log(redirect_uri)
+                // oauth 요청 URL
+                const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
+                window.location.href = kakaoURL
+            }
         },
         {
             title: 'Google로 시작하기',
@@ -67,6 +84,7 @@ const AuthPage: React.FC = () => {
 
 
     return (
+        
         <main className="w-[100%]  mx-auto   flex flex-col justify-center items-center h-[calc(100vh-80px)]">
             <div className='h-[80px] flex flex-col justify-center items-center  '>
                 <img src="/images/logo.png" alt="logo" className="h-[35px]" />
@@ -91,6 +109,7 @@ const AuthPage: React.FC = () => {
                                     justify-between items-center
                                     ${item.color} ${item.border}
                                     `}
+                                    onClick={item.onClick}
                                 >
                                     <img src={item.icon} alt="icon" className="w-5 h-5" />
                                     <span className='text-black'>{item.title}</span>
@@ -102,7 +121,13 @@ const AuthPage: React.FC = () => {
 
                     }
                     <span className='mt-1 text-center text-gray-700 underline cursor-pointer'>
-                        <Link href="/auth/new">
+                        <Link href="/auth/new" onClick={
+                            () => {
+                                const cookies = new Cookies();
+                                cookies.remove('socialLoginInfo');
+                            }
+                        
+                        }>
                             이메일로 회원 가입하기
                         </Link>
                     </span>
@@ -154,6 +179,7 @@ const AuthPage: React.FC = () => {
 
 
             </div>
+            <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.1/kakao.min.js" integrity="sha384-kDljxUXHaJ9xAb2AzRd59KxjrFjzHa5TAoFQ6GbYTCAG0bjM55XohjjDT7tDDC01" crossOrigin="anonymous"></script>
         </main>
     );
 };

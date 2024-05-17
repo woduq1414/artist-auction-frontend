@@ -17,7 +17,14 @@ import { CheckCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
 // import { HSSelect, HSSelect } from 'preline';
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { HSOverlay, ICollectionItem } from 'preline';
+import { HSOverlay, ICollectionItem, } from 'preline';
+
+import { Cookies } from 'react-cookie';
+import { unescape } from 'lodash';
+import { toast } from 'react-toastify';
+import Config from '@/config/config.export';
+
+// import  { HSStepper } from 'preline';
 
 
 const RegisterPage: React.FC = () => {
@@ -30,6 +37,12 @@ const RegisterPage: React.FC = () => {
         "기본 정보 입력",
     ];
 
+
+
+    const initialStep = 1;
+
+
+
     const [selectedUserType, setSelectedUserType] = useState<any>(null);
 
     const [birthYear, setBirthYear] = useState<string>('');
@@ -39,6 +52,7 @@ const RegisterPage: React.FC = () => {
     const [gender, setGender] = useState<string>('');
 
     const [name, setName] = useState<string>('');
+    const [nickname, setNickname] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
@@ -74,13 +88,43 @@ const RegisterPage: React.FC = () => {
     let mainImageUploaderRef = useRef<any>(null);
     let exampleImageUploaderRef = useRef<any>(null);
 
+    const cookies = new Cookies();
+    const socialLoginInfo = cookies.get('socialLoginInfo',)
 
+
+
+    const [socialLoginType, setSocialLoginType] = useState<string>('password');
+    const [socialLoginId, setSocialLoginId] = useState<string>('');
+
+    let submitButtonRef = useRef<any>(null);
 
     useEffect(() => {
         getCategoryList();
 
+        // get cookie
+
 
     }, [])
+
+    useEffect(() => {
+        if (socialLoginInfo) {
+            // base64 decode
+            try {
+                let decoded = atob(socialLoginInfo);
+                let userInfo = JSON.parse(decoded);
+
+                setSocialLoginType(userInfo.loginType);
+                setSocialLoginId(userInfo.accessToken);
+            } catch (e) {
+                console.log(e);
+            }
+
+
+
+        }
+
+    }, [socialLoginInfo])
+
 
     useEffect(() => {
         firstCategoryRef.current.addEventListener('change.hs.select', (e: any) => {
@@ -93,9 +137,7 @@ const RegisterPage: React.FC = () => {
             setSecondCategory(e.detail.payload);
         });
 
-        // let e = document.querySelector('#stepper') as HTMLElement;
-        // const stepper = new HSStepper(e);
-        // stepper.setProcessedNavItem(1);
+
     }, [categoryList])
 
 
@@ -103,12 +145,63 @@ const RegisterPage: React.FC = () => {
 
 
     // ...
+    useEffect(() => {
+        setTimeout(() => {
+            import('preline/preline').then((module) => {
+
+                const { HSStaticMethods, HSSelect, HSOverlay, HSStepper } = module;
+                // type HSSelect = import('preline/preline').HSSelect;
+
+
+                // if (!(stepper instanceof HSStepper)) {
+                //     return;
+                // }
+
+
+
+                // stepper.on('beforeNext', (index: number) => {
+                //     console.log(index, selectedUserType);
+                //     setStep(index + 1);
+                //     // if (index === 2) {
+                //     //     if (selectedUserType === null) {
+                //     //         stepper.setProcessedNavItem(index);
+                //     //         setTimeout(() => {
+                //     //             stepper.unsetProcessedNavItem(index);
+                //     //             stepper.enableButtons();
+
+
+
+                //     //         }, 200);
+                //     //     }else{
+                //     //         stepper.setProcessedNavItem(index);
+                //     //         stepper.goToNext();
+                //     //     }
+
+
+                //     // }
+                // });
+
+                // stepper.on('beforePrevious', (index: number) => {
+                //     setStep(index - 1);
+                // });
+
+                // HSStaticMethods.autoInit(['stepper']);
+            })
+        }, 600)
+    }, [])
+
+
 
     useEffect(() => {
         import('preline/preline').then((module) => {
 
-            const { HSStaticMethods, HSSelect, HSOverlay } = module;
+            const { HSStaticMethods, HSSelect, HSOverlay, HSStepper } = module;
             // type HSSelect = import('preline/preline').HSSelect;
+
+
+
+            // stepper.setProcessedNavItem(3);
+
 
 
             if (subCategoryList.length > 0) {
@@ -153,13 +246,14 @@ const RegisterPage: React.FC = () => {
 
     return (
         <main className="w-[80%]  mx-auto   flex flex-col justify-center items-center">
+            {/* {step} */}
             <div className='h-[80px] flex flex-col justify-center items-center  '>
-            <img src="/images/logo.png" alt="logo" className="h-[35px]" />
+                <img src="/images/logo.png" alt="logo" className="h-[35px]" />
             </div>
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -167,17 +261,17 @@ const RegisterPage: React.FC = () => {
                                     <li
                                         key={index}
                                         className={`flex items-center gap-x-2 shrink  group`}
-                                        data-hs-stepper-nav-item={JSON.stringify({
-                                            "index": index + 1
-                                        })}
+
                                     >
                                         <span className="inline-flex flex-col items-center justify-center text-xs align-middle min-w-7 min-h-7 group">
-                                            <span className="flex items-center justify-center flex-shrink-0 font-medium text-gray-800 bg-gray-100 rounded-full w-7 h-7 group-focus:bg-gray-200 hs-stepper-active:bg-primary hs-stepper-active:text-white hs-stepper-success:bg-primary hs-stepper-success:text-white hs-stepper-completed:bg-teal-500 hs-stepper-completed:group-focus:bg-teal-600 ">
-                                                <span className="hs-stepper-success:hidden hs-stepper-completed:hidden">
-                                                    {index + 1}
+                                            <span className={`flex items-center justify-center flex-shrink-0 font-medium text-gray-800 bg-gray-100 rounded-full w-7 h-7 group-focus:bg-gray-200 
+                                            ${step >= item ? 'bg-primary text-white' : ' '}
+                                            `}>
+                                                <span className={`${step > item ? 'hidden' : ' '}`}>
+                                                    {item}
                                                 </span>
                                                 <svg
-                                                    className="flex-shrink-0 hidden size-2 hs-stepper-success:block"
+                                                    className={`flex-shrink-0 size-2 ${step > item ? 'block' : 'hidden'}`}
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     width={12}
                                                     height={12}
@@ -197,7 +291,8 @@ const RegisterPage: React.FC = () => {
                                                 }
                                             </span>
                                         </span>
-                                        <div className={` w-[300px] max-w-[15vw] h-px bg-gray-200 group-last:hidden hs-stepper-success:bg-primary hs-stepper-completed:bg-teal-600      
+                                        <div className={` w-[300px] max-w-[15vw] h-px bg-gray-200 group-last:hidden ${step > item ? 'bg-primary' : ' '
+                                            }   
                                       
                                         `} />
                                     </li>
@@ -211,9 +306,7 @@ const RegisterPage: React.FC = () => {
                         <div className="flex-grow mt-2 overflow-y-auto">
 
                             <div
-                                data-hs-stepper-content-item='{
-"index": 1
-    }'                          style={{ display: "none" }} className=''
+                                className={`${step === 1 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
 
@@ -231,11 +324,11 @@ const RegisterPage: React.FC = () => {
                                             <input
                                                 type="checkbox"
                                                 className="border-gray-200 rounded shrink-0text-md color-primary text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                                id="hs-checked-checkbox"
+                                                id="agree-checkbox1"
 
                                             />
                                             <label
-                                                htmlFor="hs-checked-checkbox"
+                                                htmlFor="agree-checkbox1"
                                                 className="text-gray-500 text-md ms-3 dark:text-neutral-400"
                                             >
                                                 위 내용에 동의합니다.
@@ -257,11 +350,11 @@ const RegisterPage: React.FC = () => {
                                             <input
                                                 type="checkbox"
                                                 className="border-gray-200 rounded shrink-0text-md color-primary text-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                                id="hs-checked-checkbox"
+                                                id="agree-checkbox2"
 
                                             />
                                             <label
-                                                htmlFor="hs-checked-checkbox"
+                                                htmlFor="agree-checkbox2"
                                                 className="text-gray-500 text-md ms-3 dark:text-neutral-400"
                                             >
                                                 위 내용에 동의합니다.
@@ -276,9 +369,7 @@ const RegisterPage: React.FC = () => {
                             </div>
                             {/* First Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"index": 2
-    }'                          style={{ display: "none" }} className=''
+                                className={`${step === 2 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
                                     <div className='flex flex-col gap-6'>
@@ -344,10 +435,7 @@ const RegisterPage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* First Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"index": 3
-    }'
-                                style={{ display: "none" }}
+                                className={`${step === 3 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
                                     <div className='flex flex-col gap-2'>
@@ -367,24 +455,27 @@ const RegisterPage: React.FC = () => {
                                         />
 
                                     </div>
+                                    {
+                                        socialLoginType === 'password' &&
+                                        <div className='flex flex-col gap-2'>
+                                            <label
+                                                htmlFor="inline-input-label-with-helper-text"
+                                                className="block text-lg font-semibold "
+                                            >
+                                                비밀번호
+                                            </label>
+                                            <input
+                                                type="password"
+                                                id="inline-input-label-with-helper-text"
+                                                className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
+                                                placeholder="비밀번호를 입력해주세요."
+                                                aria-describedby="hs-inline-input-helper-text"
+                                                onChange={(e) => setPassword(e.target.value)}
+                                            />
 
-                                    <div className='flex flex-col gap-2'>
-                                        <label
-                                            htmlFor="inline-input-label-with-helper-text"
-                                            className="block text-lg font-semibold "
-                                        >
-                                            비밀번호
-                                        </label>
-                                        <input
-                                            type="password"
-                                            id="inline-input-label-with-helper-text"
-                                            className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            placeholder="비밀번호를 입력해주세요."
-                                            aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
+                                        </div>
+                                    }
 
-                                    </div>
 
                                     <div className='flex flex-col gap-2'>
                                         <label
@@ -403,6 +494,25 @@ const RegisterPage: React.FC = () => {
                                         />
 
                                     </div>
+
+                                    <div className='flex flex-col gap-2'>
+                                        <label
+                                            htmlFor="inline-input-label-with-helper-text"
+                                            className="block text-lg font-semibold "
+                                        >
+                                            닉네임
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="inline-input-label-with-helper-text"
+                                            className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
+                                            placeholder="다른 이용자들에게 보일 이름을 입력해주세요."
+                                            aria-describedby="hs-inline-input-helper-text"
+                                            onChange={(e) => setNickname(e.target.value)}
+                                        />
+
+                                    </div>
+
                                     <div className='flex flex-col gap-2'>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
@@ -541,9 +651,7 @@ const RegisterPage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* Final Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"isFinal": true
-    }'
+
                                 style={{ display: "none" }}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
@@ -560,7 +668,12 @@ const RegisterPage: React.FC = () => {
                             <button
                                 type="button"
                                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-1 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-back-btn=""
+                                // data-hs-stepper-back-btn=""
+                                disabled={step === 1 ? true : false}
+                                onClick={() => {
+                                    setStep(step - 1);
+
+                                }}
                             >
                                 <svg
                                     className="flex-shrink-0 size-4"
@@ -580,8 +693,50 @@ const RegisterPage: React.FC = () => {
                             </button>
                             <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-next-btn=""
+                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? 'hidden' : ''}
+                                `}
+                                // data-hs-stepper-next-btn=""
+                                onClick={
+                                    (e) => {
+                                        if (step === 1) {
+                                            if ((document.getElementById('agree-checkbox1') as HTMLInputElement)?.checked === true
+                                                && (document.getElementById('agree-checkbox2') as HTMLInputElement)?.checked === true
+                                            ) {
+                                                setStep(step + 1);
+                                            } else {
+                                                toast.error('이용 약관 및 개인 정보 처리 방침에 동의해주세요.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
+
+                                                });
+                                            }
+                                        } else if (step === 2) {
+                                            if (selectedUserType === null) {
+                                                toast.error('회원 유형을 선택해주세요.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
+
+                                                });
+                                            } else {
+                                                setStep(step + 1);
+                                            }
+
+                                        }
+                                    }
+                                }
                             >
                                 다음
                                 <svg
@@ -601,16 +756,71 @@ const RegisterPage: React.FC = () => {
                             </button>
                             <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-finish-btn=""
-                                style={{ display: "none" }}
+                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? '' : 'hidden'}
+                                `}
+                                ref={submitButtonRef}
+
+
+                                onClick={
+                                    async (e) =>  {
+                                        
+
+                                        // e.preventDefault();
+                                        console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
+                                        if (email === '' || name === '' || nickname === '' || birthYear === '' || birthMonth === '' || birthDay === '' || gender === '' || firstCategory === null || secondCategory === null || (
+                                            socialLoginType === 'password' && password === ''
+
+                                        )) {
+                                            toast.error('입력하지 않은 정보가 있습니다.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+                                            return;
+                                        } else {
+                                            
+                                            submitButtonRef.current.disabled = true;
+
+                                            let res = await fetch(Config().baseUrl + '/auth/artist', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    'email': email,
+                                                    'password': password,
+                                                    'name': name,
+                                                    'nickname': nickname,
+                                                    'birthdate': Date.parse(birthYear + '-' + birthMonth + '-' + birthDay),
+                                                    'gender': gender,
+                                                    'favorite_category': secondCategory,
+                                                    'login_type': socialLoginType,
+                                                    'social_id': socialLoginId,
+                                                    'account_type' : selectedUserType
+                                                })
+                                            })
+
+                                            submitButtonRef.current.disabled = false;
+
+                                            console.log(res);
+                                        }
+                                    }
+                                }
                             >
                                 제출
                             </button>
                             <button
                                 type="reset"
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-reset-btn=""
+
                                 style={{ display: "none" }}
                                 onClick={() => {
 
