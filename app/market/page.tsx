@@ -19,9 +19,10 @@ function CategoryListContainer(): JSX.Element {
     <div className="hs-accordion-group" data-hs-accordion-always-open="">
 
       {categoryList.map((category, index) => {
+        // console.log(category.id + index.toString())
         return (
           <div
-            key={index}
+            key={category.id + index.toString()}
             className="hs-accordion active"
             id={`hs-basic-with-title-and-arrow-stretched-heading-${index}`}
           >
@@ -74,7 +75,7 @@ function CategoryListContainer(): JSX.Element {
               <ul className="hs-accordion-content-inner">
                 {category.list.map((item: any) => {
                   return (
-                    <li key={index} className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
+                    <li key={item.id} className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
                       setSelectedCategory(item)
                     }
                     >

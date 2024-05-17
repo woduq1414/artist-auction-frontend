@@ -763,8 +763,8 @@ const RegisterPage: React.FC = () => {
 
 
                                 onClick={
-                                    async (e) =>  {
-                                        
+                                    async (e) => {
+
 
                                         // e.preventDefault();
                                         console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
@@ -785,7 +785,7 @@ const RegisterPage: React.FC = () => {
                                             });
                                             return;
                                         } else {
-                                            
+
                                             submitButtonRef.current.disabled = true;
 
                                             let res = await fetch(Config().baseUrl + '/auth/artist', {
@@ -804,13 +804,25 @@ const RegisterPage: React.FC = () => {
                                                     'favorite_category': secondCategory,
                                                     'login_type': socialLoginType,
                                                     'social_id': socialLoginId,
-                                                    'account_type' : selectedUserType
+                                                    'account_type': selectedUserType
                                                 })
                                             })
 
                                             submitButtonRef.current.disabled = false;
 
                                             console.log(res);
+
+                                            if (res.status === 201) {
+                                                let data = await res.json()
+                                                let accessToken = data.data.accessToken;
+                                                const cookies = new Cookies();
+                                                cookies.set('accessToken', accessToken, { path: '/' });
+
+                                                window.location.href = '/';
+
+                                            } else {
+
+                                            }
                                         }
                                     }
                                 }

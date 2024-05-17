@@ -15,6 +15,7 @@ import CustomEditor from '@/app/_components/CustomEditor';
 import { CheckCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import Config from '@/config/config.export';
+import { toast } from 'react-toastify';
 // import { HSSelect, HSSelect } from 'preline';
 
 declare global {
@@ -30,7 +31,7 @@ const AuthPage: React.FC = () => {
     const [password, setPassword] = useState<string>('');
 
 
-    const [isEmailMode , setIsEmailMode] = useState<boolean>(false);
+    const [isEmailMode, setIsEmailMode] = useState<boolean>(false);
 
 
     useEffect(() => {
@@ -45,9 +46,9 @@ const AuthPage: React.FC = () => {
             icon: '/images/social/kakao.png',
             color: 'bg-[#FAE100]',
             border: '',
-            onClick : () => {
-                
-                const Rest_api_key='9a022bf07d96f5bd196f5223293c1f0e' //REST API KEY
+            onClick: () => {
+
+                const Rest_api_key = '9a022bf07d96f5bd196f5223293c1f0e' //REST API KEY
                 const redirect_uri = Config().baseUrl + '/auth/social/kakao' // 리다이렉트 URI
                 console.log(redirect_uri)
                 // oauth 요청 URL
@@ -84,7 +85,7 @@ const AuthPage: React.FC = () => {
 
 
     return (
-        
+
         <main className="w-[100%]  mx-auto   flex flex-col justify-center items-center h-[calc(100vh-80px)]">
             <div className='h-[80px] flex flex-col justify-center items-center  '>
                 <img src="/images/logo.png" alt="logo" className="h-[35px]" />
@@ -94,11 +95,10 @@ const AuthPage: React.FC = () => {
                     <h1 className="text-2xl font-bold">로그인 / 회원가입</h1>
                     <p className="text-sm text-gray-400">로그인하여 더 많은 기능을 이용하세요.</p>
                 </div>
-                
-                <div className={`flex flex-col w-full ${
-                    isEmailMode ? 'hidden' : ''
-                
-                }`}>
+
+                <div className={`flex flex-col w-full ${isEmailMode ? 'hidden' : ''
+
+                    }`}>
                     {
                         socialLoginList.map((item, index) => {
                             return (
@@ -126,7 +126,7 @@ const AuthPage: React.FC = () => {
                                 const cookies = new Cookies();
                                 cookies.remove('socialLoginInfo');
                             }
-                        
+
                         }>
                             이메일로 회원 가입하기
                         </Link>
@@ -135,7 +135,7 @@ const AuthPage: React.FC = () => {
                 </div>
 
 
-   
+
                 <div className='flex flex-col w-full '>
                     <input
                         type="text"
@@ -156,12 +156,39 @@ const AuthPage: React.FC = () => {
                         aria-describedby="hs-inline-input-helper-text"
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                   
 
                     <button
                         type="button"
                         className="w-full max-w-lg px-4 py-3 mt-2 mb-3 font-semibold text-white rounded-lg bg-primary text-md"
-                        onClick={() => {
-                            setIsEmailMode(true);
+                        onClick={async () => {
+                            if (isEmailMode) {
+                                let res = await fetch(Config().baseUrl + '/auth/login', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                    },
+                                    body: JSON.stringify({
+                                        'email': email,
+                                        'password': password,
+                                    })
+                                })
+                                if (res.status === 200) {
+                                    let data = await res.json()
+                                    let accessToken = data.data.accessToken;
+                                    const cookies = new Cookies();
+                                    cookies.set('accessToken', accessToken, { path: '/' });
+
+                                    window.location.href = '/';
+
+                                }else{
+                                    toast.error('이메일 또는 비밀번호가 일치하지 않습니다.')
+                                }
+                                
+                            } else {
+                                setIsEmailMode(true);
+                            }
                         }}
                     >
                         {
