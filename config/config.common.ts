@@ -3,7 +3,9 @@ export declare namespace ICommonConfig {
    
     export interface Params {
       baseUrl: string;
+      cookieDomain: string;
       mode: Mode;
+
     }
   }  
    
@@ -12,12 +14,14 @@ export declare namespace ICommonConfig {
     // local, development, production 마다 달라지는 값
     const {
       baseUrl,
+      cookieDomain,
       mode,
     } = params;
    
     // 공통으로 반환되는 구조
     return {
       baseUrl,
+      cookieDomain,
       mode,
    
       api: {
