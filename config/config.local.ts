@@ -8,6 +8,7 @@ const mode = 'local';
 // 환경마다 달라져야 할 값들을 getConfig 함수에 전달합니다.
 const configLocal = getConfigs({
   baseUrl,
+  cookieDomain,
   mode,
 });
  
