@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "local": "env-cmd -f .env.localhost next dev -p 3000",
+    "local": "env-cmd -f .env.localhost next dev -p 3030",
     "build": "next build",
     "build:dev": "env-cmd -f .env.development next build",
-    "start": "next start -p 3000",
-    "start:dev": "env-cmd -f .env.development next start -p 3000"
+    "start": "next start -p 3030",
+    "start:dev": "env-cmd -f .env.development next start -p 3030"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
