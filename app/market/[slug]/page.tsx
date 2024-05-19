@@ -389,7 +389,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             </div>
 
-            <div className="sticky flex gap-3 my-2 top-[calc(100vh-56px)] z-50">
+            <div className="sticky flex gap-3 my-2 top-[calc(100vh-70px)] z-50 bg-white py-3 flex-row items-center">
               <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                 아티스트에게 1:1 문의
               </button>

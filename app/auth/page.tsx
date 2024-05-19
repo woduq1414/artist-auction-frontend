@@ -178,7 +178,9 @@ const AuthPage: React.FC = () => {
                                     let data = await res.json()
                                     let accessToken = data.data.accessToken;
                                     const cookies = new Cookies();
-                                    cookies.set('accessToken', accessToken, { path: '/' });
+                                    cookies.set('accessToken', accessToken, { path: '/',
+                                        domain: Config().cookieDomain,
+                                     });
 
                                     window.location.href = '/';
 
