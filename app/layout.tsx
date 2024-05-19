@@ -112,7 +112,7 @@ export default function RootLayout({
               <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>
-          <div className={`flex flex-row items-center gap-6 md:flex-col lg:gap-5 ml-auto mr-10 
+          <div className={`flex flex-row items-center md:flex-col lg:gap-5 ml-auto mr-10 
            md:hidden
           `}>
             {/* <Link className="text-lg font-semibold text-pro" href="#">
@@ -121,20 +121,22 @@ export default function RootLayout({
             <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
               Info
             </Link> */}
-            <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
               구인
             </Link>
-            <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/market">
+            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/market">
               구직
             </Link>
 
-            <button type="button" className={`text-lg ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 
+            <Link className={``} href="/auth">
+              <button type="button" className={`text-lg ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 
               ${isLogin ? 'hidden' : ''}
               `}>
-              <Link className={``} href="/auth">
+
                 로그인
-              </Link>
-            </button>
+
+              </button>
+            </Link>
 
             <div className={`hs-dropdown relative inline-flex ${!isLogin ? 'hidden' : ' '}`}>
               <button

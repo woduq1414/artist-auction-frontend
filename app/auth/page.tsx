@@ -139,7 +139,7 @@ const AuthPage: React.FC = () => {
                 <div className='flex flex-col w-full '>
                     <input
                         type="text"
-                        id="inline-input-label-with-helper-text"
+                        id="emailInput"
                         className="block w-full max-w-lg px-4 py-3 mb-1 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                         placeholder="이메일을 입력해주세요."
                         aria-describedby="hs-inline-input-helper-text"
@@ -148,7 +148,7 @@ const AuthPage: React.FC = () => {
 
                     <input
                         type="text"
-                        id="inline-input-label-with-helper-text"
+                        id="passwordInput"
                         className={`block w-full max-w-lg px-4 py-3 mb-3 border border-gray-200 rouded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none 
                         ${isEmailMode ? '' : 'hidden'}
                         `}
