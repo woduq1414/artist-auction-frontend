@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from './_store/useAuth'
 import { Cookies } from 'react-cookie'
+import Config from '@/config/config.export'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -179,14 +180,20 @@ export default function RootLayout({
                   href="#"
                   onClick={() => {
                     const cookies = new Cookies();
-                    cookies.remove('accessToken');
-                    cookies.remove('refreshToken');
+                    cookies.remove('accessToken', {
+                      path: '/',
+                      domain: Config().cookieDomain,
+                    });
+                    cookies.remove('refreshToken', {
+                      path: '/',
+                      domain: Config().cookieDomain,
+                    });
                     window.location.reload();
                   }}
                 >
                   로그아웃
                 </a>
-           
+
               </div>
             </div>
 
