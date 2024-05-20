@@ -26,6 +26,8 @@ const nextConfig = {
       },
     ];
   },
+  // add middleware.ts
+  pageExtensions: ["ts", "tsx"]
 };
 
 module.exports = nextConfig;
