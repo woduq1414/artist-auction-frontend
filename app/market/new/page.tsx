@@ -16,6 +16,8 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { HSOverlay, ICollectionItem } from 'preline';
+import { toast } from 'react-toastify';
+import Config from '@/config/config.export';
 
 
 const NewMarketPage: React.FC = () => {
@@ -54,6 +56,8 @@ const NewMarketPage: React.FC = () => {
 
     let mainImageUploaderRef = useRef<any>(null);
     let exampleImageUploaderRef = useRef<any>(null);
+
+    let submitButtonRef = useRef<any>(null);
 
 
 
@@ -142,7 +146,7 @@ const NewMarketPage: React.FC = () => {
             <div className="w-[100%] rounded-xl  h-full">
                 <div className='flex flex-col h-full mx-5 my-5'>
                     {/* Stepper */}
-                    <div data-hs-stepper='{"currentIndex": 1 }' id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
+                    <div id="stepper" className='flex flex-col h-[calc(100vh-120px)] bg-slate-50 '>
                         {/* Stepper Nav */}
                         <ul className="relative flex flex-row justify-center flex-shrink-0 h-[5rem] mx-auto gap-x-2 mt-3">
                             {
@@ -150,17 +154,17 @@ const NewMarketPage: React.FC = () => {
                                     <li
                                         key={index}
                                         className={`flex items-center gap-x-2 shrink  group`}
-                                        data-hs-stepper-nav-item={JSON.stringify({
-                                            "index": index + 1
-                                        })}
+
                                     >
                                         <span className="inline-flex flex-col items-center justify-center text-xs align-middle min-w-7 min-h-7 group">
-                                            <span className="flex items-center justify-center flex-shrink-0 font-medium text-gray-800 bg-gray-100 rounded-full w-7 h-7 group-focus:bg-gray-200 hs-stepper-active:bg-primary hs-stepper-active:text-white hs-stepper-success:bg-primary hs-stepper-success:text-white hs-stepper-completed:bg-teal-500 hs-stepper-completed:group-focus:bg-teal-600 ">
-                                                <span className="hs-stepper-success:hidden hs-stepper-completed:hidden">
-                                                    {index + 1}
+                                            <span className={`flex items-center justify-center flex-shrink-0 font-medium text-gray-800 bg-gray-100 rounded-full w-7 h-7 group-focus:bg-gray-200 
+                                            ${step >= item ? 'bg-primary text-white' : ' '}
+                                            `}>
+                                                <span className={`${step > item ? 'hidden' : ' '}`}>
+                                                    {item}
                                                 </span>
                                                 <svg
-                                                    className="flex-shrink-0 hidden size-2 hs-stepper-success:block"
+                                                    className={`flex-shrink-0 size-2 ${step > item ? 'block' : 'hidden'}`}
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     width={12}
                                                     height={12}
@@ -180,7 +184,8 @@ const NewMarketPage: React.FC = () => {
                                                 }
                                             </span>
                                         </span>
-                                        <div className={` w-[300px] max-w-[15vw] h-px bg-gray-200 group-last:hidden hs-stepper-success:bg-primary hs-stepper-completed:bg-teal-600      
+                                        <div className={` w-[300px] max-w-[15vw] h-px bg-gray-200 group-last:hidden ${step > item ? 'bg-primary' : ' '
+                                            }   
                                       
                                         `} />
                                     </li>
@@ -194,9 +199,7 @@ const NewMarketPage: React.FC = () => {
                         <div className="flex-grow mt-2 overflow-y-auto">
                             {/* First Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"index": 1
-    }'                          style={{ display: "none" }} className=''
+                                className={`${step === 1 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
                                     <div className='flex flex-col gap-2'>
@@ -380,9 +383,10 @@ const NewMarketPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             // placeholder="상품 제목을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setTitle(e.target.value)}
+                                            onChange={(e) => setEndDate(e.target.value)}
                                             min={new Date().toISOString().split('T')[0]}
                                             max={(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]}
+
                                         />
 
                                         <p
@@ -400,10 +404,8 @@ const NewMarketPage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* First Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"index": 2
-    }'
-                                style={{ display: "none" }}
+
+                                className={`${step === 2 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-1">
                                     <label
@@ -419,10 +421,8 @@ const NewMarketPage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* First Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"index": 3
-    }'
-                                style={{ display: "none" }}
+
+                                className={`${step === 3 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
                                     <label
@@ -648,9 +648,7 @@ const NewMarketPage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* Final Contnet */}
                             <div
-                                data-hs-stepper-content-item='{
-"isFinal": true
-    }'
+
                                 style={{ display: "none" }}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
@@ -667,7 +665,11 @@ const NewMarketPage: React.FC = () => {
                             <button
                                 type="button"
                                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-1 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-back-btn=""
+                                disabled={step === 1 ? true : false}
+                                onClick={() => {
+                                    setStep(step - 1);
+
+                                }}
                             >
                                 <svg
                                     className="flex-shrink-0 size-4"
@@ -687,8 +689,37 @@ const NewMarketPage: React.FC = () => {
                             </button>
                             <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-next-btn=""
+                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? 'hidden' : ''}
+                                `}
+                                onClick={
+                                    (e) => {
+                                        if (step === 1) {
+                                            if (!(title === '' || description === '' || firstCategory === null || secondCategory === null || price === 0 || endDate === '')) {
+                                                setStep(step + 1);
+                                            } else {
+                                                toast.error('입력하지 않은 정보가 있습니다.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
+
+                                                });
+                                            }
+                                        } else if (step === 2) {
+                                            if (false) {
+                                         
+                                            } else {
+                                                setStep(step + 1);
+                                            }
+
+                                        }
+                                    }
+                                }
                             >
                                 다음
                                 <svg
@@ -708,16 +739,66 @@ const NewMarketPage: React.FC = () => {
                             </button>
                             <button
                                 type="button"
-                                className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-finish-btn=""
-                                style={{ display: "none" }}
+                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? '' : 'hidden'}
+                                `}
+                                ref={submitButtonRef}
+
+
+                                onClick={
+                                    async (e) => {
+
+
+                                        // e.preventDefault();
+                                        // console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
+                                        if (mainImageList.length < 1 || exampleImageList.length < 1) {
+                                            toast.error('대표 이미지와 작품 예시 이미지를 등록해주세요.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+                                            return;
+                                        } else {
+
+                                            submitButtonRef.current.disabled = true;
+
+                                            let res = await fetch(Config().baseUrl + '/market', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                   title : title,
+                                                    description : description,
+                                                    secondCategory : secondCategory,
+                                                    price : price,
+                                                    endDate : endDate,
+                                                    mainImage : mainImageList[0].src,
+                                                    exampleImage : exampleImageList.map((image) => image.src),
+                                                    content : editor?.getHTML()
+                                                })
+                                            })
+
+                                            submitButtonRef.current.disabled = false;
+
+                                            
+                                        }
+                                    }
+                                }
                             >
                                 제출
                             </button>
                             <button
                                 type="reset"
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
-                                data-hs-stepper-reset-btn=""
+
                                 style={{ display: "none" }}
                                 onClick={() => {
 

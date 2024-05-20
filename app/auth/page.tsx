@@ -16,6 +16,7 @@ import { CheckCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link';
 import Config from '@/config/config.export';
 import { toast } from 'react-toastify';
+import { on } from 'events';
 // import { HSSelect, HSSelect } from 'preline';
 
 declare global {
@@ -60,7 +61,10 @@ const AuthPage: React.FC = () => {
             title: 'Google로 시작하기',
             icon: '/images/social/google.webp',
             color: 'bg-white',
-            border: 'border border-gray-200'
+            border: 'border border-gray-200',
+            onClick: () => {
+                alert('준비중입니다.')
+            }
         }
     ]
 
