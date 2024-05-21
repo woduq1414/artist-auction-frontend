@@ -1,9 +1,6 @@
 'use client'
 
 import { useCategory } from '@/app/_store/useCategory';
-import JoditEditor from 'jodit-react';
-
-import dynamic from 'next/dynamic';
 
 
 
@@ -15,14 +12,13 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 // import { HSSelect, HSSelect } from 'preline';
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import { HSOverlay, ICollectionItem } from 'preline';
 import { toast } from 'react-toastify';
 import Config from '@/config/config.export';
 
 
 const NewMarketPage: React.FC = () => {
 
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(2);
 
     const stepList = [
         "기본 정보 입력",
@@ -134,12 +130,7 @@ const NewMarketPage: React.FC = () => {
 
     }, [subCategoryList])
 
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-        ],
-        content: '<p>Hello World! 🌎️</p>',
-    })
+    const [editor, setEditor] = useState<any>(null);
 
     return (
         <main className="w-[80%]  mx-auto mt-20 md:mt-16  flex flex-col justify-center items-center">
@@ -414,7 +405,10 @@ const NewMarketPage: React.FC = () => {
                                     >
                                         상품 상세 설명
                                     </label>
-                                    <CustomEditor />
+                                    <CustomEditor setEditor={
+                                        setEditor
+
+                                    } />
 
                                 </div>
                             </div>
@@ -695,8 +689,25 @@ const NewMarketPage: React.FC = () => {
                                 onClick={
                                     (e) => {
                                         if (step === 1) {
-                                            if (!(title === '' || description === '' || firstCategory === null || secondCategory === null || price === 0 || endDate === '')) {
-                                                setStep(step + 1);
+                                            if (!(title.replaceAll(" ", "") === '' || description.replaceAll(" ", "") === '' || firstCategory === null || secondCategory === null || price === 0 || endDate === '')) {
+                                                if (endDate > new Date().toISOString().split('T')[0] && endDate <= (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]) {
+                                                    setStep(step + 1);
+
+                                                } else {
+                                                    toast.error('경매 종료일을 현재일로부터 4주 안으로 설정해주세요.', {
+                                                        position: "top-right",
+                                                        autoClose: 3000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                        theme: "light",
+
+                                                    });
+                                                }
+
+
                                             } else {
                                                 toast.error('입력하지 않은 정보가 있습니다.', {
                                                     position: "top-right",
@@ -712,7 +723,7 @@ const NewMarketPage: React.FC = () => {
                                             }
                                         } else if (step === 2) {
                                             if (false) {
-                                         
+
                                             } else {
                                                 setStep(step + 1);
                                             }
@@ -767,28 +778,30 @@ const NewMarketPage: React.FC = () => {
                                         } else {
 
                                             submitButtonRef.current.disabled = true;
-
-                                            let res = await fetch(Config().baseUrl + '/market', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json',
-                                                    'Accept': 'application/json',
-                                                },
-                                                body: JSON.stringify({
-                                                   title : title,
-                                                    description : description,
-                                                    secondCategory : secondCategory,
-                                                    price : price,
-                                                    endDate : endDate,
-                                                    mainImage : mainImageList[0].src,
-                                                    exampleImage : exampleImageList.map((image) => image.src),
-                                                    content : editor?.getHTML()
-                                                })
+                                            console.log({
+                                                content: editor?.getHTML()
                                             })
+                                            // let res = await fetch(Config().baseUrl + '/market/artist', {
+                                            //     method: 'POST',
+                                            //     headers: {
+                                            //         'Content-Type': 'application/json',
+                                            //         'Accept': 'application/json',
+                                            //     },
+                                            //     body: JSON.stringify({
+                                            //         title: title,
+                                            //         description: description,
+                                            //         secondCategory: secondCategory,
+                                            //         price: price,
+                                            //         endDate: endDate,
+                                            //         mainImage: mainImageList[0].src,
+                                            //         exampleImage: exampleImageList.map((image) => image.src),
+                                            //         content: editor?.getHTML()
+                                            //     })
+                                            // })
 
                                             submitButtonRef.current.disabled = false;
 
-                                            
+
                                         }
                                     }
                                 }

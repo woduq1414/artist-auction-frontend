@@ -21,10 +21,16 @@ import ImageResize from 'tiptap-extension-resize-image';
 import Image from '@tiptap/extension-image'
 
 import '@tiptap/extension-text-style';
+import Config from '@/config/config.export';
+import { Cookies } from 'react-cookie';
 
 
 
-export default function CustomEditor() {
+export default function CustomEditor({
+    setEditor
+}: {
+    setEditor: React.Dispatch<React.SetStateAction<Editor>>;
+}) {
     const fontSizeList = [28, 20, 16, 12, 10];
 
     const imageUploaderRef = React.useRef<HTMLInputElement>(null);
@@ -32,6 +38,7 @@ export default function CustomEditor() {
     useEffect(() => {
         const editor = new Editor({
             element: document.querySelector('#hs-editor-tiptap [data-hs-editor-field]') as HTMLElement,
+            
             extensions: [
                 Placeholder.configure({
                     placeholder: 'Add a message, if you\'d like.',
@@ -89,6 +96,9 @@ export default function CustomEditor() {
 
             ]
         });
+
+        setEditor(editor);
+        
         const actions = [
             {
                 id: '#hs-editor-tiptap [data-hs-editor-bold]',
@@ -168,40 +178,82 @@ export default function CustomEditor() {
 
         });
 
-        imageUploaderRef.current?.addEventListener('change', (e) => {
+        imageUploaderRef.current?.addEventListener('change', async (e) => {
             const fileList = (e.target as HTMLInputElement)?.files;
             if (!fileList) return;
+            let formData = new FormData();
             for (let i = 0; i < fileList.length; i++) {
-                const file = fileList[i];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e2) {
-                        const src = e2.target?.result;
-                        console.log(src);
-
-                        editor.chain().command(({ tr, dispatch }) => {
-                            const { selection } = tr;
-                            const { from, to } = selection;
-                            const node = editor.schema.text(' ');
-                            const image = editor.schema.nodes.image.create({
-                                src: src as string,
-                                alt: 'image',
-                                title: 'image'
-                            });
-                            const nodePos = from + 1;
-                            tr.insert(nodePos, node);
-                            tr.insert(nodePos + 1, image);
-                            dispatch?.(tr);
-                            return true;
-                        }).run();
-                        // editor.chain().focus().setImage({ src: src as string }).run();
-                        // editor.commands.setImage({ src: src as string });
-                     
-                       
-                    };
-                    reader.readAsDataURL(file);
-                }
+                formData.append('files', fileList[i]);
             }
+
+
+
+            let res = await fetch(Config().baseUrl + '/image/?to_db=false', {
+                method: 'POST',
+                headers: {
+                    "Authorization" : "Bearer " + new Cookies().get('accessToken')
+                },
+                body: formData
+            })
+            console.log(res);
+
+            if (res.status !== 200) return;
+
+            let data = await res.json();
+
+            for (let i = 0; i < data.data.length; i++) {
+                let src = data.data[i].media.link;
+
+                editor.chain().command(({ tr, dispatch }) => {
+                    const { selection } = tr;
+                    const { from, to } = selection;
+                    const node = editor.schema.text(' ');
+                    const image = editor.schema.nodes.image.create({
+                        src: src as string,
+                        alt: 'image',
+                        title: 'image'
+                    });
+                    const nodePos = from + 1;
+                    tr.insert(nodePos, node);
+                    tr.insert(nodePos + 1, image);
+                    dispatch?.(tr);
+                    return true;
+                }).run();
+            }
+
+            return;
+            // for (let i = 0; i < fileList.length; i++) {
+            //     const file = fileList[i];
+            //     if (file) {
+            //         const reader = new FileReader();
+            //         reader.onload = function (e2) {
+            //             const src = e2.target?.result;
+            //             console.log(src);
+
+            //             editor.chain().command(({ tr, dispatch }) => {
+            //                 const { selection } = tr;
+            //                 const { from, to } = selection;
+            //                 const node = editor.schema.text(' ');
+            //                 const image = editor.schema.nodes.image.create({
+            //                     src: src as string,
+            //                     alt: 'image',
+            //                     title: 'image'
+            //                 });
+            //                 const nodePos = from + 1;
+            //                 tr.insert(nodePos, node);
+            //                 tr.insert(nodePos + 1, image);
+            //                 dispatch?.(tr);
+            //                 return true;
+            //             }).run();
+            //             // editor.chain().focus().setImage({ src: src as string }).run();
+            //             // editor.commands.setImage({ src: src as string });
+
+
+            //         };
+            //         reader.readAsDataURL(file);
+
+            //     }
+            // }
 
         });
     }, [])
