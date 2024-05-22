@@ -14,11 +14,23 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { toast } from 'react-toastify';
 import Config from '@/config/config.export';
+import { Cookies } from 'react-cookie';
+import { set } from 'lodash';
 
 
 const NewMarketPage: React.FC = () => {
-
-    const [step, setStep] = useState(2);
+    function dataURLtoFile(dataurl: string, filename: string) {
+        var arr = dataurl.split(","),
+            mime = arr[0].match(/:(.*?);/)?.[1], // Add null check
+            bstr = atob(arr[arr.length - 1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    }
+    const [step, setStep] = useState(3);
 
     const stepList = [
         "기본 정보 입력",
@@ -40,6 +52,7 @@ const NewMarketPage: React.FC = () => {
 
     const [mainImageList, setMainImageList] = useState<any[]>([]);
     const [tempMainImage, setTempMainImage] = useState<string>('');
+    const [tempMainImageTitle, setTempMainImageTitle] = useState<string>('');
     const [exampleImageList, setExampleImageList] = useState<any[]>([]);
 
     const cropperRef = useRef<ReactCropperElement>(null);
@@ -481,6 +494,7 @@ const NewMarketPage: React.FC = () => {
                                                 onChange={(e) => {
                                                     const fileList = (e.target as HTMLInputElement)?.files;
                                                     if (!fileList) return;
+
                                                     for (let i = 0; i < fileList.length; i++) {
                                                         const file = fileList[i];
                                                         if (file) {
@@ -490,6 +504,7 @@ const NewMarketPage: React.FC = () => {
                                                                 console.log(src);
 
                                                                 setTempMainImage(src as string);
+                                                                setTempMainImageTitle(file.name);
                                                                 cropperModalOpenRef.current.click();
 
 
@@ -570,7 +585,7 @@ const NewMarketPage: React.FC = () => {
                                                 ref={exampleImageUploaderRef}
                                                 multiple
                                                 accept="image/*"
-                                                onChange={(e) => {
+                                                onChange={async (e) => {
                                                     let fileList = (e.target as HTMLInputElement)?.files;
                                                     let imageList: { src: string | ArrayBuffer | null | undefined; }[] = [];
                                                     if (!fileList) return;
@@ -582,26 +597,53 @@ const NewMarketPage: React.FC = () => {
                                                     }
 
 
-                                                    const promises = Array.from(newFileList).map((file) => {
-                                                        return new Promise((resolve, reject) => {
-                                                            const reader = new FileReader();
-                                                            reader.onload = function (e2) {
-                                                                const src = e2.target?.result;
-                                                                console.log(src);
-
-                                                                if (exampleImageList.length >= 9) return;
-
-                                                                imageList.push({ src: src });
-                                                                resolve(true);
-                                                            };
-                                                            reader.readAsDataURL(file);
-                                                        });
+                                                    let formData = new FormData();
+                                                    for (let i = 0; i < newFileList.length; i++) {
+                                                        formData.append('files', newFileList[i]);
                                                     }
-                                                    );
+                                                    submitButtonRef.current.disabled = true;
 
-                                                    Promise.all(promises).then(() => {
-                                                        setExampleImageList([...exampleImageList, ...imageList]);
-                                                    });
+                                                    let res = await fetch(Config().baseUrl + '/image/', {
+                                                        method: 'POST',
+                                                        headers: {
+                                                            "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                        },
+                                                        body: formData
+                                                    })
+
+                                                    submitButtonRef.current.disabled = false;
+
+                                                    console.log(res);
+
+                                                    if (res.status !== 200) return;
+
+                                                    let data = await res.json();
+
+                                                    setExampleImageList([...exampleImageList, ...data.data.map((image: any) => ({
+                                                        src: image.media.link,
+                                                        id: image.id
+                                                    }))]);
+
+                                                    // const promises = Array.from(newFileList).map((file) => {
+                                                    //     return new Promise((resolve, reject) => {
+                                                    //         const reader = new FileReader();
+                                                    //         reader.onload = function (e2) {
+                                                    //             const src = e2.target?.result;
+                                                    //             console.log(src);
+
+                                                    //             if (exampleImageList.length >= 9) return;
+
+                                                    //             imageList.push({ src: src });
+                                                    //             resolve(true);
+                                                    //         };
+                                                    //         reader.readAsDataURL(file);
+                                                    //     });
+                                                    // }
+                                                    // );
+
+                                                    // Promise.all(promises).then(() => {
+                                                    //     setExampleImageList([...exampleImageList, ...imageList]);
+                                                    // });
 
 
                                                     // for (let i = 0; i < fileList.length; i++) {
@@ -643,7 +685,7 @@ const NewMarketPage: React.FC = () => {
                             {/* Final Contnet */}
                             <div
 
-                                style={{ display: "none" }}
+                                className={`${step === 4 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[80%] max-w-[90%] mx-auto px-5 py-8  border-dashed rounded-xl flex flex-col">
                                     <div className='text-2xl font-semibold'>[{title}] 상품의 접수가 완료되었습니다.</div>
@@ -659,14 +701,16 @@ const NewMarketPage: React.FC = () => {
                             <button
                                 type="button"
                                 className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-1 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
-                                disabled={step === 1 ? true : false}
+                                disabled={step === 1 || step === 4 ? true : false}
                                 onClick={() => {
                                     setStep(step - 1);
 
                                 }}
                             >
                                 <svg
-                                    className="flex-shrink-0 size-4"
+                                    className={`flex-shrink-0 size-4
+                                    `}
+
                                     xmlns="http://www.w3.org/2000/svg"
                                     width={24}
                                     height={24}
@@ -684,7 +728,7 @@ const NewMarketPage: React.FC = () => {
                             <button
                                 type="button"
                                 className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
-                                ${step === 3 ? 'hidden' : ''}
+                                ${step === 3 || step === 4 ? 'hidden' : ''}
                                 `}
                                 onClick={
                                     (e) => {
@@ -751,6 +795,33 @@ const NewMarketPage: React.FC = () => {
                             <button
                                 type="button"
                                 className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 4 ? '' : 'hidden'}
+                                `}
+                                onClick={
+                                    (e) => {
+                                        
+                                    }
+                                }
+                            >
+                                마이 페이지로
+                                <svg
+                                    className="flex-shrink-0 size-4"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width={24}
+                                    height={24}
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </button>
+                            <button
+                                type="button"
+                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
                                 ${step === 3 ? '' : 'hidden'}
                                 `}
                                 ref={submitButtonRef}
@@ -779,27 +850,63 @@ const NewMarketPage: React.FC = () => {
 
                                             submitButtonRef.current.disabled = true;
                                             console.log({
+                                                title: title,
+                                                description: description,
+                                                category: secondCategory,
+                                                price: price,
+                                                end_date: endDate,
+                                                main_image: mainImageList[0].id,
+                                                example_image_list: exampleImageList.map((image) => image.id),
                                                 content: editor?.getHTML()
                                             })
-                                            // let res = await fetch(Config().baseUrl + '/market/artist', {
-                                            //     method: 'POST',
-                                            //     headers: {
-                                            //         'Content-Type': 'application/json',
-                                            //         'Accept': 'application/json',
-                                            //     },
-                                            //     body: JSON.stringify({
-                                            //         title: title,
-                                            //         description: description,
-                                            //         secondCategory: secondCategory,
-                                            //         price: price,
-                                            //         endDate: endDate,
-                                            //         mainImage: mainImageList[0].src,
-                                            //         exampleImage: exampleImageList.map((image) => image.src),
-                                            //         content: editor?.getHTML()
-                                            //     })
-                                            // })
+
+                                            let endDateTime = new Date(endDate);
+
+                                            let res = await fetch(Config().baseUrl + '/artist/goods', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
+                                                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                },
+                                                body: JSON.stringify({
+                                                    title: title,
+                                                    description: description,
+                                                    category: secondCategory,
+                                                    price: price,
+                                                    end_date: endDateTime.toISOString(),
+                                                    main_image: mainImageList[0].id,
+                                                    example_image_list: exampleImageList.map((image) => image.id),
+                                                    content: editor?.getHTML()
+                                                })
+                                            })
+
+                                            console.log(res);
 
                                             submitButtonRef.current.disabled = false;
+
+                                            if (res.status === 201) {
+
+                                                setStep(step + 1);
+                                            } else {
+                                                toast.error('상품 등록에 실패하였습니다.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
+
+                                                });
+                                                return;
+                                            }
+                                            return;
+
+
+
+
 
 
                                         }
@@ -893,13 +1000,42 @@ const NewMarketPage: React.FC = () => {
                                 type="button"
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 hover:bg-primary-light disabled:opacity-50 disabled:pointer-events-none"
                                 data-hs-overlay="#cropperModal"
-                                onClick={() => {
+                                onClick={async () => {
                                     const cropper = cropperRef.current?.cropper;
                                     if (cropper) {
 
+                                        // setMainImageList([...mainImageList, {
+                                        //     'src': cropper.getCroppedCanvas().toDataURL(),
+                                        //     'file': null
+                                        // }]);
+
+
+                                        var blob = dataURLtoFile(cropper.getCroppedCanvas().toDataURL(), tempMainImageTitle); //Converts to blob using link above
+                                        let formData = new FormData();
+                                        formData.append("files", blob);
+
+                                        submitButtonRef.current.disabled = true;
+
+                                        let res = await fetch(Config().baseUrl + '/image/', {
+                                            method: 'POST',
+                                            headers: {
+                                                "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                            },
+                                            body: formData
+                                        })
+                                        submitButtonRef.current.disabled = false;
+                                        console.log(res);
+
+                                        if (res.status !== 200) return;
+
+                                        let data = await res.json();
+
+                                        console.log(data);
+
                                         setMainImageList([...mainImageList, {
-                                            'src': cropper.getCroppedCanvas().toDataURL(),
-                                            'file': null
+                                            'src': data.data[0].media.path,
+                                            'file': blob,
+                                            'id': data.data[0].id
                                         }]);
                                     }
 
