@@ -3,17 +3,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { MagnifyingGlassIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
+import Config from "@/config/config.export";
+import { get } from "lodash";
 
 function CategoryListContainer(): JSX.Element {
 
-  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory, listviewType, setListViewType } = useCategory();
+  const { categoryList, getCategoryList, selectedCategory, setSelectedCategory, listviewType, setListViewType, fetchGoodsList } = useCategory();
+
+  const [goodsList, setGoodsList] = useState(null);
+
   useEffect(() => {
     getCategoryList();
+    fetchGoodsList('all');
+
   }, [])
+
+  useEffect(() => {
+    fetchGoodsList(selectedCategory.id === 0 ? 'all' : selectedCategory.id + '');
+  }, [selectedCategory])
+
+
+
 
   return (
     <div className="hs-accordion-group" data-hs-accordion-always-open="">
@@ -33,7 +47,7 @@ function CategoryListContainer(): JSX.Element {
               aria-controls={`hs-basic-with-title-and-arrow-stretched-collapse-${index}`}
 
               onClick={() => {
-                setSelectedCategory(category);
+                // setSelectedCategory(category);
 
               }}
             >
@@ -97,7 +111,7 @@ function CategoryListContainer(): JSX.Element {
 
 function CategoryItemContainer(): JSX.Element {
   const router = useRouter();
-  const { selectedCategory, listviewType } = useCategory();
+  const { selectedCategory, listviewType, goodsList } = useCategory();
   // {``}
   return (
     <div className="w-full ">
@@ -105,17 +119,22 @@ function CategoryItemContainer(): JSX.Element {
         <div className={`flex  w-full  py-3 pl-4
         ${listviewType === 'column' ? 'flex-col gap-6' : 'flex-wrap flex-row gap-3'}
         `}>
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item: any) => {
+          {goodsList !== null ? (goodsList.map((item: any) => {
             return (
-              <div key={item} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} shadow-md cursor-pointer`}
+              <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} shadow-md cursor-pointer`}
                 onClick={() => {
                   console.log('click');
-                  router.push('/market/' + item)
+                  router.push('/market/' + item.id)
 
                 }}
               >
                 <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
-                  <img src={'/images/sample-pf.jpg'} alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
+                  <img
+                  src = {
+                    item.image.media.link
+                  }
+                  //  src={'/images/sample-pf.jpg'} 
+                  alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
                   <div className={`
                   ${listviewType === 'column' ? "flex items-center justify-center flex-grow h-full bg-gray-300" : "hidden"} 
                   
@@ -129,21 +148,23 @@ function CategoryItemContainer(): JSX.Element {
                   <div>
                   </div>
                   <div className={`${listviewType === 'column' ? "flex flex-row justify-between" : "flex flex-col gap-2"} `}>
-                    <div className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'} font-bold text-gray-800`}>{`세상을 놀라게 할 ${selectedCategory.name} ${item}`}</div>
+                    <div className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'} font-bold text-gray-800`}>{item.title}</div>
                     <div>
                       <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증됨</span>
                     </div>
                   </div>
                   <div className={`${listviewType === 'column' ? "flex flex-row items-center justify-between mt-2" : "flex flex-col mt-2"} `}>
                     <div className={`text-gray-600 ${listviewType === 'column' ? 'display-block' : 'hidden'}`}>
-                      {`저만 믿고 맡겨 주시면 엄청난 ${selectedCategory.name}를 만들어드리겠습니다.`}
+                      {item.description}
                     </div>
                     <div>
-                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`1일 후 종료`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`${
+                        Math.floor((Date.parse(item.end_date) - Date.now()) / (1000 * 60 * 60 * 24))
+                        }일 후 종료`}</span>
                       <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{` | `}</span>
-                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{`150,000`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{item.price.toLocaleString()}</span>
                       <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-light text-gray-800`}>{` ~ `}</span>
-                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{`200,000`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{item.max_price.toLocaleString()}</span>
                       <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-light text-gray-800`}>{`원`}</span>
                     </div>
                   </div>
@@ -152,10 +173,11 @@ function CategoryItemContainer(): JSX.Element {
                 </div>
               </div>
             )
-          })}
+          })) : (<div />)}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 
 

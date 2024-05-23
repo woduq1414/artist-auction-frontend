@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
 import fetcher from '../_common/fetcher'
+import Config from '@/config/config.export';
 
 interface Category {
   categoryList: any[];
@@ -9,6 +10,8 @@ interface Category {
   getCategoryList: () => void;
   setSelectedCategory: (selectedCategory: any) => void;
   setListViewType: (listviewType: string) => void;
+  goodsList: any[];
+  fetchGoodsList: (category : string) => void;
 }
 
 
@@ -34,9 +37,28 @@ export const useCategory = create<Category>((set) => ({
     id: 0,
     name: '전체',
     list: []
-  
+
   },
   setSelectedCategory: (selectedCategory: any) => set({ selectedCategory }),
   listviewType: 'column',
-  setListViewType: (listviewType: string) => set({ listviewType })
+  setListViewType: (listviewType: string) => set({ listviewType }),
+  goodsList: [],
+  fetchGoodsList: async (category : string) => {
+    if (category === 'all') {
+      category = '';
+    }
+    let res = await fetch(Config().baseUrl + `/artist/goods?category=${category}`, {
+      method: 'GET',
+      headers: {
+
+        'Accept': 'application/json',
+
+      },
+
+    })
+    const data = await res.json();
+    console.log(data);
+
+    set({ goodsList: data.data.items })
+  }
 }))
