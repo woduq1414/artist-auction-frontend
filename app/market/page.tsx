@@ -9,13 +9,15 @@ import { MagnifyingGlassIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get } from "lodash";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 
 function CategoryListContainer(): JSX.Element {
 
   const { categoryList, getCategoryList, selectedCategory, setSelectedCategory, listviewType, setListViewType, fetchGoodsList } = useCategory();
 
-  const [goodsList, setGoodsList] = useState(null);
-
+ 
   useEffect(() => {
     getCategoryList();
     fetchGoodsList('all');
@@ -116,12 +118,13 @@ function CategoryItemContainer(): JSX.Element {
   return (
     <div className="w-full ">
       {selectedCategory !== null && (
-        <div className={`flex  w-full  py-3 pl-4
+        <div className={`flex  w-full  my-2 px-4 h-[calc(100vh-210px)] 
         ${listviewType === 'column' ? 'flex-col gap-6' : 'flex-wrap flex-row gap-3'}
+        ${goodsList === undefined ? 'overflow-y-hidden' : 'overflow-y-auto'}
         `}>
-          {goodsList !== null ? (goodsList.map((item: any) => {
+          {goodsList !== undefined ? (goodsList.map((item: any) => {
             return (
-              <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} shadow-md cursor-pointer`}
+              <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%] max-w-[34%] h-[fit-content]"} shadow-md cursor-pointer`}
                 onClick={() => {
                   console.log('click');
                   router.push('/market/' + item.id)
@@ -130,11 +133,9 @@ function CategoryItemContainer(): JSX.Element {
               >
                 <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
                   <img
-                  src = {
-                    item.image.media.link
-                  }
-                  //  src={'/images/sample-pf.jpg'} 
-                  alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
+                    src={item.image.media.link}
+                    //  src={'/images/sample-pf.jpg'} 
+                    alt='samplepf' className={`${listviewType === 'column' ? "h-[300px] w-[532px]" : "w-full"}  flex-shrink-0`} />
                   <div className={`
                   ${listviewType === 'column' ? "flex items-center justify-center flex-grow h-full bg-gray-300" : "hidden"} 
                   
@@ -158,8 +159,7 @@ function CategoryItemContainer(): JSX.Element {
                       {item.description}
                     </div>
                     <div>
-                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`${
-                        Math.floor((Date.parse(item.end_date) - Date.now()) / (1000 * 60 * 60 * 24))
+                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`${Math.floor((Date.parse(item.end_date) - Date.now()) / (1000 * 60 * 60 * 24))
                         }일 후 종료`}</span>
                       <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{` | `}</span>
                       <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{item.price.toLocaleString()}</span>
@@ -173,7 +173,23 @@ function CategoryItemContainer(): JSX.Element {
                 </div>
               </div>
             )
-          })) : (<div />)}
+          })) : ([1,2,3,4,5,6,7,8,9,10,11,12,13,14].map((item: any) => {
+            return (
+              <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} `}
+
+              >
+                <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
+                  <Skeleton containerClassName="flex-1" height={'300px'} />
+                </div>
+                <div className="py-3 pr-6 ">
+                  <Skeleton containerClassName="flex-1" 
+                  count={2}
+                  />
+
+                </div>
+              </div>
+            )
+          }))}
         </div>
       )
       }

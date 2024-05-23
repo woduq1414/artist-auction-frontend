@@ -10,7 +10,7 @@ interface Category {
   getCategoryList: () => void;
   setSelectedCategory: (selectedCategory: any) => void;
   setListViewType: (listviewType: string) => void;
-  goodsList: any[];
+  goodsList: any[] | undefined;
   fetchGoodsList: (category : string) => void;
 }
 
@@ -42,8 +42,9 @@ export const useCategory = create<Category>((set) => ({
   setSelectedCategory: (selectedCategory: any) => set({ selectedCategory }),
   listviewType: 'column',
   setListViewType: (listviewType: string) => set({ listviewType }),
-  goodsList: [],
+  goodsList: undefined,
   fetchGoodsList: async (category : string) => {
+    set({ goodsList: undefined })
     if (category === 'all') {
       category = '';
     }
