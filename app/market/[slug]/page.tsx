@@ -6,14 +6,19 @@ import { useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import { debounce, set, throttle } from 'lodash';
 //Or 
-import ApexCharts from "react-apexcharts";
+import dynamic from 'next/dynamic'
+
+
 
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useSwipeable } from "react-swipeable";
 
+const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
 export default function Page({ params }: { params: { slug: string } }) {
   let slug = params.slug;
-  let imageRefList = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
+  let imageRefList = [useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null),
+  useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null), useRef<any>(null)];
 
   let contentRef = useRef<any>(null);
   let priceRef = useRef<any>(null);
@@ -29,9 +34,11 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   const [currentSection, setCurrentSection] = useState(0);
 
-  const { backgroundList, getGoods, title, description, content } = useGoods();
+  const { backgroundList, getGoods, title, description, content, artist } = useGoods();
   useEffect(() => {
-    getGoods();
+    getGoods(
+      slug
+    );
 
 
   }, []);
@@ -86,7 +93,31 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         });
       }
+
     });
+    if (backgroundList.length > 0) {
+      import('preline/preline').then((module) => {
+
+        const { HSStaticMethods, HSCarousel } = module;
+        // type HSSelect = import('preline/preline').HSSelect;
+
+
+
+        // stepper.setProcessedNavItem(3);
+
+
+
+
+        HSStaticMethods.autoInit([
+          'carousel'
+        ]);
+
+
+      });
+
+    }
+
+
   }, [backgroundList]);
 
   const handlers = useSwipeable({
@@ -100,6 +131,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     preventScrollOnSwipe: true,
     trackMouse: true
   });
+
+
 
 
   return (
@@ -126,6 +159,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         bg-contain
                          bg-center bg-no-repeat" style={{ backgroundImage: `url(${background})` }}></div>
                         <img src={background} alt='samplepf' className={`relative top-[20px] hidden`} ref={imageRefList[index]} />
+
                       </div>
                     </div>
                   );
@@ -296,12 +330,19 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
 
-            <p className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>{content}</p>
+            <div className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>
+              <div dangerouslySetInnerHTML={
+                { __html: content }
+
+              }>
+
+              </div>
+            </div>
 
             <div className="flex flex-row w-full px-[0%] py-8 my-8 bg-gray-50  rounded-2xl  ">
               <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
                 <img className="w-[125px] rounded-full " src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Image Description" />
-                <h4 className="text-lg font-light text-gray-600">@김민수</h4>
+                <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
               </div>
               <div className="mr-[5%] flex flex-col justify-between">
                 <div className="flex flex-row flex-wrap gap-3 mb-3">
@@ -343,7 +384,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               </div>
 
               <div className="flex-grow">
-                <ApexCharts
+                <ApexChart
                   type="line"
                   series={[
                     {
@@ -384,7 +425,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
                   }}>
-                </ApexCharts>
+                </ApexChart>
               </div>
 
             </div>

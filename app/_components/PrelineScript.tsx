@@ -17,7 +17,9 @@ export default function PrelineScript() {
     const loadPreline = async () => {
       await import("preline/preline");
 
-      window.HSStaticMethods.autoInit();
+      window.HSStaticMethods.autoInit([
+        'dropdown', 'stepper', 'select', 'hsselect', 'tab', 'modal', 'collapse', 'accordion'
+      ]);
     };
 
     loadPreline();
