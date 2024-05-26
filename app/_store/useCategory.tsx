@@ -11,7 +11,9 @@ interface Category {
   setSelectedCategory: (selectedCategory: any) => void;
   setListViewType: (listviewType: string) => void;
   goodsList: any[] | undefined;
-  fetchGoodsList: (category : string) => void;
+  fetchGoodsList: (category : string, 
+    sort : string,
+  ) => void;
 }
 
 
@@ -43,12 +45,12 @@ export const useCategory = create<Category>((set) => ({
   listviewType: 'column',
   setListViewType: (listviewType: string) => set({ listviewType }),
   goodsList: undefined,
-  fetchGoodsList: async (category : string) => {
+  fetchGoodsList: async (category : string, sort : string) => {
     set({ goodsList: undefined })
     if (category === 'all') {
       category = '';
     }
-    let res = await fetch(Config().baseUrl + `/artist/goods?category=${category}`, {
+    let res = await fetch(Config().baseUrl + `/artist/goods?category=${category}&sort=${sort}`, {
       method: 'GET',
       headers: {
 

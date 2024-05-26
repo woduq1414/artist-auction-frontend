@@ -10,23 +10,13 @@ import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get } from "lodash";
 import Skeleton from "react-loading-skeleton";
+import React from "react";
 
 
 
 function CategoryListContainer(): JSX.Element {
 
   const { categoryList, getCategoryList, selectedCategory, setSelectedCategory, listviewType, setListViewType, fetchGoodsList } = useCategory();
-
- 
-  useEffect(() => {
-    getCategoryList();
-    fetchGoodsList('all');
-
-  }, [])
-
-  useEffect(() => {
-    fetchGoodsList(selectedCategory.id === 0 ? 'all' : selectedCategory.id + '');
-  }, [selectedCategory])
 
 
 
@@ -118,20 +108,20 @@ function CategoryItemContainer(): JSX.Element {
   return (
     <div className="w-full ">
       {selectedCategory !== null && (
-        <div className={`flex  w-full  my-2 px-4 h-[calc(100vh-210px)] 
+        <div className={`flex  w-full  my-2 pl-4 h-[calc(100vh-210px)] 
         ${listviewType === 'column' ? 'flex-col gap-6' : 'flex-wrap flex-row gap-3'}
         ${goodsList === undefined ? 'overflow-y-hidden' : 'overflow-y-auto'}
         `}>
           {goodsList !== undefined ? (goodsList.map((item: any) => {
             return (
-              <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%] max-w-[34%] h-[fit-content]"} shadow-md cursor-pointer`}
+              <div key={item.id} className={`${listviewType === 'column' ? "w-full border-b" : "flex-1 min-w-[31%] max-w-[34%] h-[fit-content]"} cursor-pointer`}
                 onClick={() => {
                   console.log('click');
                   router.push('/market/' + item.id)
 
                 }}
               >
-                <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} `}>
+                <div className={`${listviewType === 'column' ? "h-[300px] flex flex-row" : "w-full"} border`}>
                   <img
                     src={item.image.media.link}
                     //  src={'/images/sample-pf.jpg'} 
@@ -173,7 +163,7 @@ function CategoryItemContainer(): JSX.Element {
                 </div>
               </div>
             )
-          })) : ([1,2,3,4,5,6,7,8,9,10,11,12,13,14].map((item: any) => {
+          })) : ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((item: any) => {
             return (
               <div key={item.id} className={`${listviewType === 'column' ? "w-full" : "flex-1 min-w-[31%]"} `}
 
@@ -182,8 +172,8 @@ function CategoryItemContainer(): JSX.Element {
                   <Skeleton containerClassName="flex-1" height={'300px'} />
                 </div>
                 <div className="py-3 pr-6 ">
-                  <Skeleton containerClassName="flex-1" 
-                  count={2}
+                  <Skeleton containerClassName="flex-1"
+                    count={2}
                   />
 
                 </div>
@@ -205,7 +195,46 @@ export default function Market() {
 
   // const data = await Data();
   // console.log(data);
-  const { listviewType, setListViewType, setSelectedCategory } = useCategory();
+  const { listviewType, setListViewType, setSelectedCategory, getCategoryList, fetchGoodsList, selectedCategory } = useCategory();
+
+  const [sort, setSort] = useState('recent');
+  const sortRef = React.createRef<HTMLSelectElement>() as React.MutableRefObject<HTMLSelectElement>;
+
+
+
+  useEffect(() => {
+    getCategoryList();
+    fetchGoodsList('all', 'recent');
+
+    sortRef.current.addEventListener('change.hs.select', (e: any) => {
+      console.log(e.target.value);
+      setSort(e.target.value);
+
+    });
+  }, [])
+
+
+  useEffect(() => {
+    
+
+      // if (
+      //   sort === 'recent'
+      // ) {
+      //   return
+      // }
+
+      const element = document.querySelector('div.sort-select-option[tabindex="0"]') as HTMLDivElement;
+      element?.click();
+
+    }, [selectedCategory])
+
+
+  useEffect(() => {
+    fetchGoodsList(selectedCategory.id === 0 ? 'all' : selectedCategory.id + '', sort);
+  }, [selectedCategory, sort])
+
+
+
   return (
     <main className="w-[80%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
       {/* <div className="mx-auto mt-6 text-4xl font-bold">
@@ -242,8 +271,44 @@ export default function Market() {
             <div>
 
             </div>
-            <div className="flex flex-row">
-              <QueueListIcon className={`w-8 h-8 ${listviewType === 'column' ? 'text-gray-700' : 'text-gray-500'} cursor-pointer`} onClick={
+            <div className="flex flex-row items-center">
+              <select data-hs-select='{
+  "placeholder": "최신순",
+  "toggleTag": "<button type=\"button\"></button>",
+  "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative py-2 px-2 pe-9 flex text-nowrap w-full cursor-pointer bg-white border border-gray-200 rounded-lg text-start text-sm focus:border-primary focus:ring-primary before:absolute before:inset-0 before:z-[1] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400",
+  "dropdownClasses": "mt-2 z-50 min-w-[8rem] max-h-72 p-1 space-y-0.5 bg-white border border-gray-200 rounded-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 dark:bg-neutral-900 dark:border-neutral-700",
+  "optionClasses": "sort-select-option py-2 px-4 w-full text-sm text-gray-800 cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-none focus:bg-gray-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:text-neutral-200 dark:focus:bg-neutral-800",
+  "optionTemplate": "<div class=\"flex justify-between items-center w-full\"><span data-title></span><span class=\"hidden hs-selected:block\"><svg class=\"flex-shrink-0 size-3.5 text-primary dark:text-primary\" xmlns=\"http:.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"20 6 9 17 4 12\"/></svg></span></div>",
+  "extraMarkup": "<div class=\"absolute top-1/2 right-2 end-3 -translate-y-1/2\"><svg class=\"flex-shrink-0 size-3.5 text-gray-500 dark:text-neutral-500\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+}' className="hidden" id='sortSelect' ref={sortRef}
+                onClick={(e) => { console.log(e) }}
+              >
+                <option value="">최신순</option>
+                {
+                  [{
+                    "value": "recent",
+                    "text": "최신순"
+                  },
+                  {
+                    "value": "highPrice",
+                    "text": "높은 가격순"
+                  },
+                  {
+                    "value": "lowPrice",
+                    "text": "낮은 가격순"
+                  },
+                  {
+                    "value": "end_date",
+                    "text": "마감 임박"
+                  }
+                  ].map((item, index) => (
+                    <option key={index} value={item.value}>{item.text}</option>
+                  ))
+
+                }
+
+              </select>
+              <QueueListIcon className={`ml-2 w-8 h-8 ${listviewType === 'column' ? 'text-gray-700' : 'text-gray-500'} cursor-pointer`} onClick={
                 () => {
                   setListViewType('column')
                 }

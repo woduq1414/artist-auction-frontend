@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 import { IStaticMethods } from "preline/preline";
+
+
 declare global {
   interface Window {
     HSStaticMethods: IStaticMethods;
@@ -18,7 +20,7 @@ export default function PrelineScript() {
       await import("preline/preline");
 
       window.HSStaticMethods.autoInit([
-        'dropdown', 'stepper', 'select', 'hsselect', 'tab', 'modal', 'collapse', 'accordion'
+        'dropdown', 'stepper', 'select', 'hsselect', 'tab', 'modal', 'collapse', 'accordion', 'overlay'
       ]);
     };
 
