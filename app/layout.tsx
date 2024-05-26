@@ -18,6 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from './_store/useAuth'
 import { Cookies } from 'react-cookie'
 import Config from '@/config/config.export'
+import "react-loading-skeleton/dist/skeleton.css";
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 

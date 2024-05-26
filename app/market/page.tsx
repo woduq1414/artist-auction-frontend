@@ -10,7 +10,7 @@ import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get } from "lodash";
 import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+
 
 
 function CategoryListContainer(): JSX.Element {

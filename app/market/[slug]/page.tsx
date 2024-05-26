@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic'
 
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useSwipeable } from "react-swipeable";
+import Skeleton from "react-loading-skeleton";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -146,7 +147,9 @@ export default function Page({ params }: { params: { slug: string } }) {
           className="relative"
 
         >
-          <div className="relative w-full overflow-x-hidden bg-white hs-carousel min-h-[500px] h-[500px] bg-red "  >
+          <div className={`relative w-full overflow-x-hidden hs-carousel min-h-[500px] h-[500px] bg-red 
+            ${backgroundList.length == 0 ? 'bg-slate-100 ' : 'bg-white'}
+          `}  >
             <div className="absolute top-0 bottom-0 flex transition-transform duration-700 opacity-0 hs-carousel-body start-0 flex-nowrap">
 
               {
@@ -169,7 +172,9 @@ export default function Page({ params }: { params: { slug: string } }) {
           </div>
           <button
             type="button"
-            className="hs-carousel-prev hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10  dark:text-white dark:hover:bg-white/10"
+            className={`hs-carousel-prev hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10  dark:text-white dark:hover:bg-white/10
+              ${backgroundList.length == 0 ? 'hidden' : ''}
+            `}
             ref={carouselPrevRef}
           >
             <span className="text-2xl" aria-hidden="true">
@@ -192,7 +197,9 @@ export default function Page({ params }: { params: { slug: string } }) {
           </button>
           <button
             type="button"
-            className="hs-carousel-next hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 dark:text-white dark:hover:bg-white/10"
+            className={`hs-carousel-next hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 end-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10 dark:text-white dark:hover:bg-white/10
+            ${backgroundList.length == 0 ? 'hidden' : ''}
+            `}
             ref={carouselNextRef}
           >
             <span className="sr-only">Next</span>
@@ -227,8 +234,8 @@ export default function Page({ params }: { params: { slug: string } }) {
         {/* End Slider */}
 
         <div className="w-full m-auto text-center">
-          <h1 className="mt-6 text-4xl font-bold">{title}</h1>
-          <p className="mt-5 text-lg">{description}</p>
+          <h1 className="mt-6 text-4xl font-bold">{title || <Skeleton containerClassName="flex-1" width={150} />}</h1>
+          <p className="mt-5 text-lg">{description || <Skeleton containerClassName="flex-1" width={250} />}</p>
           <div className="px-[15%] mt-5">
 
 
@@ -331,102 +338,118 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
             <div className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>
-              <div dangerouslySetInnerHTML={
-                { __html: content }
+              {
+                content ? <div dangerouslySetInnerHTML={
+                  { __html: content }
 
-              }>
+                } /> : <Skeleton count={10} />
 
-              </div>
-            </div>
-
-            <div className="flex flex-row w-full px-[0%] py-8 my-8 bg-gray-50  rounded-2xl  ">
-              <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
-                <img className="w-[125px] rounded-full " src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Image Description" />
-                <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
-              </div>
-              <div className="mr-[5%] flex flex-col justify-between">
-                <div className="flex flex-row flex-wrap gap-3 mb-3">
-                  <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증됨</span>
-                  <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">총 거래수 12회</span>
-                  <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">웹 디자인 전문</span>
-                </div>
-                <div className="font-light text-left text-md line-clamp-2">
-                  안녕하세요 저는 김민수입니다. 그리고 세상을 뒤흔들어놓고 뒤집어놓을 디자이너라고 자부합니다. 저는 디자인을 통해 세상을 놀라게 할 수 있는 무언가를 만들어드리겠습니다. 그리고 엄청나게 기가 막힌 디자인을 매일 같이 뽑아내는 것이 저의 일상이니 많은 관심 부탁드립니다. 그럼 오늘도 좋은 하루 보내세요.
-                </div>
-                <div className="flex items-center justify-end w-full">
-                  <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    포트폴리오로 이동
-                    <ArrowRightIcon className="w-4 h-4" />
-                  </button>
-                </div>
-
-              </div>
-
+              }
 
             </div>
 
-            <div ref={priceRef} className="flex flex-row w-full px-[6%] py-8 my-8 bg-gray-50  rounded-2xl shadow-black/2 ">
-              <div className="flex flex-col flex-shrink-0 gap-10 mr-[2rem] justify-center">
-                <div className="flex flex-row items-center justify-center">
-                  <h3 className="mr-3 text-2xl font-light">시작가</h3>
-                  <h3 className="text-4xl font-semibold">150,000</h3>
-                  <h3 className="ml-2 text-2xl font-light">원</h3>
-                </div>
-                <div className="flex flex-row items-center justify-center">
-                  <h3 className="mr-3 text-2xl font-light">최고가</h3>
-                  <h3 className="text-4xl font-semibold">270,000</h3>
-                  <h3 className="ml-2 text-2xl font-light">원</h3>
-                </div>
-                <div className="flex flex-col items-start gap-2">
-                  <h3 className="mr-3 font-light text-gray-800 text-md">최근 거래 성사일 : 2024. 05. 27.</h3>
-                  <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : 220,000원</h3>
-                </div>
-              </div>
+            {
+              content ?
+                <div>
+                  <div className="flex flex-row w-full px-[0%] py-8 my-8 bg-gray-50  rounded-2xl  ">
+                    <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
+                      <img className="w-[125px] rounded-full " src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Image Description" />
+                      <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
+                    </div>
+                    <div className="mr-[5%] flex flex-col justify-between">
+                      <div className="flex flex-row flex-wrap gap-3 mb-3">
+                        <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-primary-light text-white ">인증됨</span>
+                        <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">총 거래수 12회</span>
+                        <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">웹 디자인 전문</span>
+                      </div>
+                      <div className="font-light text-left text-md line-clamp-2">
+                        안녕하세요 저는 김민수입니다. 그리고 세상을 뒤흔들어놓고 뒤집어놓을 디자이너라고 자부합니다. 저는 디자인을 통해 세상을 놀라게 할 수 있는 무언가를 만들어드리겠습니다. 그리고 엄청나게 기가 막힌 디자인을 매일 같이 뽑아내는 것이 저의 일상이니 많은 관심 부탁드립니다. 그럼 오늘도 좋은 하루 보내세요.
+                      </div>
+                      <div className="flex items-center justify-end w-full">
+                        <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                          포트폴리오로 이동
+                          <ArrowRightIcon className="w-4 h-4" />
+                        </button>
+                      </div>
 
-              <div className="flex-grow">
-                <ApexChart
-                  type="line"
-                  series={[
-                    {
-                      name: "거래가",
-                      data: [150000, 180000, 240000, 270000, 220000, 220000, 260000],
-                    },
-
-                  ]}
+                    </div>
 
 
-                  options={{
+                  </div>
 
-                    chart: {
+                </div> : <div className="flex flex-row w-full px-[0%] py-8 my-8   rounded-2xl  "> <Skeleton
+                  containerClassName="flex-1"
+                  height={200} /> </div>
+            }
 
-                      width: '100%',
-                      toolbar: { show: false },
-                      zoom: { enabled: false },
-                      fontFamily: 'Pretendard',
+            <div ref={priceRef} className="flex flex-row w-full my-8 rounded-2xl shadow-black/2 ">
+              {
+                content ? <div className="flex flex-row w-full bg-gray-50 px-[6%] py-8">
+                  <div className="flex flex-col flex-shrink-0 gap-10 mr-[2rem] justify-center">
+                    <div className="flex flex-row items-center justify-center">
+                      <h3 className="mr-3 text-2xl font-light">시작가</h3>
+                      <h3 className="text-4xl font-semibold">150,000</h3>
+                      <h3 className="ml-2 text-2xl font-light">원</h3>
+                    </div>
+                    <div className="flex flex-row items-center justify-center">
+                      <h3 className="mr-3 text-2xl font-light">최고가</h3>
+                      <h3 className="text-4xl font-semibold">270,000</h3>
+                      <h3 className="ml-2 text-2xl font-light">원</h3>
+                    </div>
+                    <div className="flex flex-col items-start gap-2">
+                      <h3 className="mr-3 font-light text-gray-800 text-md">최근 거래 성사일 : 2024. 05. 27.</h3>
+                      <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : 220,000원</h3>
+                    </div>
+                  </div>
 
-                    },
-                    xaxis: {
-                      categories: ["5/10", "5/16", "5/17", "5/22", "5/24", "5/26", "5/27"],
-                    },
+                  <div className="flex-grow">
+                    <ApexChart
+                      type="line"
+                      series={[
+                        {
+                          name: "거래가",
+                          data: [150000, 180000, 240000, 270000, 220000, 220000, 260000],
+                        },
 
-                    yaxis: {
-                      labels: {
-                        formatter: function (value) {
-                          return value.toLocaleString('ko-KR') + "원";
+                      ]}
+
+
+                      options={{
+
+                        chart: {
+
+                          width: '100%',
+                          toolbar: { show: false },
+                          zoom: { enabled: false },
+                          fontFamily: 'Pretendard',
+
+                        },
+                        xaxis: {
+                          categories: ["5/10", "5/16", "5/17", "5/22", "5/24", "5/26", "5/27"],
+                        },
+
+                        yaxis: {
+                          labels: {
+                            formatter: function (value) {
+                              return value.toLocaleString('ko-KR') + "원";
+                            }
+                          },
+                        },
+
+                        theme: {
+                          mode: 'light',
+                          palette: 'palette7',
+
                         }
-                      },
-                    },
-
-                    theme: {
-                      mode: 'light',
-                      palette: 'palette7',
-
-                    }
 
 
-                  }}>
-                </ApexChart>
-              </div>
+                      }}>
+                    </ApexChart>
+                  </div>
+                </div> : <Skeleton
+                  containerClassName="flex-1"
+                  height={500} />
+              }
 
             </div>
 
@@ -443,98 +466,105 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
             <div ref={reviewRef} className="w-full h-[600px]  translate-y-[-44px]">
-              <div className="w-full h-[560px] mb-10 bg-gray-50 rounded-2xl flex flex-row px-8 py-8">
-                <div className="flex flex-row flex-shrink-0 h-[fit-content] items-center gap-4">
-                  <svg className="flex-shrink-0 w-[2rem] h-[2rem] text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
-                  </svg>
-                  <span className="text-5xl">
-                    3.0
-                  </span>
+              {
+                content ?
+                  <div>
+                    <div className="w-full h-[560px] mb-10 bg-gray-50 rounded-2xl flex flex-row px-8 py-8">
+                      <div className="flex flex-row flex-shrink-0 h-[fit-content] items-center gap-4">
+                        <svg className="flex-shrink-0 w-[2rem] h-[2rem] text-primary" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
+                        </svg>
+                        <span className="text-5xl">
+                          3.0
+                        </span>
 
-                </div>
-                <div className="flex-grow px-4 ml-20 overflow-y-auto border-l-2 border-gray-200">
-                  {
-                    [1, 2, 3, 4, 5, 6, 7].map((index) => (
-                      <div key={index} className="flex flex-row items-center gap-4 py-4 [&:not(:last-child)]:border-b border-gray-200">
-                        <div className="flex flex-col">
-                          <img className="w-[65px] rounded-full" src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg" alt="Image Description" />
-
-                        </div>
-                        <div className="flex flex-col">
-                          <div className="flex flex-row">
-                            <>
-                              {/* Rating */}
-                              <div className="flex items-center">
-                                <svg
-                                  className="flex-shrink-0 text-primary size-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  className="flex-shrink-0 text-primary size-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  className="flex-shrink-0 text-primary size-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  className="flex-shrink-0 text-gray-300 size-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                                <svg
-                                  className="flex-shrink-0 text-gray-300 size-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={16}
-                                  height={16}
-                                  fill="currentColor"
-                                  viewBox="0 0 16 16"
-                                >
-                                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-                                </svg>
-                              </div>
-                              {/* End Rating */}
-                            </>
-                            <span className="ml-2 text-lg font-semibold">"정말 감동적인 결과물이 나왔어요!{index}"</span>
-                          </div>
-
-
-                          <div className="flex flex-row items-center gap-2">
-                            <h4 className="font-light text-md">@삼성전자</h4>
-                            <span className="font-light text-md">2024. 05. 27.</span>
-                          </div>
-                        </div>
                       </div>
-                    ))
+                      <div className="flex-grow px-4 ml-20 overflow-y-auto border-l-2 border-gray-200">
+                        {
+                          [1, 2, 3, 4, 5, 6, 7].map((index) => (
+                            <div key={index} className="flex flex-row items-center gap-4 py-4 [&:not(:last-child)]:border-b border-gray-200">
+                              <div className="flex flex-col">
+                                <img className="w-[65px] rounded-full" src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg" alt="Image Description" />
 
-                  }
-                </div>
-              </div>
+                              </div>
+                              <div className="flex flex-col">
+                                <div className="flex flex-row">
+                                  <>
+                                    {/* Rating */}
+                                    <div className="flex items-center">
+                                      <svg
+                                        className="flex-shrink-0 text-primary size-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={16}
+                                        height={16}
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                      </svg>
+                                      <svg
+                                        className="flex-shrink-0 text-primary size-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={16}
+                                        height={16}
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                      </svg>
+                                      <svg
+                                        className="flex-shrink-0 text-primary size-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={16}
+                                        height={16}
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                      </svg>
+                                      <svg
+                                        className="flex-shrink-0 text-gray-300 size-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={16}
+                                        height={16}
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                      </svg>
+                                      <svg
+                                        className="flex-shrink-0 text-gray-300 size-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={16}
+                                        height={16}
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16"
+                                      >
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
+                                      </svg>
+                                    </div>
+                                    {/* End Rating */}
+                                  </>
+                                  <span className="ml-2 text-lg font-semibold">"정말 감동적인 결과물이 나왔어요!{index}"</span>
+                                </div>
 
+
+                                <div className="flex flex-row items-center gap-2">
+                                  <h4 className="font-light text-md">@삼성전자</h4>
+                                  <span className="font-light text-md">2024. 05. 27.</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+
+                        }
+                      </div>
+                    </div>
+
+                  </div> : <Skeleton
+                    containerClassName="flex-1"
+                    height={600} />
+              }
             </div>
           </div>
         </div>

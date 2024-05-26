@@ -7,9 +7,9 @@ import Artist from '../_data/Artist';
 
 interface Goods {
   backgroundList: any[string];
-  title: string;
-  description: string;
-  content: string;
+  title: string | undefined;
+  description: string | undefined;
+  content: string | undefined;
   artist : Artist;
 
   getGoods: (artistGoodsId : string) => void;
@@ -69,11 +69,11 @@ export const useGoods = create<Goods>((set) => ({
     profile_image : ''
   },
 
-  content: 'content',
+  content: undefined,
   setContent: (content: string) => set({ content }),
-  title: 'title',
+  title: undefined,
   setTitle: (title: string) => set({ title }),
-  description: 'description',
+  description: undefined,
   setDescription: (description: string) => set({ description })
 }))
 
