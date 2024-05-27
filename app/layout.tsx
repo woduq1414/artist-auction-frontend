@@ -109,7 +109,7 @@ export default function RootLayout({
         ${!isNavExist ? 'hidden' : ''}
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
-            <Link href="#">
+            <Link href="/">
               <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>
@@ -122,7 +122,7 @@ export default function RootLayout({
             <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
               Info
             </Link> */}
-            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
+            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/">
               구인
             </Link>
             <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/market">
@@ -240,7 +240,7 @@ export default function RootLayout({
                 Info
               </Link> */}
               <hr />
-              <Link className={`text-lg font-semibold text-black`} href="#">
+              <Link className={`text-lg font-semibold text-black`} href="/">
                 구인
               </Link>
               <hr />

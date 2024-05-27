@@ -1,14 +1,14 @@
 'use client'
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
 import { useEffect, useState } from "react";
 
 import { MagnifyingGlassIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
-import { get } from "lodash";
+import { get, set } from "lodash";
 import Skeleton from "react-loading-skeleton";
 import React from "react";
 
@@ -83,6 +83,7 @@ function CategoryListContainer(): JSX.Element {
                   return (
                     <li key={item.id} className={`ml-3 cursor-pointer font-light hs-accordion-content-item ${selectedCategory !== null && item.id === selectedCategory.id ? "text-primary-light" : "text-gray-600"} text-[1rem]`} onClick={() =>
                       setSelectedCategory(item)
+                      
                     }
                     >
 
@@ -200,38 +201,134 @@ export default function Market() {
   const [sort, setSort] = useState('recent');
   const sortRef = React.createRef<HTMLSelectElement>() as React.MutableRefObject<HTMLSelectElement>;
 
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const searchInputRef = React.createRef<HTMLInputElement>() as React.MutableRefObject<HTMLInputElement>;
+
+  const sortList = [{
+    "value": "recent",
+    "text": "최신순"
+  },
+  {
+    "value": "highPrice",
+    "text": "높은 가격순"
+  },
+  {
+    "value": "lowPrice",
+    "text": "낮은 가격순"
+  },
+  {
+    "value": "end_date",
+    "text": "마감 임박"
+  }
+  ]
+
+
+
 
 
   useEffect(() => {
     getCategoryList();
-    fetchGoodsList('all', 'recent');
+
+    // alert("@!#")
+    if (searchParams.get('category')) {
+      setSelectedCategory({
+        id: searchParams.get('category') ? parseInt(searchParams.get('category') as string) : 0,
+        name: '전체',
+        list: []
+
+      })
+    } else {
+      setSelectedCategory({
+        id: 0,
+        name: '전체',
+        list: []
+
+      })
+    }
+    if (searchParams.get('sort')) {
+      setSort(searchParams.get('sort') as string);
+
+    }
+    if (searchParams.get('search')) {
+      setSearch(searchParams.get('search') as string);
+    }
+
+
+    // fetchGoodsList('all', 'recent', '', 1);
 
     sortRef.current.addEventListener('change.hs.select', (e: any) => {
       console.log(e.target.value);
       setSort(e.target.value);
 
     });
+
+    import('preline/preline').then((module) => {
+
+      const element = document.querySelector(`div.sort-select-option[tabindex="${sortList.findIndex((item) => item.value === searchParams.get('sort'))
+        }"]`) as HTMLDivElement;
+      element?.click();
+
+    });
+
+
   }, [])
 
 
   useEffect(() => {
-    
 
-      // if (
-      //   sort === 'recent'
-      // ) {
-      //   return
-      // }
 
-      const element = document.querySelector('div.sort-select-option[tabindex="0"]') as HTMLDivElement;
-      element?.click();
+    // if (
+    //   sort === 'recent'
+    // ) {
+    //   return
+    // }
 
-    }, [selectedCategory])
+    const element = document.querySelector('div.sort-select-option[tabindex="0"]') as HTMLDivElement;
+    element?.click();
+
+  }, [selectedCategory, search])
+
+  useEffect(() => {
+    searchInputRef.current.value = '';
+    setSearch('');
+  },[selectedCategory])
+
+
 
 
   useEffect(() => {
-    fetchGoodsList(selectedCategory.id === 0 ? 'all' : selectedCategory.id + '', sort);
-  }, [selectedCategory, sort])
+
+
+    let routerUrl = "/market?"
+    if (selectedCategory.id !== 0) {
+      routerUrl += 'category=' + encodeURIComponent(selectedCategory.id) + '&'
+    }
+    if (sort !== 'recent') {
+      routerUrl += 'sort=' + encodeURIComponent(sort) + '&'
+    }
+    if (search !== '') {
+      routerUrl += 'search=' + encodeURIComponent(search) + '&'
+    }
+
+    routerUrl = routerUrl.slice(0, routerUrl.length - 1);
+
+    router.push(routerUrl, undefined,);
+
+  }, [selectedCategory, sort, search])
+
+  useEffect(() => {
+    fetchGoodsList(selectedCategory.id === 0 ? 'all' : selectedCategory.id + '',
+      searchParams.get('sort') || 'recent',
+      searchParams.get('search') || '', 1);
+
+  }, [
+    searchParams.get('category'), searchParams.get('sort'), searchParams.get('search')
+  ])
+
 
 
 
@@ -258,16 +355,36 @@ export default function Market() {
           <div className="flex w-full mt-3 sm:mt-8" >
             <input className="w-full h-12 pl-2  text-md rounded-l-[20px] placeholder:font-bold
                 sm:text-sm sm:h-14 sm:pl-8 border-2 border-r-0
-                " type="text" placeholder="검색어" />
+                " type="text" placeholder="검색어"
+              onInput={
+                (e) => {
+                  setSearchInput(e.currentTarget.value)
+                }
+              }
+              ref ={searchInputRef}
+
+              onKeyDown={(e) => {
+
+                if (e.key === 'Enter') {
+                  setSearch(searchInput)
+                }
+              }}
+            />
             <button className="w-12 h-12 sm:h-14 bg-gray-700 rounded-r-[20px] flex justify-center items-center
                 sm:w-14
-                ">
+                "
+              onClick={() => {
+                setSearch(searchInput)
+
+              }
+              }
+            >
               <MagnifyingGlassIcon className="w-6 h-6 text-white sm:w-7" />
             </button>
           </div>
         </div>
         <div className="w-full ml-5 border-l-2 border-gray-300">
-          <div className="flex flex-row justify-between w-full">
+          <div className="flex flex-row items-center justify-between w-full">
             <div>
 
             </div>
@@ -285,23 +402,7 @@ export default function Market() {
               >
                 <option value="">최신순</option>
                 {
-                  [{
-                    "value": "recent",
-                    "text": "최신순"
-                  },
-                  {
-                    "value": "highPrice",
-                    "text": "높은 가격순"
-                  },
-                  {
-                    "value": "lowPrice",
-                    "text": "낮은 가격순"
-                  },
-                  {
-                    "value": "end_date",
-                    "text": "마감 임박"
-                  }
-                  ].map((item, index) => (
+                  sortList.map((item, index) => (
                     <option key={index} value={item.value}>{item.text}</option>
                   ))
 

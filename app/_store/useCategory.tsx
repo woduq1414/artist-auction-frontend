@@ -11,8 +11,8 @@ interface Category {
   setSelectedCategory: (selectedCategory: any) => void;
   setListViewType: (listviewType: string) => void;
   goodsList: any[] | undefined;
-  fetchGoodsList: (category : string, 
-    sort : string,
+  fetchGoodsList: (category: string,
+    sort: string, searchInput : string, page : number
   ) => void;
 }
 
@@ -41,16 +41,31 @@ export const useCategory = create<Category>((set) => ({
     list: []
 
   },
-  setSelectedCategory: (selectedCategory: any) => set({ selectedCategory }),
+  setSelectedCategory: (selectedCategory: any) => {
+    set({ selectedCategory })
+  },
   listviewType: 'column',
   setListViewType: (listviewType: string) => set({ listviewType }),
   goodsList: undefined,
-  fetchGoodsList: async (category : string, sort : string) => {
+  fetchGoodsList: async (category: string, sort: string, search : string, page : number) => {
     set({ goodsList: undefined })
     if (category === 'all') {
       category = '';
     }
-    let res = await fetch(Config().baseUrl + `/artist/goods?category=${category}&sort=${sort}`, {
+    let url = Config().baseUrl + `/artist/goods?`
+    if (category) {
+      url += `category=${category}&`
+    }
+    if (sort) {
+      url += `sort=${sort}&`
+    }
+    if (search) {
+      url += `search=${search}&`
+    }
+    if (page) {
+      url += `page=${page}&`
+    }
+    let res = await fetch(url, {
       method: 'GET',
       headers: {
 
