@@ -8,7 +8,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 // import { HSSelect, HSSelect } from 'preline';
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -53,7 +53,12 @@ const NewMarketPage: React.FC = () => {
     const [mainImageList, setMainImageList] = useState<any[]>([]);
     const [tempMainImage, setTempMainImage] = useState<string>('');
     const [tempMainImageTitle, setTempMainImageTitle] = useState<string>('');
-    const [exampleImageList, setExampleImageList] = useState<any[]>([]);
+    const [exampleImageList, setExampleImageList] = useState<any[]>([
+        {
+            'id': 1,
+            'src': "https://res.cloudinary.com/do7rz1fza/image/upload/w_1920/q_auto/f_auto/v1716811386/prod/018f8ee2-26b1-79e4-9d8b-b6a4b4f5ca97:5b6a3d95-5e00-4377-bc12-abcda3bfc2e7.png"
+        }
+    ]);
 
     const cropperRef = useRef<ReactCropperElement>(null);
     const [cropperModalInstance, setCropperModalInstance] = useState<any>(null);
@@ -142,6 +147,17 @@ const NewMarketPage: React.FC = () => {
         });
 
     }, [subCategoryList])
+
+    useEffect(() => {
+        import('preline/preline').then((module) => {
+
+            const { HSStaticMethods, HSSelect, HSOverlay } = module;
+            // type HSSelect = import('preline/preline').HSSelect;
+
+            HSStaticMethods.autoInit(['tooltip']);
+
+        });
+    }, [mainImageList, exampleImageList])
 
     const [editor, setEditor] = useState<any>(null);
 
@@ -451,7 +467,7 @@ const NewMarketPage: React.FC = () => {
                                         {
                                             mainImageList.length >= 1 && (
                                                 <div className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
-                                                    <img src={mainImageList[0].src} alt="" className='object-cover h-[130px] w-fit' />
+                                                    <img src={mainImageList[0].src} alt="" className='object-cover h-[130px] w-fit rounded-xl' />
                                                     <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
                                                         onClick={() => {
                                                             setMainImageList([]);
@@ -542,14 +558,68 @@ const NewMarketPage: React.FC = () => {
                                         {
                                             exampleImageList.length >= 1 && (
                                                 exampleImageList.map((image, index) => (
-                                                    <div key={index} className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
-                                                        <img src={exampleImageList[index].src} alt="" className='object-cover h-[130px] w-fit' />
-                                                        <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                    // <div key={index} className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
+                                                    //     <img src={exampleImageList[index].src} alt="" className='object-cover h-[130px] w-fit rounded-xl' />
+                                                    //     <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                    //         onClick={() => {
+                                                    //             setExampleImageList(exampleImageList.filter((_, i) => i !== index));
+                                                    //         }}
+                                                    //     >
+                                                    //         <TrashIcon className='w-5 h-5 text-white' />
+                                                    //     </div>
+                                                    // </div>
+                                                    <div key={index} className='relative items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl hs-tooltip [--trigger:click] inline-block'>
+                                                        <img src={exampleImageList[index].src} alt="" className='object-cover h-[130px] w-fit rounded-xl' />
+                                                        <span className="absolute z-10 flex flex-row invisible gap-2 px-2 py-1 text-sm text-gray-600 transition-opacity bg-white border rounded-lg shadow-md opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" role="tooltip">
+                                                            <div className='p-2 rounded-full hover:bg-gray-200'
+                                                                onClick={() => {
+                                                                    // move forward item
+                                                                    if (index === 0) return;
+                                                                    let temp = exampleImageList[index];
+                                                                    let temp2 = exampleImageList[index - 1];
+                                                                    exampleImageList[index] = temp2;
+                                                                    exampleImageList[index - 1] = temp;
+                                                                    setExampleImageList([...exampleImageList]);
+
+
+                                                                }}>
+                                                                <ChevronDoubleLeftIcon className='w-4 h-4 text-gray-700' />
+                                                            </div>
+                                                            <div className='p-2 rounded-full hover:bg-gray-200' onClick={
+                                                                () => {
+                                                                    setExampleImageList(exampleImageList.filter((_, i) => i !== index));
+                                                                }
+
+                                                            }>
+                                                                <TrashIcon className='w-4 h-4 text-primary-light' />
+                                                            </div>
+                                                            <div className='p-2 rounded-full hover:bg-gray-200' 
                                                             onClick={() => {
-                                                                setExampleImageList(exampleImageList.filter((_, i) => i !== index));
-                                                            }}
+                                                                // move backward item
+
+                                                                if (index === exampleImageList.length - 1) return;
+                                                                let temp = exampleImageList[index];
+                                                                let temp2 = exampleImageList[index + 1];
+                                                                exampleImageList[index] = temp2;
+                                                                exampleImageList[index + 1] = temp;
+                                                                setExampleImageList([...exampleImageList]);
+                                                                console.log(exampleImageList)
+
+                                                            }
+
+
+
+
+                                                            }>
+                                                                <ChevronDoubleRightIcon className='w-4 h-4 text-gray-700' />
+                                                            </div>
+
+
+                                                        </span>
+                                                        <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+
                                                         >
-                                                            <TrashIcon className='w-5 h-5 text-white' />
+
                                                         </div>
                                                     </div>
                                                 )
@@ -799,7 +869,7 @@ const NewMarketPage: React.FC = () => {
                                 `}
                                 onClick={
                                     (e) => {
-                                        
+
                                     }
                                 }
                             >

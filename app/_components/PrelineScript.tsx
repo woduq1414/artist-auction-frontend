@@ -20,7 +20,7 @@ export default function PrelineScript() {
       await import("preline/preline");
 
       window.HSStaticMethods.autoInit([
-        'dropdown', 'stepper', 'select', 'hsselect', 'tab', 'modal', 'collapse', 'accordion', 'overlay'
+        'dropdown', 'stepper', 'select', 'hsselect', 'tab', 'modal', 'collapse', 'accordion', 'overlay', 'tooltip'
       ]);
     };
 
