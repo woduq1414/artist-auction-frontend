@@ -27,7 +27,10 @@ const nextConfig = {
     ];
   },
   // add middleware.ts
-  pageExtensions: ["ts", "tsx"]
+  pageExtensions: ["ts", "tsx"],
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 module.exports = nextConfig;
