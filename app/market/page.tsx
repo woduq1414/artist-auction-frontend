@@ -11,6 +11,7 @@ import Config from "@/config/config.export";
 import { get, set } from "lodash";
 import Skeleton from "react-loading-skeleton";
 import React from "react";
+import { dateDiffToKor } from "../_common/date";
 
 
 
@@ -150,8 +151,7 @@ function CategoryItemContainer(): JSX.Element {
                       {item.description}
                     </div>
                     <div>
-                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`${Math.floor((Date.parse(item.end_date) - Date.now()) / (1000 * 60 * 60 * 24))
-                        }일 후 종료`}</span>
+                      <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{`${dateDiffToKor(Date.parse(item.end_date))} 종료`}</span>
                       <span className={`${listviewType === 'column' ? 'text-xl' : 'text-lg'}  font-light text-gray-800`}>{` | `}</span>
                       <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-semibold text-gray-800`}>{item.price.toLocaleString()}</span>
                       <span className={`${listviewType === 'column' ? 'text-2xl' : 'text-xl'}  font-light text-gray-800`}>{` ~ `}</span>

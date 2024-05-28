@@ -71,6 +71,13 @@ export default function CategoryList() {
         else if (index == 3) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://blog.native-instruments.com/wp-content/uploads/dynamic/2023/04/how-to-write-song-lyrics-2-1200x0-c-default.jpg')]"
         else if (index == 4) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(187,83,83,.5)),url('https://as2.ftcdn.net/v2/jpg/02/02/96/41/1000_F_202964122_Ia4oFHOgm7Iy5yHvP9GbzECsRDOX9FZH.jpg')]"
     }
+    function getBackgroundImageStyleFront(index: number) {
+        if (index == 0) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://cdn.logojoy.com/wp-content/uploads/20200612115158/AdobeStock_88222430-1-min-scaled.jpeg')]"
+        else if (index == 1) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://www.kdanmobile.com/blog/wp-content/uploads/2022/03/balazs-ketyi-byoBbHSlP5U-unsplash.jpg')]"
+        else if (index == 2) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://dimg.donga.com/wps/NEWS/IMAGE/2022/02/03/111561272.2.jpg')]"
+        else if (index == 3) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://blog.native-instruments.com/wp-content/uploads/dynamic/2023/04/how-to-write-song-lyrics-2-1200x0-c-default.jpg')]"
+        else if (index == 4) return "[background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('https://as2.ftcdn.net/v2/jpg/02/02/96/41/1000_F_202964122_Ia4oFHOgm7Iy5yHvP9GbzECsRDOX9FZH.jpg')]"
+    }
 
     return (
         <div className='min-w-full min-h-screen bg-white px-[5%] py-0 flex flex-col'>
@@ -91,7 +98,9 @@ export default function CategoryList() {
                              ${getTransformStyle(index, 'pc')}
                              ${getTransformStyle(index, 'mobile')}
                             `}>
-                                    <div className="absolute flex flex-col items-center justify-center w-full h-full overflow-hidden transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110 "
+                                    <div className={`absolute flex flex-col items-center justify-center w-full h-full overflow-hidden transition duration-300 ease-in-out shadow-lg backface-hidden hover:-translate-y-1 hover:scale-110
+                                    ${getBackgroundImageStyleFront(index)} [-webkit-background-clip:text] text-transparent bg-clip-text bg-cover bg-center
+                                    `}
                                         onClick={() => {
                                             if (!canChangeCategory) return;
 

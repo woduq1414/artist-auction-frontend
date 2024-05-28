@@ -48,7 +48,8 @@ const NewMarketPage: React.FC = () => {
     const [description, setDescription] = useState<string>('');
     const [price, setPrice] = useState<number>(0);
 
-    const [endDate, setEndDate] = useState<string>('');
+    // const [endDate, setEndDate] = useState<string>('');
+    const [duration, setDuration] = useState<number>(0);
 
     const [mainImageList, setMainImageList] = useState<any[]>([]);
     const [tempMainImage, setTempMainImage] = useState<string>('');
@@ -393,27 +394,36 @@ const NewMarketPage: React.FC = () => {
                                             htmlFor="inline-input-label-with-helper-text"
                                             className="block text-lg font-semibold "
                                         >
-                                            경매 종료일
+                                            경매 지속 기간
                                         </label>
 
-
-                                        <input
-                                            type="date"
-                                            id="inline-input-label-with-helper-text"
-                                            className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            // placeholder="상품 제목을 입력해주세요."
-                                            aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setEndDate(e.target.value)}
-                                            min={new Date().toISOString().split('T')[0]}
-                                            max={(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]}
-
-                                        />
+                                        <div className="relative max-w-xl ">
+                                            <input
+                                                type="text"
+                                                id="inline-input-label-with-helper-text"
+                                                className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
+                                                // placeholder="상품 제목을 입력해주세요."
+                                                aria-describedby="hs-inline-input-helper-text"
+                                                onChange={(e) => {
+                                                    const value: string = e.target.value;
+                                                    const removedCommaValue: number = Number(value.replaceAll(",", ""));
+                                                    if (removedCommaValue < 100) {
+                                                        setDuration(removedCommaValue);
+                                                    }
+                                                }}
+                                                value={duration.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                max={14}
+                                            />
+                                            <div className="absolute inset-y-0 z-20 flex items-center pointer-events-none end-0 pe-4">
+                                                <span className="text-gray-500 dark:text-neutral-500">일</span>
+                                            </div>
+                                        </div>
 
                                         <p
                                             className="text-gray-500 text-md dark:text-neutral-500"
                                             id="hs-inline-input-helper-text"
                                         >
-                                            경매는 4주까지 진행 가능합니다. {`( ~ ${(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]})`}
+                                            경매는 1 ~ 14일까지 진행 가능합니다. 검수 다음 날부터 경매가 시작됩니다.
                                         </p>
                                     </div>
                                 </div>
@@ -593,24 +603,24 @@ const NewMarketPage: React.FC = () => {
                                                             }>
                                                                 <TrashIcon className='w-4 h-4 text-primary-light' />
                                                             </div>
-                                                            <div className='p-2 rounded-full hover:bg-gray-200' 
-                                                            onClick={() => {
-                                                                // move backward item
+                                                            <div className='p-2 rounded-full hover:bg-gray-200'
+                                                                onClick={() => {
+                                                                    // move backward item
 
-                                                                if (index === exampleImageList.length - 1) return;
-                                                                let temp = exampleImageList[index];
-                                                                let temp2 = exampleImageList[index + 1];
-                                                                exampleImageList[index] = temp2;
-                                                                exampleImageList[index + 1] = temp;
-                                                                setExampleImageList([...exampleImageList]);
-                                                                console.log(exampleImageList)
+                                                                    if (index === exampleImageList.length - 1) return;
+                                                                    let temp = exampleImageList[index];
+                                                                    let temp2 = exampleImageList[index + 1];
+                                                                    exampleImageList[index] = temp2;
+                                                                    exampleImageList[index + 1] = temp;
+                                                                    setExampleImageList([...exampleImageList]);
+                                                                    console.log(exampleImageList)
 
-                                                            }
-
-
+                                                                }
 
 
-                                                            }>
+
+
+                                                                }>
                                                                 <ChevronDoubleRightIcon className='w-4 h-4 text-gray-700' />
                                                             </div>
 
@@ -803,12 +813,9 @@ const NewMarketPage: React.FC = () => {
                                 onClick={
                                     (e) => {
                                         if (step === 1) {
-                                            if (!(title.replaceAll(" ", "") === '' || description.replaceAll(" ", "") === '' || firstCategory === null || secondCategory === null || price === 0 || endDate === '')) {
-                                                if (endDate > new Date().toISOString().split('T')[0] && endDate <= (new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 28)).toISOString().split('T')[0]) {
-                                                    setStep(step + 1);
-
-                                                } else {
-                                                    toast.error('경매 종료일을 현재일로부터 4주 안으로 설정해주세요.', {
+                                            if (!(title.replaceAll(" ", "") === '' || description.replaceAll(" ", "") === '' || firstCategory === null || secondCategory === null || price === 0 || duration === 0)) {
+                                                if (duration > 14 || duration < 1) {
+                                                    toast.error('경매 기간은 1일부터 14일까지 가능합니다.', {
                                                         position: "top-right",
                                                         autoClose: 3000,
                                                         hideProgressBar: false,
@@ -819,6 +826,9 @@ const NewMarketPage: React.FC = () => {
                                                         theme: "light",
 
                                                     });
+                                                    return;
+                                                }else{
+                                                    setStep(step + 1);
                                                 }
 
 
@@ -924,13 +934,13 @@ const NewMarketPage: React.FC = () => {
                                                 description: description,
                                                 category: secondCategory,
                                                 price: price,
-                                                end_date: endDate,
+                                                duration: duration,
                                                 main_image: mainImageList[0].id,
                                                 example_image_list: exampleImageList.map((image) => image.id),
                                                 content: editor?.getHTML()
                                             })
 
-                                            let endDateTime = new Date(endDate);
+                                            // let endDateTime = new Date(endDate);
 
                                             let res = await fetch(Config().baseUrl + '/artist/goods', {
                                                 method: 'POST',
@@ -944,7 +954,7 @@ const NewMarketPage: React.FC = () => {
                                                     description: description,
                                                     category: secondCategory,
                                                     price: price,
-                                                    end_date: endDateTime.toISOString(),
+                                                    duration: duration,
                                                     main_image: mainImageList[0].id,
                                                     example_image_list: exampleImageList.map((image) => image.id),
                                                     content: editor?.getHTML()

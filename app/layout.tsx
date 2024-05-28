@@ -249,11 +249,78 @@ export default function RootLayout({
               </Link>
               <hr />
 
-              <button type="button" className={`text-lg text-black hover:bg-gray-100 border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 `}>
-                <Link className={``} href="/auth">
+              <Link className={``} href="/auth">
+                <button type="button" className={`w-full text-lg ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 
+              ${isLogin ? 'hidden' : ''}
+              `}>
+
                   로그인 / 회원가입
-                </Link>
-              </button>
+
+                </button>
+              </Link>
+
+              <div className={`w-full hs-dropdown relative inline-flex ${!isLogin ? 'hidden' : ' '}`}>
+                <button
+                  id="hs-dropdown-custom-trigger"
+                  type="button"
+                  className="flex flex-row items-center justify-between w-full py-1 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-md shadow-sm hs-dropdown-toggle ps-1 pe-3 gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                >
+                  <div className='flex flex-row items-center gap-2'>
+                    <img
+                      className="w-8 h-auto rounded-full"
+                      src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                      alt="Maria"
+                    />
+                    <span className="text-gray-600 font-semibold text-md truncate max-w-[7.5rem] dark:text-neutral-400">
+                      {nickname}
+                    </span>
+                  </div>
+                  <svg
+                    className="hs-dropdown-open:rotate-180 size-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={24}
+                    height={24}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#888888"
+                    strokeWidth={1}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <div
+                  className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-neutral-800 dark:border dark:border-neutral-700"
+                  aria-labelledby="hs-dropdown-custom-trigger"
+                >
+                  <a
+                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                    href="#"
+                  >
+                    내 정보
+                  </a>
+                  <a
+                    className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                    href="#"
+                    onClick={() => {
+                      const cookies = new Cookies();
+                      cookies.remove('accessToken', {
+                        path: '/',
+                        domain: Config().cookieDomain,
+                      });
+                      cookies.remove('refreshToken', {
+                        path: '/',
+                        domain: Config().cookieDomain,
+                      });
+                      window.location.reload();
+                    }}
+                  >
+                    로그아웃
+                  </a>
+
+                </div>
+              </div>
             </div>
 
           </div>
