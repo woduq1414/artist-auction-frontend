@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic';
 
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
 import { CheckCircleIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 // import { HSSelect, HSSelect } from 'preline';
@@ -23,7 +23,8 @@ import { Cookies } from 'react-cookie';
 import { unescape } from 'lodash';
 import { toast } from 'react-toastify';
 import Config from '@/config/config.export';
-
+import _debounce from 'lodash/debounce';
+import errorBuilder from '@/app/_common/errorBuilder';
 // import  { HSStepper } from 'preline';
 
 
@@ -49,12 +50,25 @@ const RegisterPage: React.FC = () => {
     const [birthMonth, setBirthMonth] = useState<string>('');
     const [birthDay, setBirthDay] = useState<string>('');
 
+    const [birthDateError, setBirthDateError] = useState<any>('');
+
+
     const [gender, setGender] = useState<string>('');
 
     const [name, setName] = useState<string>('');
     const [nickname, setNickname] = useState<string>('');
+    const [nicknameError, setNicknameError] = useState<any>('');
     const [email, setEmail] = useState<string>('');
+
+    const [emailError, setEmailError] = useState<any>('');
+
+
     const [password, setPassword] = useState<string>('');
+
+    const [passwordError, setPasswordError] = useState<any>('');
+
+
+
 
 
     const { categoryList, getCategoryList } = useCategory();
@@ -241,6 +255,140 @@ const RegisterPage: React.FC = () => {
         });
 
     }, [subCategoryList])
+
+    const debounceEmailFn = useCallback(_debounce(async (email) => {
+        // check if valid email with reg
+
+        if (email === '') {
+
+            setEmailError(undefined);
+            return;
+        }
+
+        const emailReg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailReg.test(email)) {
+            setEmailError({
+                type: 'error',
+                message: '이메일 형식이 올바르지 않습니다.'
+            });
+            return;
+        }
+
+        let res = await fetch(Config().baseUrl + '/auth/check-email?email=' + email, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+
+        })
+
+        if (res.status === 200) {
+            setEmailError({
+                type: 'good',
+                message: '사용할 수 있는 이메일 입니다.'
+            });
+        } else {
+            setEmailError({
+                type: 'error',
+                message: '이미 사용중인 이메일 입니다. 다른 이메일을 입력해주세요.'
+            });
+        }
+
+
+
+
+    }, 1000), []);
+    function handleChangeEmail(e: any) {
+        setEmail(e.target.value);
+        debounceEmailFn(e.target.value);
+    }
+
+    const debounceNicknameFn = useCallback(_debounce(async (nickname) => {
+        // check if valid email with reg
+
+        if (nickname === '') {
+
+            setNicknameError(undefined);
+            return;
+        }
+        let byteLength = 0;
+
+        for (let i = 0; i < nickname.length; i++) {
+            if (escape(nickname.charAt(i)).length > 4) {
+                byteLength += 2;
+            } else {
+                byteLength++;
+            }
+        }
+
+        const nicknameReg = /^[a-zA-Z0-9가-힣_]+$/;
+
+
+        if (byteLength > 16 || !nicknameReg.test(nickname)) {
+            setNicknameError({
+                type: 'error',
+                message: '16바이트 이하의 한글, 영문, 숫자, 언더바(_)만 사용 가능합니다. (현재 ' + byteLength + '바이트)'
+            });
+            return;
+        } else {
+            let res = await fetch(Config().baseUrl + '/artist/check-nickname?nickname=' + nickname, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+
+            })
+
+            if (res.status === 200) {
+                setNicknameError({
+                    type: 'good',
+                    message: '사용할 수 있는 닉네임입니다. (현재 ' + byteLength + '바이트)'
+                });
+            } else {
+                setNicknameError({
+                    type: 'error',
+                    message: '이미 사용중인 닉네임입니다. 다른 닉네임을 입력해주세요.'
+                });
+            }
+        }
+
+
+
+
+
+
+
+    }, 1000), []);
+    function handleChangeNickname(e: any) {
+        setNickname(e.target.value);
+        // byte check
+
+        let byteLength = 0;
+        let nickname = e.target.value;
+        for (let i = 0; i < nickname.length; i++) {
+            if (escape(nickname.charAt(i)).length > 4) {
+                byteLength += 2;
+            } else {
+                byteLength++;
+            }
+        }
+
+
+        if (byteLength > 16) {
+            setNicknameError({
+                type: 'error',
+                message: '16바이트 이하의 한글, 영문, 숫자, 언더바(_)만 사용 가능합니다. (현재 ' + byteLength + '바이트)'
+            });
+            return;
+        }
+
+
+        debounceNicknameFn(e.target.value);
+    }
+
 
 
 
@@ -451,9 +599,11 @@ const RegisterPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="이메일을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={handleChangeEmail}
                                         />
-
+                                        {
+                                            errorBuilder(emailError)
+                                        }
                                     </div>
                                     {
                                         socialLoginType === 'password' &&
@@ -470,9 +620,36 @@ const RegisterPage: React.FC = () => {
                                                 className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="비밀번호를 입력해주세요."
                                                 aria-describedby="hs-inline-input-helper-text"
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value);
+                                                    if (e.target.value === '') {
+                                                        setPasswordError(undefined);
+                                                        return;
+                                                    }
+                                                    // check if valid password(8-20, at least one number, one alphabet, one special character)
 
+                                                    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,20}$/;
+
+                                                    if (!passwordReg.test(e.target.value)) {
+                                                        setPasswordError({
+                                                            type: 'error',
+                                                            message: `비밀번호는 8~20자 사이로, 영문, 숫자, 특수문자가 포함되어야 합니다. (${e.target.value.length} / 20)`
+                                                        });
+                                                        return;
+                                                    } else {
+                                                        setPasswordError({
+                                                            type: 'good',
+                                                            message: '사용할 수 있는 비밀번호 입니다.'
+
+                                                        });
+
+                                                    }
+
+                                                }}
+                                            />
+                                            {
+                                                errorBuilder(passwordError)
+                                            }
                                         </div>
                                     }
 
@@ -508,8 +685,12 @@ const RegisterPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="다른 이용자들에게 보일 이름을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setNickname(e.target.value)}
+                                            onChange={handleChangeNickname}
                                         />
+
+                                        {
+                                            errorBuilder(nicknameError)
+                                        }
 
                                     </div>
 
@@ -527,7 +708,37 @@ const RegisterPage: React.FC = () => {
                                                 className=" text-center w-[80px] block px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="연도"
                                                 aria-describedby="hs-inline-input-helper-text"
-                                                onChange={(e) => setBirthYear(e.target.value)}
+                                                value={
+                                                    birthYear
+                                                }
+                                                onChange={(e) => {
+                                                    setBirthYear(e.target.value.replace(/\D/, ''));
+                                                    if (e.target.value === '' || birthMonth === '' || birthDay === '') {
+                                                        return;
+                                                    }
+                                                    if (parseInt(e.target.value) < 1900 || parseInt(e.target.value) > new Date().getFullYear()) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthMonth) < 1 || parseInt(birthMonth) > 12) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthDay) < 1 || parseInt(birthDay) > 31) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    setBirthDateError(undefined);
+                                                }}
                                             />
                                             <input
                                                 type="text"
@@ -535,7 +746,38 @@ const RegisterPage: React.FC = () => {
                                                 className="  text-center w-[60px] block px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="월"
                                                 aria-describedby="hs-inline-input-helper-text"
-                                                onChange={(e) => setBirthMonth(e.target.value)}
+                                                value={
+                                                    birthMonth
+                                                }
+                                                onChange={(e) => {
+                                                    setBirthMonth(e.target.value.replace(/\D/, ''))
+                                                    if (e.target.value === '' || birthYear === '' || birthDay === '') {
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthYear) < 1900 || parseInt(birthYear) > new Date().getFullYear()) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 12) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthDay) < 1 || parseInt(birthDay) > 31) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    setBirthDateError(undefined);
+
+                                                }}
                                             />
                                             <input
                                                 type="text"
@@ -543,9 +785,41 @@ const RegisterPage: React.FC = () => {
                                                 className="  text-center w-[60px] block px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="일"
                                                 aria-describedby="hs-inline-input-helper-text"
-                                                onChange={(e) => setBirthDay(e.target.value)}
+                                                value={birthDay}
+                                                onChange={(e) => {
+                                                    setBirthDay(e.target.value.replace(/\D/, ''))
+                                                    if (e.target.value === '' || birthYear === '' || birthMonth === '') {
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthYear) < 1900 || parseInt(birthYear) > new Date().getFullYear()) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(birthMonth) < 1 || parseInt(birthMonth) > 12) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 31) {
+                                                        setBirthDateError({
+                                                            type: 'error',
+                                                            message: '생년월일을 확인해주세요.'
+                                                        });
+                                                        return;
+                                                    }
+                                                    setBirthDateError(undefined);
+
+                                                }}
                                             />
                                         </div>
+                                        {
+                                            errorBuilder(birthDateError)
+                                        }
 
                                     </div>
                                     <div className='flex flex-col gap-2'>
@@ -765,7 +1039,63 @@ const RegisterPage: React.FC = () => {
                                 onClick={
                                     async (e) => {
 
+                                        if(emailError && emailError.type === 'error'){
+                                            toast.error('이메일을 확인해주세요.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
 
+                                            });
+                                            return;
+                                        }
+                                        if(nicknameError && nicknameError.type === 'error'){
+                                            toast.error('닉네임을 확인해주세요.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+                                            return;
+                                        }
+                                        if(birthDateError && birthDateError.type === 'error'){
+                                            toast.error('생년월일을 확인해주세요.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+                                            return;
+                                        }
+                                        if (passwordError && passwordError.type === 'error') {
+                                            toast.error('비밀번호를 확인해주세요.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+                                            return;
+                                        }
+                                        
                                         // e.preventDefault();
                                         console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
                                         if (email === '' || name === '' || nickname === '' || birthYear === '' || birthMonth === '' || birthDay === '' || gender === '' || firstCategory === null || secondCategory === null || (
@@ -824,7 +1154,18 @@ const RegisterPage: React.FC = () => {
                                                 window.location.href = '/';
 
                                             } else {
+                                                toast.error('회원가입에 실패했습니다.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
 
+                                                });
+                                                
                                             }
                                         }
                                     }

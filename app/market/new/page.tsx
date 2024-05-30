@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import Config from '@/config/config.export';
 import { Cookies } from 'react-cookie';
 import { set } from 'lodash';
+import errorBuilder from '@/app/_common/errorBuilder';
 
 
 const NewMarketPage: React.FC = () => {
@@ -30,7 +31,7 @@ const NewMarketPage: React.FC = () => {
         }
         return new File([u8arr], filename, { type: mime });
     }
-    const [step, setStep] = useState(3);
+    const [step, setStep] = useState(1);
 
     const stepList = [
         "기본 정보 입력",
@@ -45,11 +46,16 @@ const NewMarketPage: React.FC = () => {
     const [secondCategory, setSecondCategory] = useState<any>(null);
 
     const [title, setTitle] = useState<string>('');
+    const [titleError, setTitleError] = useState<any>('');
     const [description, setDescription] = useState<string>('');
+    const [descriptionError, setDescriptionError] = useState<any>('');
+
     const [price, setPrice] = useState<number>(0);
+    const [priceError, setPriceError] = useState<any>('');
 
     // const [endDate, setEndDate] = useState<string>('');
-    const [duration, setDuration] = useState<number>(0);
+    const [duration, setDuration] = useState<number>(7);
+    const [durationError, setDurationError] = useState<any>('');
 
     const [mainImageList, setMainImageList] = useState<any[]>([]);
     const [tempMainImage, setTempMainImage] = useState<string>('');
@@ -236,14 +242,18 @@ const NewMarketPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="상품 제목을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setTitle(e.target.value)}
+                                            onChange={(e) => {
+                                                setTitle(e.target.value);
+                                                if (e.target.value.length > 20) {
+                                                    setTitleError({type : "error", message : `상품 제목은 20자 이내로 입력해주세요. (${e.target.value.length} / 20)`});
+                                                } else {
+                                                    setTitleError({type : "good" , message : `(${e.target.value.length} / 20)`})
+                                                }
+                                            }}
                                         />
-                                        <p
-                                            className="text-gray-500 text-md "
-                                            id="hs-inline-input-helper-text"
-                                        >
-                                            ({title.length} / 20)
-                                        </p>
+                                        {
+                                            errorBuilder(titleError)
+                                        }
                                     </div>
                                     <div className='flex flex-col gap-2'>
                                         <label
@@ -258,14 +268,17 @@ const NewMarketPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="한 줄 설명을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            onChange={(e) => setDescription(e.target.value)}
+                                            onChange={(e) => {
+                                                setDescription(e.target.value)
+                                                if (e.target.value.length > 40) {
+                                                    setDescriptionError({type : "error", message : `한 줄 설명은 40자 이내로 입력해주세요. (${e.target.value.length} / 40)`});
+                                                } else {
+                                                    setDescriptionError({type : "good" , message : `(${e.target.value.length} / 40)`})
+                                                }
+                                            }}
                                         />
-                                        <p
-                                            className="text-gray-500 text-md dark:text-neutral-500"
-                                            id="hs-inline-input-helper-text"
-                                        >
-                                            ({description.length} / 40)
-                                        </p>
+                                       
+
                                     </div>
                                     {/* <div className='h-[14rem]'></div> */}
                                     <div className='flex flex-col gap-2'>
@@ -409,6 +422,12 @@ const NewMarketPage: React.FC = () => {
                                                     const removedCommaValue: number = Number(value.replaceAll(",", ""));
                                                     if (removedCommaValue < 100) {
                                                         setDuration(removedCommaValue);
+
+                                                        if(removedCommaValue < 1 || removedCommaValue > 14){
+                                                            setDurationError({type : "error", message : `경매 기간은 1일 이상 14일 이하로 입력해주세요.`});
+                                                        }else{
+                                                            setDurationError({type : "good", message : `경매는 1 ~ 14일까지 진행 가능합니다. 검수 다음 날부터 경매가 시작됩니다.`});
+                                                        }
                                                     }
                                                 }}
                                                 value={duration.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -419,12 +438,9 @@ const NewMarketPage: React.FC = () => {
                                             </div>
                                         </div>
 
-                                        <p
-                                            className="text-gray-500 text-md dark:text-neutral-500"
-                                            id="hs-inline-input-helper-text"
-                                        >
-                                            경매는 1 ~ 14일까지 진행 가능합니다. 검수 다음 날부터 경매가 시작됩니다.
-                                        </p>
+                                        {
+                                            errorBuilder(durationError)
+                                        }
                                     </div>
                                 </div>
 
@@ -827,6 +843,30 @@ const NewMarketPage: React.FC = () => {
 
                                                     });
                                                     return;
+                                                }else if(titleError.type == 'error'){
+                                                    toast.error('상품 제목을 확인해주세요.', {
+                                                        position: "top-right",
+                                                        autoClose: 3000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                        theme: "light",
+
+                                                    });
+                                                }else if(descriptionError.type == 'error'){
+                                                    toast.error('한 줄 설명을 확인해주세요.', {
+                                                        position: "top-right",
+                                                        autoClose: 3000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                        theme: "light",
+
+                                                    });
                                                 }else{
                                                     setStep(step + 1);
                                                 }
