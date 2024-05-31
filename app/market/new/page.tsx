@@ -17,7 +17,7 @@ import Config from '@/config/config.export';
 import { Cookies } from 'react-cookie';
 import { set } from 'lodash';
 import errorBuilder from '@/app/_common/errorBuilder';
-
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 const NewMarketPage: React.FC = () => {
     function dataURLtoFile(dataurl: string, filename: string) {
@@ -167,7 +167,7 @@ const NewMarketPage: React.FC = () => {
     }, [mainImageList, exampleImageList])
 
     const [editor, setEditor] = useState<any>(null);
-
+    const router = useRouter();
     return (
         <main className="w-[80%]  mx-auto mt-20 md:mt-16  flex flex-col justify-center items-center">
             <div className="w-[100%] rounded-xl  h-full">
@@ -919,7 +919,8 @@ const NewMarketPage: React.FC = () => {
                                 `}
                                 onClick={
                                     (e) => {
-
+                                    
+                                        router.push('/my')
                                     }
                                 }
                             >
