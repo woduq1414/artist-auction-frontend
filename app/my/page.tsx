@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
 import { useEffect, useState } from "react";
 
-import { MagnifyingGlassIcon, PencilIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
+import { MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get, set } from "lodash";
@@ -13,6 +13,7 @@ import Skeleton from "react-loading-skeleton";
 import React from "react";
 import { dateDiffToKor } from "../_common/date";
 import { useAuth } from "../_store/useAuth";
+import { Cookies } from "react-cookie";
 
 
 
@@ -25,7 +26,28 @@ export default function MyPage() {
     // console.log(data);
     const { checkAuth, isLogin, profileImage, nickname } = useAuth();
 
-    const [goodsList, setGoodsList] = useState([]) as any;
+    const [goodsList, setGoodsList] = useState(undefined) as any;
+
+    async function getMyGoodsList() {
+        const res = await fetch(Config().baseUrl + '/artist/goods/my',
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                },
+            }
+
+        );
+        const data = await res.json();
+        console.log(data.data.items)
+        setGoodsList(data.data.items);
+    }
+
+    useEffect(() => {
+        getMyGoodsList();
+    }, []);
+
     const router = useRouter();
     return (
         <main className="w-[100%] h-full mx-auto mt-20 md:mt-16  flex flex-col">
@@ -46,7 +68,9 @@ export default function MyPage() {
 
                         </div>
                         <div className="flex-grow">
-                            {nickname ? <div className="mt-6 text-2xl font-bold">{nickname}</div> : <Skeleton width={100} height={20} />}
+                            {nickname ? <div className="mt-6 text-2xl font-bold">{nickname}</div> : <Skeleton 
+                            className="mt-6"
+                            width={100} height={20} />}
                         </div>
 
                     </div>
@@ -65,7 +89,41 @@ export default function MyPage() {
                                             아직 등록된 상품이 없습니다. 상품을 등록해보세요!
                                         </div>
                                         :
-                                        <div>
+                                        <div className="flex flex-col gap-3">
+                                            {
+                                                goodsList.map((item: any) => {
+                                                    return (
+                                                        <div key={item.id} className="flex flex-row items-center w-full border-b border-gray-200">
+                                                            <div className="flex-shrink-0 text-lg font-semibold">
+                                                                <img src={
+                                                                    item.image.media.link
+                                                                } className={`h-[100px] mb-3 ring-gray-200 ring-1`}
+                                                                    height={100}
+                                                                />
+                                                            </div>
+                                                            <div className="flex flex-col items-start justify-center flex-grow gap-3 ml-5">
+                                                                <div className="text-2xl font-semibold">
+                                                                    <Link href={
+                                                                        `/market/${item.id}`
+                                                                    
+                                                                    }>
+                                                                        {item.title}
+                                                                    </Link></div>
+                                                                <div className="text-sm text-gray-500">{new Date(Date.parse(item.created_at)).toISOString().substring(0, 10)} 등록</div>
+
+
+                                                            </div>
+                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
+                                                                <div className="p-3 rounded-full cursor-pointer bg-primary">
+                                                                    <PencilSquareIcon className="w-4 h-4 text-white" />
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    )
+
+                                                })
+                                            }
                                         </div>
                             }
                             <div className="flex flex-row justify-end w-full mt-4">
@@ -76,12 +134,12 @@ export default function MyPage() {
                                 `}
                                     onClick={
                                         (e) => {
-                                         
+
                                             router.push('/market/new')
                                         }
                                     }
                                 >
-                                    등록 페이지로
+                                    새 상품 등록
                                     <svg
                                         className="flex-shrink-0 size-4"
                                         xmlns="http://www.w3.org/2000/svg"

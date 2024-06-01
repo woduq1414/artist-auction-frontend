@@ -51,7 +51,7 @@ const NewMarketPage: React.FC = () => {
     const [descriptionError, setDescriptionError] = useState<any>('');
 
     const [price, setPrice] = useState<number>(0);
-    const [priceError, setPriceError] = useState<any>('');
+
 
     // const [endDate, setEndDate] = useState<string>('');
     const [duration, setDuration] = useState<number>(7);
@@ -68,7 +68,6 @@ const NewMarketPage: React.FC = () => {
     ]);
 
     const cropperRef = useRef<ReactCropperElement>(null);
-    const [cropperModalInstance, setCropperModalInstance] = useState<any>(null);
 
     const cropperModalOpenRef = useRef<any>(null);
 
