@@ -147,7 +147,11 @@ export default function RootLayout({
               >
                 <img
                   className="w-8 h-auto rounded-full"
-                  src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                  src={
+                    profileImage
+                      ? profileImage
+                      : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                  }
                   alt="Maria"
                 />
                 <span className="text-gray-600 font-semibold text-md truncate max-w-[7.5rem] dark:text-neutral-400">
@@ -268,7 +272,11 @@ export default function RootLayout({
                   <div className='flex flex-row items-center gap-2'>
                     <img
                       className="w-8 h-auto rounded-full"
-                      src="https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                      src={
+                        profileImage
+                          ? profileImage
+                          : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                      }
                       alt="Maria"
                     />
                     <span className="text-gray-600 font-semibold text-md truncate max-w-[7.5rem] dark:text-neutral-400">

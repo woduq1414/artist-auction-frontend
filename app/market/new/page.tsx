@@ -493,7 +493,7 @@ const NewMarketPage: React.FC = () => {
                                             mainImageList.length >= 1 && (
                                                 <div className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
                                                     <img src={mainImageList[0].src} alt="" className='object-cover h-[130px] w-fit rounded-xl' />
-                                                    <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                    <div className="absolute inset-0 z-10 flex items-center justify-center text-sm font-semibold duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl hover:opacity-100"
                                                         onClick={() => {
                                                             setMainImageList([]);
                                                         }}
