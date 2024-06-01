@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic'
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import { useSwipeable } from "react-swipeable";
 import Skeleton from "react-loading-skeleton";
+import { useRouter } from "next/navigation";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -32,17 +33,24 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   const [isSectionMovingAllowed, setIsSectionMovingAllowed] = useState(true);
 
+  const [tempTitle, setTempTitle] = useState("");
+
 
   const [currentSection, setCurrentSection] = useState(0);
 
-  const { backgroundList, getGoods, title, description, content, artist } = useGoods();
+  const { backgroundList, getGoods, title, description, content, artist, reset } = useGoods();
   useEffect(() => {
-    getGoods(
+    reset();
+    setTempTitle(getGoods(
       slug
-    );
+    ));
 
+    
 
   }, []);
+  const router = useRouter();
+
+
 
 
 
@@ -99,7 +107,9 @@ export default function Page({ params }: { params: { slug: string } }) {
       }
 
     });
-    if (backgroundList.length > 0) {
+
+    if (backgroundList.length > 0 && tempTitle != '') {
+      console.log(backgroundList,   "!!")
       import('preline/preline').then((module) => {
 
         const { HSStaticMethods, HSCarousel } = module;
@@ -156,7 +166,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             <div className="absolute top-0 bottom-0 flex transition-transform duration-700 opacity-0 hs-carousel-body start-0 flex-nowrap">
 
               {
-                backgroundList.map((background: string | undefined, index: any) => {
+                title && backgroundList.map((background: string | undefined, index: any) => {
                   return (
                     <div className="hs-carousel-slide" key={index}  >
                       <div className={"flex justify-center h-[480px] "} {...handlers}>

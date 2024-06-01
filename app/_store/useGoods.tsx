@@ -11,18 +11,35 @@ interface Goods {
   description: string | undefined;
   content: string | undefined;
   artist : Artist;
+  isFetchFinished: boolean;
 
-  getGoods: (artistGoodsId : string) => void;
+  getGoods: (artistGoodsId : string) => string;
   setTitle: (title: string) => void;
   setContent: (content: string) => void;
   setDescription: (description: string) => void;
+
+  reset : () => void;
 
 }
 
 
 export const useGoods = create<Goods>((set) => ({
+  isFetchFinished : false,
+  reset : () => set({
+    title : undefined,
+    description : undefined,
+    content : undefined,
+    artist : {
+      id : '',
+      nickname : '',
+      profile_image : ''
+    },
+    // backgroundList : [],
+    isFetchFinished : false
+  }),
   backgroundList: [],
   getGoods: async (artistGoodsId) => {
+   
     // const res = await fetcher('/category/list');
     // const data = res.json();
     let res = await fetch(Config().baseUrl + `/artist/goods/${artistGoodsId}`, {
@@ -42,7 +59,8 @@ export const useGoods = create<Goods>((set) => ({
         id : data.artist.id,
         nickname : data.artist.nickname,
         profile_image : data.artist.profile_image
-      }
+      },
+      
     })
 
     let backgroundListData = data.example_image_url_list
@@ -62,6 +80,8 @@ export const useGoods = create<Goods>((set) => ({
 
     // })
     set({ backgroundList: backgroundListData })
+
+    return data.title
   },
   artist : {
     id : '',
