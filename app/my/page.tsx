@@ -85,10 +85,10 @@ export default function MyPage() {
                                 profileImage ? profileImage : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
                             } alt="Image Description" />
-                            <div className="absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-300 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900"
+                            <div className="absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900"
                                 onClick={openProfileImageUploader}
                             >
-                                <PencilIcon className="w-3 h-3 text-gray-700" />
+                                <PencilIcon className="w-3 h-3 text-gray-500" />
                             </div>
                             <div className="absolute top-0 w-[120px] h-[120px] rounded-full flex items-center justify-center  start-0 ring-1 ring-white dark:ring-neutral-900
                           duration-300 bg-gray-500 opacity-0 bg-opacity-30  text-sm font-semibold hover:opacity-100 cursor-pointer text-white"

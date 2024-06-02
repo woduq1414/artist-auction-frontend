@@ -60,7 +60,7 @@ export const useGoods = create<Goods>((set) => ({
     })
 
     if(res.status != 200) {
-      document.location.href = `/market/${artistGoodsId}`
+      document.location.href = `/market/`
     }
 
     const data = (await res.json())?.data;

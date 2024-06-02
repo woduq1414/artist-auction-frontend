@@ -372,7 +372,10 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <div>
                   <div className="flex flex-row w-full px-[0%] py-8 my-8 bg-gray-50  rounded-2xl  ">
                     <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
-                      <img className="w-[125px] rounded-full " src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2&w=300&h=300&q=80" alt="Image Description" />
+                      <img className="w-[125px] rounded-full " src={
+                        artist.profile_image.media.path
+                      
+                      } alt="Image Description" />
                       <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
                     </div>
                     <div className="mr-[5%] flex flex-col justify-between">
