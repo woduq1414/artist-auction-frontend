@@ -125,7 +125,7 @@ export default function RootLayout({
               <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>
-          <div className={`flex flex-row items-center md:flex-col lg:gap-5 ml-auto mr-10 
+          <div className={`flex flex-row items-center md:flex-col  ml-auto mr-10 
            md:hidden
           `}>
             {/* <Link className="text-lg font-semibold text-pro" href="#">

@@ -41,7 +41,7 @@ export default function CustomEditor({
 
             content: initialContent || '',
             element: document.querySelector('#hs-editor-tiptap [data-hs-editor-field]') as HTMLElement,
-            
+
             extensions: [
                 Placeholder.configure({
                     placeholder: 'Add a message, if you\'d like.',
@@ -101,7 +101,7 @@ export default function CustomEditor({
         });
 
         setEditor(editor);
-        
+
         const actions = [
             {
                 id: '#hs-editor-tiptap [data-hs-editor-bold]',
@@ -180,6 +180,18 @@ export default function CustomEditor({
             editor.chain().focus().setColor((e.target as HTMLInputElement).value).run();
 
         });
+        setTimeout(() => {
+            import('preline/preline').then((module) => {
+                // alert(props.cat  egory)
+
+
+                const { HSStaticMethods, HSSelect, HSOverlay } = module;
+                HSStaticMethods.autoInit(['dropdown']);
+
+
+            })
+        }, 0)
+
 
         imageUploaderRef.current?.addEventListener('change', async (e) => {
             const fileList = (e.target as HTMLInputElement)?.files;
@@ -194,7 +206,7 @@ export default function CustomEditor({
             let res = await fetch(Config().baseUrl + '/image/?to_db=false', {
                 method: 'POST',
                 headers: {
-                    "Authorization" : "Bearer " + new Cookies().get('accessToken')
+                    "Authorization": "Bearer " + new Cookies().get('accessToken')
                 },
                 body: formData
             })
@@ -259,6 +271,7 @@ export default function CustomEditor({
             // }
 
         });
+
     }, [])
 
     return (

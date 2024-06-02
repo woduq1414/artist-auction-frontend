@@ -157,15 +157,18 @@ export default function MyPage() {
                                             아직 등록된 상품이 없습니다. 상품을 등록해보세요!
                                         </div>
                                         :
-                                        <div className="flex flex-col gap-3">
+                                        <div className="flex flex-col ">
                                             {
                                                 goodsList.map((item: any) => {
                                                     return (
-                                                        <div key={item.id} className="flex flex-row items-center w-full border-b border-gray-200">
+                                                        <div key={item.id} className={`flex flex-row items-center w-full border-b border-gray-200
+                                                        ${item.status === 'draft' ? 'bg-gray-100' : ''
+                                                            }
+                                                        `}>
                                                             <div className="flex-shrink-0 text-lg font-semibold">
                                                                 <img src={
                                                                     item.image.media.link
-                                                                } className={`h-[100px] mb-3 ring-gray-200 ring-1`}
+                                                                } className={`h-[100px] my-3 ring-gray-200 ring-1`}
                                                                     height={100}
                                                                 />
                                                             </div>
@@ -182,7 +185,16 @@ export default function MyPage() {
 
                                                             </div>
                                                             <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
-                                                                <div className="p-3 rounded-full cursor-pointer bg-primary">
+                                                                <div className={`p-3 rounded-full cursor-pointer bg-primary
+                                                                ${item.status != 'draft' ? 'hidden' : ''}
+                                                                
+                                                                `}
+                                                                    onClick={
+                                                                        (e) => {
+                                                                            router.push(`/market/${item.id}/edit`)
+                                                                        }
+                                                                    }>
+
                                                                     <PencilSquareIcon className="w-4 h-4 text-white" />
                                                                 </div>
 
@@ -283,7 +295,7 @@ export default function MyPage() {
                                 viewMode={1}
                                 guides={false}
                                 crop={() => {
-                           
+
 
                                 }}
                                 ref={cropperRef}
@@ -302,7 +314,7 @@ export default function MyPage() {
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 hover:bg-primary-light disabled:opacity-50 disabled:pointer-events-none"
                                 // data-hs-overlay="#cropperModal"
                                 ref={uploadProfileImageButtonRef}
-                                
+
                                 onClick={async () => {
                                     uploadProfileImageButtonRef.current?.setAttribute('disabled', 'true');
 
@@ -328,7 +340,7 @@ export default function MyPage() {
                                             },
                                             body: formData
                                         })
-                  
+
                                         console.log(res);
 
                                         if (res.status !== 200) return;
@@ -336,31 +348,32 @@ export default function MyPage() {
                                         let data = await res.json();
 
                                         console.log(data);
-                                        
+
                                         let res2 = await fetch(Config().baseUrl + '/artist/profile-image?image_media_id=' + data.data[0].id, {
                                             method: 'PUT',
                                             headers: {
-                                             
+
                                                 "Authorization": "Bearer " + new Cookies().get('accessToken')
                                             },
-                                   
+
                                         })
                                         // let res2 = await fetch(Config().baseUrl + '/artist/profile-image?image_media_id=' + '018fd249-aeab-7f3a-ae44-9b6efd69a209', {
                                         //     method: 'PUT',
                                         //     headers: {
-                                             
+
                                         //         "Authorization": "Bearer " + new Cookies().get('accessToken')
                                         //     },
-                                   
+
                                         // })
                                         console.log(res2);
                                         let data2 = await res2.json();
                                         console.log(data2);
                                         if (res2.status === 200) {
-                                    
+
                                             let accessToken = data2.data.accessToken;
                                             const cookies = new Cookies();
-                                            cookies.set('accessToken', accessToken, { path: '/',
+                                            cookies.set('accessToken', accessToken, {
+                                                path: '/',
                                                 domain: Config().cookieDomain,
                                             });
 
@@ -369,7 +382,7 @@ export default function MyPage() {
 
                                         }
 
-                              
+
                                     }
 
                                 }}
@@ -380,7 +393,7 @@ export default function MyPage() {
                     </div>
                 </div>
             </div>
-           
+
         </main>
     );
 }

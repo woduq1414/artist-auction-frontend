@@ -13,7 +13,7 @@ import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon, TrashIcon } fr
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { toast } from 'react-toastify';
-import Config from '@/config/config.export';
+import Config from '@/config/config.export'
 import { Cookies } from 'react-cookie';
 import { set } from 'lodash';
 import errorBuilder from '@/app/_common/errorBuilder';
@@ -71,6 +71,8 @@ const MarketFormPage: React.FC<{
     const cropperRef = useRef<ReactCropperElement>(null);
 
     const cropperModalOpenRef = useRef<any>(null);
+
+    let previewIframeRef = useRef<any>(null);
 
     let firstCategoryRef = useRef<any>(null);
     let secondCategoryRef = useRef<any>(null);
@@ -134,7 +136,8 @@ const MarketFormPage: React.FC<{
 
 
                 const { HSStaticMethods, HSSelect, HSOverlay } = module;
-                HSStaticMethods.autoInit(['select']);
+                HSStaticMethods.autoInit(['select', 'modal', 'overlay']);
+
 
             })
         }
@@ -370,6 +373,8 @@ const MarketFormPage: React.FC<{
 
 
             } else {
+
+                console.log(props.id, goodsId);
                 let res = await fetch(Config().baseUrl + '/artist/goods', {
                     method: 'PUT',
                     headers: {
@@ -398,18 +403,36 @@ const MarketFormPage: React.FC<{
                 saveButtonRef.current.disabled = false;
 
                 if (res.status === 200) {
-                    toast.success('상품 저장에 성공하였습니다.', {
-                        position: "top-right",
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
+                    if (type == 'submit') {
+                        toast.success('상품 제출에 성공하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
 
-                    });
-                    // setStep(step + 1);
+                        });
+
+                        setStep(step + 1);
+                    } else {
+                        toast.success('상품 저장에 성공하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+
+                        });
+                       
+                    }
+
+
                 } else {
                     toast.error('상품 저장에 실패하였습니다.', {
                         position: "top-right",
@@ -1233,6 +1256,7 @@ const MarketFormPage: React.FC<{
                                             onSubmitButtonClicked('preview');
 
                                             previewModalOpenRef.current.click();
+                                            previewIframeRef.current.contentWindow.location.reload();
                                         }
                                     }
                                 >
@@ -1464,6 +1488,7 @@ const MarketFormPage: React.FC<{
                                             }`}
                                         frameBorder={0}
                                         title="Preview"
+                                        ref={previewIframeRef}
                                     />}
                             </div>
                             <div className="flex items-center justify-end px-4 py-3 mt-auto border-t gap-x-2 dark:border-neutral-700">

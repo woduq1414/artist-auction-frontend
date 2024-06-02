@@ -25,7 +25,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     const { backgroundList, mainImage, getGoods, title, description, content, artist, reset, category, price } = useGoods();
     useEffect(() => {
-        // reset();
+        reset();
         getGoods(slug, true);
 
     }, []);
@@ -47,6 +47,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 category={category}
                 price={price}
                 isEdit={true}
+                id={slug}
 
 
 

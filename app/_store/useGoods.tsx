@@ -68,7 +68,7 @@ export const useGoods = create<Goods>((set) => ({
     set({
       id : data.id,
       title : data.title, description : data.description, content : data.content,
-      price : data.price,
+      price : data.price / 10000,
       category : data.category,
       artist : {
         id : data.artist.id,
