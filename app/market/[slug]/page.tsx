@@ -41,13 +41,19 @@ export default function Page({ params }: { params: { slug: string } }) {
   const { backgroundList, getGoods, title, description, content, artist, reset } = useGoods();
   useEffect(() => {
     reset();
-    setTempTitle(getGoods(
-      slug
-    ));
-
-    
+    fetchGoods();
 
   }, []);
+
+  async function fetchGoods() {
+    let title = await getGoods(
+      slug, false
+    )
+    // alert(title);
+    setTempTitle(title);
+  }
+
+
   const router = useRouter();
 
 
@@ -132,7 +138,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     }
 
 
-  }, [backgroundList]);
+  }, [backgroundList, tempTitle]);
 
   const handlers = useSwipeable({
     onSwipedLeft: () => {
@@ -166,15 +172,15 @@ export default function Page({ params }: { params: { slug: string } }) {
             <div className="absolute top-0 bottom-0 flex transition-transform duration-700 opacity-0 hs-carousel-body start-0 flex-nowrap">
 
               {
-                title && backgroundList.map((background: string | undefined, index: any) => {
+                title && backgroundList.map((background: any | undefined, index: any) => {
                   return (
                     <div className="hs-carousel-slide" key={index}  >
                       <div className={"flex justify-center h-[480px] "} {...handlers}>
                         <div className="relative top-[20px] 
                         w-full h-[480px]
                         bg-contain
-                         bg-center bg-no-repeat" style={{ backgroundImage: `url(${background})` }}></div>
-                        <img src={background} alt='samplepf' className={`relative top-[20px] hidden`} ref={imageRefList[index]} />
+                         bg-center bg-no-repeat" style={{ backgroundImage: `url(${background.url})` }}></div>
+                        <img src={background.url} alt='samplepf' className={`relative top-[20px] hidden`} ref={imageRefList[index]} />
 
                       </div>
                     </div>

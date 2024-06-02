@@ -27,9 +27,10 @@ import { Cookies } from 'react-cookie';
 
 
 export default function CustomEditor({
-    setEditor
+    setEditor, initialContent
 }: {
     setEditor: React.Dispatch<React.SetStateAction<Editor>>;
+    initialContent?: string;
 }) {
     const fontSizeList = [28, 20, 16, 12, 10];
 
@@ -37,6 +38,8 @@ export default function CustomEditor({
 
     useEffect(() => {
         const editor = new Editor({
+
+            content: initialContent || '',
             element: document.querySelector('#hs-editor-tiptap [data-hs-editor-field]') as HTMLElement,
             
             extensions: [
