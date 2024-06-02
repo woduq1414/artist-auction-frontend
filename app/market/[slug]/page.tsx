@@ -133,8 +133,10 @@ export default function Page({ params }: { params: { slug: string } }) {
           HSStaticMethods.autoInit([
             'carousel'
           ]);
-          HSCarousel.autoInit();
-        }, 500);
+          // HSCarousel.autoInit();
+          // document.querySelectorAll('[data-hs-carousel]').forEach((el) => new HSCarousel(el as HTMLElement));
+ 
+        }, 0);
 
 
       });
@@ -167,7 +169,8 @@ export default function Page({ params }: { params: { slug: string } }) {
           data-hs-carousel='{
     "loadingClasses": "opacity-0"
   }'
-          className="relative"
+          className="relative "
+          
 
         >
           <div className={`relative w-full overflow-x-hidden hs-carousel min-h-[500px] h-[500px] bg-red 
