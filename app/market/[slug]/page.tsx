@@ -127,7 +127,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
 
-
+        console.log(tempTitle, "!!!")
         setTimeout(() => {
           HSStaticMethods.autoInit([
             'carousel'
