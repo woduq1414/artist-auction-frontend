@@ -31,6 +31,9 @@ export default function Page({ params }: { params: { slug: string } }) {
   let carouselPrevRef = useRef<any>(null);
   let carouselNextRef = useRef<any>(null);
 
+
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
   const [isSectionMovingAllowed, setIsSectionMovingAllowed] = useState(true);
 
   const [tempTitle, setTempTitle] = useState("");
@@ -130,9 +133,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         
         setTimeout(() => {
           console.log(tempTitle, "!!!")
-          HSStaticMethods.autoInit([
-            'carousel'
-          ]);
+       
           // HSCarousel.autoInit();
           // document.querySelectorAll('[data-hs-carousel]').forEach((el) => new HSCarousel(el as HTMLElement));
  
@@ -166,22 +167,26 @@ export default function Page({ params }: { params: { slug: string } }) {
       <>
         {/* Slider */}
         <div id="carousel"
-          data-hs-carousel='{
-    "loadingClasses": "opacity-0"
-  }'
+      
           className="relative "
           
 
         >
-          <div className={`relative w-full overflow-x-hidden hs-carousel min-h-[500px] h-[500px] bg-red 
+          <div className={`relative  overflow-x-hidden  min-h-[500px] h-[500px] bg-red 
             ${backgroundList.length == 0 ? 'bg-slate-100 ' : 'bg-white'}
           `}  >
-            <div className="absolute top-0 bottom-0 flex transition-transform duration-700 opacity-0 hs-carousel-body start-0 flex-nowrap">
+            <div className="absolute top-0 bottom-0 flex transition-transform duration-700 start-0 flex-nowrap"
+            style={{
+              transform: `translateX(-${carouselIndex * 100}vw)`
+        
+            }}
+            >
 
               {
                 title && backgroundList.map((background: any | undefined, index: any) => {
                   return (
-                    <div className="hs-carousel-slide" key={index}  >
+                    <div className="w-[100vw]" key={index}  >
+                 
                       <div className={"flex justify-center h-[480px] "} {...handlers}>
                         <div className="relative top-[20px] 
                         w-full h-[480px]
@@ -198,10 +203,13 @@ export default function Page({ params }: { params: { slug: string } }) {
           </div>
           <button
             type="button"
-            className={`hs-carousel-prev hs-carousel:disabled:opacity-50 disabled:pointer-events-none absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10  dark:text-white dark:hover:bg-white/10
+            className={`  absolute inset-y-0 start-0 inline-flex justify-center items-center w-[46px] h-full text-gray-800 hover:bg-gray-800/10  dark:text-white dark:hover:bg-white/10
               ${backgroundList.length == 0 ? 'hidden' : ''}
             `}
             ref={carouselPrevRef}
+            onClick={() => {
+              setCarouselIndex((carouselIndex - 1 + backgroundList.length) % backgroundList.length);
+            }}
           >
             <span className="text-2xl" aria-hidden="true">
               <svg
@@ -227,6 +235,9 @@ export default function Page({ params }: { params: { slug: string } }) {
             ${backgroundList.length == 0 ? 'hidden' : ''}
             `}
             ref={carouselNextRef}
+            onClick={()=>{
+              setCarouselIndex((carouselIndex + 1) % backgroundList.length);
+            }}
           >
             <span className="sr-only">Next</span>
             <span className="text-2xl" aria-hidden="true">
@@ -250,7 +261,15 @@ export default function Page({ params }: { params: { slug: string } }) {
             {
               backgroundList.map((background: string | undefined, index: any) => {
                 return (
-                  <span key={index} className="bg-opacity-50 border-8 border-gray-400 border-opacity-50 rounded-full cursor-pointer hs-carousel-active:bg-black hs-carousel-active:border-black hs-carousel-active:bg-opacity-50 hs-carousel-active:border-opacity-50 size-5 " />
+                  <span key={index} className={`bg-opacity-50 border-8 border-gray-400 border-opacity-50 rounded-full cursor-pointer
+                  ${carouselIndex == index ? ' bg-black border-black bg-opacity-80' : ''
+                  }
+                  
+                  size-5 `}
+                  onClick={() => {
+                    setCarouselIndex(index);
+                  }}
+                  />
 
                 );
               })
