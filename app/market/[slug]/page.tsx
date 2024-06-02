@@ -373,7 +373,9 @@ export default function Page({ params }: { params: { slug: string } }) {
                   <div className="flex flex-row w-full px-[0%] py-8 my-8 bg-gray-50  rounded-2xl  ">
                     <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
                       <img className="w-[125px] rounded-full " src={
+                        artist.profile_image != null ?
                         artist.profile_image.media.path
+                        : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
                       
                       } alt="Image Description" />
                       <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
