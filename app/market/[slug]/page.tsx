@@ -118,7 +118,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       console.log(backgroundList,   "!!")
       import('preline/preline').then((module) => {
 
-        const { HSStaticMethods, HSCarousel } = module;
+        const { HSStaticMethods } = module;
         // type HSSelect = import('preline/preline').HSSelect;
 
 
@@ -132,7 +132,7 @@ export default function Page({ params }: { params: { slug: string } }) {
           HSStaticMethods.autoInit([
             'carousel'
           ]);
-        }, 500);
+        }, 2000);
 
 
       });
