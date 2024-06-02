@@ -82,6 +82,16 @@ image.editor-image {
   max-width: 90%;
   height: auto;
 }
+
+#goodsContent img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  height: auto;
+}
+
+
 /* 
 h1 {
   font-size: 2.25rem;

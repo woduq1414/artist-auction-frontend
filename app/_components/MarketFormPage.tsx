@@ -237,7 +237,7 @@ const MarketFormPage: React.FC<{
                 theme: "light",
 
             });
-            return;
+            return false;
         } else {
 
             submitButtonRef.current.disabled = true;
@@ -429,7 +429,7 @@ const MarketFormPage: React.FC<{
                             theme: "light",
 
                         });
-                       
+
                     }
 
 
@@ -571,7 +571,9 @@ const MarketFormPage: React.FC<{
                                             }}
                                             value={description}
                                         />
-
+                                        {
+                                            errorBuilder(descriptionError)
+                                        }
 
                                     </div>
                                     {/* <div className='h-[14rem]'></div> */}
@@ -1253,10 +1255,12 @@ const MarketFormPage: React.FC<{
                                     onClick={
                                         async (e) => {
 
-                                            onSubmitButtonClicked('preview');
-
-                                            previewModalOpenRef.current.click();
-                                            previewIframeRef.current.contentWindow.location.reload();
+                                            let res = await onSubmitButtonClicked('preview');
+                                            if(res != false){
+                                                previewModalOpenRef.current.click();
+                                                previewIframeRef.current.contentWindow.location.reload();
+                                            }
+                                            
                                         }
                                     }
                                 >

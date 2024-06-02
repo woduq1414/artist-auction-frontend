@@ -356,7 +356,9 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
 
-            <div className="mt-5 text-lg leading-10 whitespace-pre-line" ref={contentRef}>
+            <div className="mt-5 text-lg leading-10 text-left whitespace-pre-line" ref={contentRef} 
+            id="goodsContent"
+            >
               {
                 content ? <div dangerouslySetInnerHTML={
                   { __html: content }
