@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
 import { useEffect, useState } from "react";
 
-import { MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
+import { MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon, TrashIcon } from "@heroicons/react/24/solid";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get, set } from "lodash";
@@ -184,7 +184,7 @@ export default function MyPage() {
 
 
                                                             </div>
-                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
+                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-2">
                                                                 <div className={`p-3 rounded-full cursor-pointer bg-primary
                                                                 ${item.status != 'draft' ? 'hidden' : ''}
                                                                 
@@ -196,6 +196,36 @@ export default function MyPage() {
                                                                     }>
 
                                                                     <PencilSquareIcon className="w-4 h-4 text-white" />
+                                                                </div>
+
+                                                            </div>
+                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
+                                                                <div className={`p-3 rounded-full cursor-pointer bg-gray-200 
+                                                                ${item.status != 'draft' ? 'hidden' : ''}
+                                                                
+                                                                `}
+
+                                                                onClick={
+                                                                        async (e) => {
+                                                                            const cfm = confirm(`[${item.title}] 상품의 임시저장본을 삭제하시겠습니까?`);
+
+                                                                            if (cfm) {
+                                                                                const res = await fetch(Config().baseUrl + '/artist/goods/' + item.id, {
+                                                                                    method: 'DELETE',
+                                                                                    headers: {
+                                                                                        'Accept': 'application/json',
+                                                                                        "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                                                    },
+                                                                                })
+                                                                                console.log(res);
+                                                                                if (res.status === 200) {
+                                                                                    window.location.reload();
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }>
+
+                                                                    <TrashIcon className="w-4 h-4 text-gray-500" />
                                                                 </div>
 
                                                             </div>
