@@ -24,7 +24,7 @@ import MarketFormPage from '@/app/_components/MarketFormPage';
 const NewMarketPage = () => {
 
     return (
-        <MarketFormPage/>
+        <MarketFormPage isEdit={false}/>
     )
 
 }

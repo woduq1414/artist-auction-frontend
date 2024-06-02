@@ -36,7 +36,7 @@ const MarketFormPage: React.FC<{
         }
         return new File([u8arr], filename, { type: mime });
     }
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(3);
 
     const stepList = [
         "기본 정보 입력",
@@ -79,7 +79,13 @@ const MarketFormPage: React.FC<{
     let exampleImageUploaderRef = useRef<any>(null);
 
     let submitButtonRef = useRef<any>(null);
+    let saveButtonRef = useRef<any>(null);
+    let previewButtonRef = useRef<any>(null);
 
+    let previewModalOpenRef = useRef<any>(null);
+
+    const [isEdit, setIsEdit] = useState<boolean>(props.isEdit || false);
+    const [goodsId, setGoodsId] = useState<string | undefined>(props.id || undefined);
 
 
 
@@ -184,7 +190,7 @@ const MarketFormPage: React.FC<{
                 document.getElementById('secondCategoryButton')?.classList.remove('hidden');
                 document.getElementById('secondCategoryExtra')?.classList.remove('hidden');
 
-                if (props.isEdit == true) {
+                if (isEdit == true) {
                     const element2 = document.querySelector(`div.second-category-option[data-value="${secondCategory}"]`) as HTMLDivElement;
                     console.log(element2, secondCategory);
                     element2?.click();
@@ -213,7 +219,7 @@ const MarketFormPage: React.FC<{
     const router = useRouter();
 
 
-    async function onSubmitButtonClicked(type : string) {
+    async function onSubmitButtonClicked(type: string) {
         // e.preventDefault();
         // console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
         if (mainImageList.length < 1 || exampleImageList.length < 1) {
@@ -232,6 +238,8 @@ const MarketFormPage: React.FC<{
         } else {
 
             submitButtonRef.current.disabled = true;
+            previewButtonRef.current.disabled = true;
+            saveButtonRef.current.disabled = true;
             console.log({
                 title: title,
                 description: description,
@@ -244,15 +252,133 @@ const MarketFormPage: React.FC<{
             })
 
             // let endDateTime = new Date(endDate);
-            if (props.isEdit == false) {
+            if (isEdit == false) {
+
+                if (type == 'submit') {
+                    let res = await fetch(Config().baseUrl + '/artist/goods', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            "Authorization": "Bearer " + new Cookies().get('accessToken')
+                        },
+                        body: JSON.stringify({
+                            title: title,
+                            description: description,
+                            category: secondCategory,
+                            price: price,
+                            duration: duration,
+                            main_image: mainImageList[0].id,
+                            example_image_list: exampleImageList.map((image) => image.id),
+                            content: editor?.getHTML(),
+                            type: 'submit'
+                        })
+                    })
+
+                    console.log(res);
+
+                    submitButtonRef.current.disabled = false;
+                    previewButtonRef.current.disabled = false;
+                    saveButtonRef.current.disabled = false;
+
+                    if (res.status === 201) {
+                        toast.success('상품 등록에 성공하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+
+                        });
+                        setStep(step + 1);
+                    } else {
+                        toast.error('상품 등록에 실패하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+
+                        });
+                        return;
+                    }
+                    return;
+                } else {
+                    let res = await fetch(Config().baseUrl + '/artist/goods', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            "Authorization": "Bearer " + new Cookies().get('accessToken')
+                        },
+                        body: JSON.stringify({
+                            title: title,
+                            description: description,
+                            category: secondCategory,
+                            price: price,
+                            duration: duration,
+                            main_image: mainImageList[0].id,
+                            example_image_list: exampleImageList.map((image) => image.id),
+                            content: editor?.getHTML(),
+                            type: "save"
+                        })
+                    })
+
+                    console.log(res);
+
+                    submitButtonRef.current.disabled = false;
+                    previewButtonRef.current.disabled = false;
+                    saveButtonRef.current.disabled = false;
+
+                    if (res.status === 201) {
+                        toast.success('상품 저장에 성공하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+
+                        });
+                        setGoodsId((await res.json()).data.id);
+                        setIsEdit(true);
+                        // setStep(step + 1);
+                    } else {
+                        toast.error('상품 저장에 실패하였습니다.', {
+                            position: "top-right",
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+
+                        });
+                        return;
+                    }
+                    return;
+                }
+
+
+            } else {
                 let res = await fetch(Config().baseUrl + '/artist/goods', {
-                    method: 'POST',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         "Authorization": "Bearer " + new Cookies().get('accessToken')
                     },
                     body: JSON.stringify({
+                        id: goodsId,
                         title: title,
                         description: description,
                         category: secondCategory,
@@ -260,19 +386,19 @@ const MarketFormPage: React.FC<{
                         duration: duration,
                         main_image: mainImageList[0].id,
                         example_image_list: exampleImageList.map((image) => image.id),
-                        content: editor?.getHTML()
+                        content: editor?.getHTML(),
+                        type: type == 'submit' ? 'submit' : 'save'
                     })
                 })
 
                 console.log(res);
 
                 submitButtonRef.current.disabled = false;
+                previewButtonRef.current.disabled = false;
+                saveButtonRef.current.disabled = false;
 
-                if (res.status === 201) {
-
-                    setStep(step + 1);
-                } else {
-                    toast.error('상품 등록에 실패하였습니다.', {
+                if (res.status === 200) {
+                    toast.success('상품 저장에 성공하였습니다.', {
                         position: "top-right",
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -283,38 +409,9 @@ const MarketFormPage: React.FC<{
                         theme: "light",
 
                     });
-                    return;
-                }
-                return;
-            } else {
-                let res = await fetch(Config().baseUrl + '/artist/goods/' + props.id, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        "Authorization": "Bearer " + new Cookies().get('accessToken')
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        description: description,
-                        category: secondCategory,
-                        price: price,
-                        duration: duration,
-                        main_image: mainImageList[0].id,
-                        example_image_list: exampleImageList.map((image) => image.id),
-                        content: editor?.getHTML()
-                    })
-                })
-
-                console.log(res);
-
-                submitButtonRef.current.disabled = false;
-
-                if (res.status === 200) {
-
-                    setStep(step + 1);
+                    // setStep(step + 1);
                 } else {
-                    toast.error('상품 등록에 실패하였습니다.', {
+                    toast.error('상품 저장에 실패하였습니다.', {
                         position: "top-right",
                         autoClose: 3000,
                         hideProgressBar: false,
@@ -874,6 +971,8 @@ const MarketFormPage: React.FC<{
                                                         formData.append('files', newFileList[i]);
                                                     }
                                                     submitButtonRef.current.disabled = true;
+                                                    previewButtonRef.current.disabled = true;
+                                                    saveButtonRef.current.disabled = true;
 
                                                     let res = await fetch(Config().baseUrl + '/image/', {
                                                         method: 'POST',
@@ -882,8 +981,9 @@ const MarketFormPage: React.FC<{
                                                         },
                                                         body: formData
                                                     })
-
                                                     submitButtonRef.current.disabled = false;
+                                                    previewButtonRef.current.disabled = false;
+                                                    saveButtonRef.current.disabled = false;
 
                                                     console.log(res);
 
@@ -1116,24 +1216,65 @@ const MarketFormPage: React.FC<{
                                     <path d="m9 18 6-6-6-6" />
                                 </svg>
                             </button>
-                            <button
-                                type="button"
-                                className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                            <div className={`flex flex-row gap-3
+                              ${step === 3 ? '' : 'hidden'}
+                            `}>
+                                <button
+                                    type="button"
+                                    className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-gray-500 border border-transparent rounded-lg bg-gray-200 gap-x-1 disabled:opacity-50 disabled:pointer-events-none
                                 ${step === 3 ? '' : 'hidden'}
                                 `}
-                                ref={submitButtonRef}
+                                    ref={previewButtonRef}
 
 
-                                onClick={
-                                    async (e) => {
+                                    onClick={
+                                        async (e) => {
 
-                                        onSubmitButtonClicked('submit');
+                                            onSubmitButtonClicked('preview');
 
+                                            previewModalOpenRef.current.click();
+                                        }
                                     }
-                                }
-                            >
-                                제출
-                            </button>
+                                >
+                                    미리보기
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? '' : 'hidden'}
+                                `}
+                                    ref={saveButtonRef}
+
+
+                                    onClick={
+                                        async (e) => {
+
+                                            onSubmitButtonClicked('save');
+
+                                        }
+                                    }
+                                >
+                                    임시저장
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+                                ${step === 3 ? '' : 'hidden'}
+                                `}
+                                    ref={submitButtonRef}
+
+
+                                    onClick={
+                                        async (e) => {
+
+                                            onSubmitButtonClicked('submit');
+
+                                        }
+                                    }
+                                >
+                                    제출
+                                </button>
+                            </div>
                             <button
                                 type="reset"
                                 className="inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none"
@@ -1234,6 +1375,8 @@ const MarketFormPage: React.FC<{
                                         formData.append("files", blob);
 
                                         submitButtonRef.current.disabled = true;
+                                        previewButtonRef.current.disabled = true;
+                                        saveButtonRef.current.disabled = true;
 
                                         let res = await fetch(Config().baseUrl + '/image/', {
                                             method: 'POST',
@@ -1243,6 +1386,8 @@ const MarketFormPage: React.FC<{
                                             body: formData
                                         })
                                         submitButtonRef.current.disabled = false;
+                                        previewButtonRef.current.disabled = false;
+                                        saveButtonRef.current.disabled = false;
                                         console.log(res);
 
                                         if (res.status !== 200) return;
@@ -1266,7 +1411,78 @@ const MarketFormPage: React.FC<{
                     </div>
                 </div>
             </div>
+
+            <>
+                <button
+                    type="button"
+                    className="items-center hidden px-4 py-3 text-sm font-semibold text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                    data-hs-overlay="#hs-full-screen-modal"
+                    ref={previewModalOpenRef}
+                >
+                    Full screen
+                </button>
+                <div
+                    id="hs-full-screen-modal"
+                    className="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80000] overflow-x-hidden overflow-y-auto pointer-events-none"
+                >
+                    <div className="h-full max-w-full max-h-full mt-10 transition-all opacity-0 hs-overlay-open:mt-0 hs-overlay-open:opacity-100 hs-overlay-open:duration-500">
+                        <div className="flex flex-col h-full max-w-full max-h-full bg-white pointer-events-auto dark:bg-neutral-800">
+                            <div className="flex items-center justify-between px-4 py-3 border-b dark:border-neutral-700">
+                                <h3 className="font-bold text-gray-800 dark:text-white">
+                                    미리보기
+                                </h3>
+                                <button
+                                    type="button"
+                                    className="flex items-center justify-center text-sm font-semibold text-gray-800 border border-transparent rounded-full size-7 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-700"
+                                    data-hs-overlay="#hs-full-screen-modal"
+                                >
+                                    <span className="sr-only">Close</span>
+                                    <svg
+                                        className="flex-shrink-0 size-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={24}
+                                        height={24}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div className="p-4 overflow-y-auto">
+                                {
+                                    goodsId &&
+                                    <iframe
+                                        className="w-full h-[calc(100vh-5rem)]"
+                                        src={`${Config().frontUrl
+                                            }/market/${goodsId
+                                            }`}
+                                        frameBorder={0}
+                                        title="Preview"
+                                    />}
+                            </div>
+                            <div className="flex items-center justify-end px-4 py-3 mt-auto border-t gap-x-2 dark:border-neutral-700">
+                                <button
+                                    type="button"
+                                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                                    data-hs-overlay="#hs-full-screen-modal"
+                                >
+                                    닫기
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+
         </main>
+
     );
 };
 

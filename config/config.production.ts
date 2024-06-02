@@ -4,12 +4,15 @@ import getConfigs from "./config.common";
 const baseUrl = 'https://api.artistauction.kro.kr/api/v1';
 const cookieDomain = '.artistauction.kro.kr';
 const mode = 'production';
+
+const frontUrl = 'https://artistauction.kro.kr';
  
 // 환경마다 달라져야 할 값들을 getConfig 함수에 전달합니다.
 const configProduction = getConfigs({
   baseUrl,
   cookieDomain,
   mode,
+  frontUrl
 });
  
 export default configProduction;

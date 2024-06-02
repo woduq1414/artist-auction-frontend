@@ -1,7 +1,7 @@
 'use client'
 
 import './globals.css'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import { useEffect, useState, useRef } from 'react';
@@ -47,15 +47,24 @@ export default function RootLayout({
 
   const [isNavExist, setIsNavExist] = useState(false);
 
-  const pathname = usePathname();
+  const [isNavReact, setIsNavReact] = useState(true);
 
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   useEffect(() => {
+
 
     if (pathname.startsWith("/auth")) {
       setIsNavExist(false);
     } else {
       setIsNavExist(true);
     }
+    if (searchParams.get('nav') === 'false') {
+      setIsNavReact(false);
+    }
+
+
+
   }
     , [pathname])
 
@@ -109,7 +118,10 @@ export default function RootLayout({
         ${!isNavExist ? 'hidden' : ''}
         `}>
           <div className="flex items-center w-[250px] ml-6 md:ml-0">
-            <Link href="/">
+            <Link href={
+              isNavReact ? "/" : "#"
+
+            }>
               <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
             </Link>
           </div>
@@ -122,14 +134,19 @@ export default function RootLayout({
             <Link className={`text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="#">
               Info
             </Link> */}
-            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/">
+            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href={
+              isNavReact ? "/" : "#"}>
               구인
             </Link>
-            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href="/market">
+            <Link className={`mr-6 text-lg font-semibold ${isWhiteNav ? "text-black" : "text-white"}`} href={
+              isNavReact ? "/market" : "#"
+            }>
               구직
             </Link>
 
-            <Link className={``} href="/auth">
+            <Link className={``} href={
+              isNavReact ? "/auth" : "#"
+            }>
               <button type="button" className={`text-lg ${isWhiteNav ? "text-black hover:bg-gray-100" : "text-white hover:bg-gray-600 hover:bg-opacity-20 "} border border-gray-300 focus:outline-none focus:ring-4 font-bold rounded-sm px-4 py-2.5 
               ${isLogin ? 'hidden' : ''}
               `}>
@@ -178,7 +195,9 @@ export default function RootLayout({
               >
                 <a
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
-                  href="/my"
+                  href={
+                    isNavReact ? "/my" : "#"
+                  }
                 >
                   내 정보
                 </a>
@@ -186,6 +205,9 @@ export default function RootLayout({
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href="#"
                   onClick={() => {
+                    if (!isNavReact) {
+                      return;
+                    }
                     const cookies = new Cookies();
                     cookies.remove('accessToken', {
                       path: '/',
@@ -222,6 +244,9 @@ export default function RootLayout({
         `}
           ref={modalBackgroundRef}
           onClick={(e) => {
+            if (!isNavReact) {
+              return;
+            }
             if (e.target === modalBackgroundRef.current) {
               toggleMenu();
             }

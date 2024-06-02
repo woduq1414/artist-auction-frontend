@@ -5,6 +5,7 @@ export declare namespace ICommonConfig {
       baseUrl: string;
       cookieDomain: string;
       mode: Mode;
+      frontUrl: string;
 
     }
   }  
@@ -16,13 +17,14 @@ export declare namespace ICommonConfig {
       baseUrl,
       cookieDomain,
       mode,
+      frontUrl
     } = params;
    
     // 공통으로 반환되는 구조
     return {
       baseUrl,
       cookieDomain,
-      mode,
+      mode,frontUrl,
    
       api: {
         // ...
