@@ -36,7 +36,7 @@ const MarketFormPage: React.FC<{
         }
         return new File([u8arr], filename, { type: mime });
     }
-    const [step, setStep] = useState(3);
+    const [step, setStep] = useState(1);
 
     const stepList = [
         "기본 정보 입력",

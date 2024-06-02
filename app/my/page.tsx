@@ -363,7 +363,7 @@ export default function MyPage() {
                                         formData.append("files", blob);
 
 
-                                        let res = await fetch(Config().baseUrl + '/image', {
+                                        let res = await fetch(Config().baseUrl + '/image/', {
                                             method: 'POST',
                                             headers: {
                                                 "Authorization": "Bearer " + new Cookies().get('accessToken')
