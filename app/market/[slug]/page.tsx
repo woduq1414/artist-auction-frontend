@@ -128,9 +128,11 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
 
-        HSStaticMethods.autoInit([
-          'carousel'
-        ]);
+        setTimeout(() => {
+          HSStaticMethods.autoInit([
+            'carousel'
+          ]);
+        }, 500);
 
 
       });
