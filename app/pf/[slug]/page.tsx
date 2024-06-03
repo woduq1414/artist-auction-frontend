@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCategory } from "../_store/useCategory";
+import { useCategory } from "../../_store/useCategory";
 import { useEffect, useState } from "react";
 
 import { ArrowRightIcon, MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon, TrashIcon } from "@heroicons/react/24/solid";
@@ -11,8 +11,8 @@ import Config from "@/config/config.export";
 import { get, set } from "lodash";
 import Skeleton from "react-loading-skeleton";
 import React from "react";
-import { dateDiffToKor } from "../_common/date";
-import { useAuth } from "../_store/useAuth";
+import { dateDiffToKor } from "../../_common/date";
+import { useAuth } from "../../_store/useAuth";
 import { Cookies } from "react-cookie";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -20,7 +20,7 @@ import "cropperjs/dist/cropper.css";
 
 
 
-export default function MyPage() {
+export default function Page({ params }: { params: { slug: string } }) {
 
     // const data = await Data();
     // console.log(data);
@@ -53,7 +53,14 @@ export default function MyPage() {
     }
 
     useEffect(() => {
-        getMyGoodsList();
+        import('preline/preline').then((module) => {
+            // alert(props.cat  egory)
+       
+            const { HSStaticMethods, HSSelect, HSOverlay } = module;
+            HSStaticMethods.autoInit(['tabs']);
+
+
+        })
     }, []);
 
     const router = useRouter();
@@ -143,144 +150,97 @@ export default function MyPage() {
 
 
                         <button type="button" className="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
-                        
-                        onClick={()=>{
-                            router.push(`/pf/${
-                                id
-                            }`)
-                        
-                        }}
+
+                            onClick={() => {
+
+                            }}
                         >
-                            포트폴리오로 이동 
-                            <ArrowRightIcon className="w-4 h-4" />
+                            프로필 수정
+                            <PencilSquareIcon className="w-4 h-4" />
                         </button>
 
                     </div>
                     <div className="w-full px-6 py-8">
-                        <div className="my-3 text-2xl font-semibold">
-                            내 상품
-                        </div>
-
-                        <div className="w-full">
-                            {
-                                goodsList === undefined ?
-                                    <Skeleton height={200} />
-                                    :
-                                    goodsList.length === 0 ?
-                                        <div className="py-20 text-center bg-gray-100 font-xl">
-                                            아직 등록된 상품이 없습니다. 상품을 등록해보세요!
-                                        </div>
-                                        :
-                                        <div className="flex flex-col ">
-                                            {
-                                                goodsList.map((item: any) => {
-                                                    return (
-                                                        <div key={item.id} className={`flex flex-row items-center w-full border-b border-gray-200
-                                                        ${item.status === 'draft' ? 'bg-gray-100' : ''
-                                                            }
-                                                        `}>
-                                                            <div className="flex-shrink-0 text-lg font-semibold">
-                                                                <img src={
-                                                                    item.image.media.link
-                                                                } className={`h-[100px] my-3 ring-gray-200 ring-1`}
-                                                                    height={100}
-                                                                />
-                                                            </div>
-                                                            <div className="flex flex-col items-start justify-center flex-grow gap-3 ml-5">
-                                                                <div className="text-2xl font-semibold">
-                                                                    <Link href={
-                                                                        `/market/${item.id}`
-
-                                                                    }>
-                                                                        {item.title}
-                                                                    </Link></div>
-                                                                <div className="text-sm text-gray-500">{new Date(Date.parse(item.created_at)).toISOString().substring(0, 10)} 등록</div>
-
-
-                                                            </div>
-                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-2">
-                                                                <div className={`p-3 rounded-full cursor-pointer bg-primary
-                                                                ${item.status != 'draft' ? 'hidden' : ''}
-                                                                
-                                                                `}
-                                                                    onClick={
-                                                                        (e) => {
-                                                                            router.push(`/market/${item.id}/edit`)
-                                                                        }
-                                                                    }>
-
-                                                                    <PencilSquareIcon className="w-4 h-4 text-white" />
-                                                                </div>
-
-                                                            </div>
-                                                            <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
-                                                                <div className={`p-3 rounded-full cursor-pointer bg-gray-200 
-                                                                ${item.status != 'draft' ? 'hidden' : ''}
-                                                                
-                                                                `}
-
-                                                                    onClick={
-                                                                        async (e) => {
-                                                                            const cfm = confirm(`[${item.title}] 상품의 임시저장본을 삭제하시겠습니까?`);
-
-                                                                            if (cfm) {
-                                                                                const res = await fetch(Config().baseUrl + '/artist/goods/' + item.id, {
-                                                                                    method: 'DELETE',
-                                                                                    headers: {
-                                                                                        'Accept': 'application/json',
-                                                                                        "Authorization": "Bearer " + new Cookies().get('accessToken')
-                                                                                    },
-                                                                                })
-                                                                                console.log(res);
-                                                                                if (res.status === 200) {
-                                                                                    window.location.reload();
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }>
-
-                                                                    <TrashIcon className="w-4 h-4 text-gray-500" />
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    )
-
-                                                })
-                                            }
-                                        </div>
-                            }
-                            <div className="flex flex-row justify-end w-full mt-4">
-                                <button
-                                    type="button"
-                                    className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
-                           
-                                `}
-                                    onClick={
-                                        (e) => {
-
-                                            router.push('/market/new')
-                                        }
-                                    }
-                                >
-                                    새 상품 등록
-                                    <svg
-                                        className="flex-shrink-0 size-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width={24}
-                                        height={24}
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth={2}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
+                        <>
+                            <div className="border-b border-gray-200 dark:border-neutral-700">
+                                <nav className="flex space-x-1" aria-label="Tabs" role="tablist">
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500 active"
+                                        id="tabs-with-underline-item-1"
+                                        data-hs-tab="#tabs-with-underline-1"
+                                        aria-controls="tabs-with-underline-1"
+                                        role="tab"
                                     >
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
-                                </button>
+                                        Tab 1
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
+                                        id="tabs-with-underline-item-2"
+                                        data-hs-tab="#tabs-with-underline-2"
+                                        aria-controls="tabs-with-underline-2"
+                                        role="tab"
+                                    >
+                                        Tab 2
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
+                                        id="tabs-with-underline-item-3"
+                                        data-hs-tab="#tabs-with-underline-3"
+                                        aria-controls="tabs-with-underline-3"
+                                        role="tab"
+                                    >
+                                        Tab 3
+                                    </button>
+                                </nav>
                             </div>
-                        </div>
+                            <div className="mt-3">
+                                <div
+                                    id="tabs-with-underline-1"
+                                    role="tabpanel"
+                                    aria-labelledby="tabs-with-underline-item-1"
+                                >
+                                    <p className="text-gray-500 dark:text-neutral-400">
+                                        This is the{" "}
+                                        <em className="font-semibold text-gray-800 dark:text-neutral-200">
+                                            first
+                                        </em>{" "}
+                                        item's tab body.
+                                    </p>
+                                </div>
+                                <div
+                                    id="tabs-with-underline-2"
+                                    className="hidden"
+                                    role="tabpanel"
+                                    aria-labelledby="tabs-with-underline-item-2"
+                                >
+                                    <p className="text-gray-500 dark:text-neutral-400">
+                                        This is the{" "}
+                                        <em className="font-semibold text-gray-800 dark:text-neutral-200">
+                                            second
+                                        </em>{" "}
+                                        item's tab body.
+                                    </p>
+                                </div>
+                                <div
+                                    id="tabs-with-underline-3"
+                                    className="hidden"
+                                    role="tabpanel"
+                                    aria-labelledby="tabs-with-underline-item-3"
+                                >
+                                    <p className="text-gray-500 dark:text-neutral-400">
+                                        This is the{" "}
+                                        <em className="font-semibold text-gray-800 dark:text-neutral-200">
+                                            third
+                                        </em>{" "}
+                                        item's tab body.
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+
                     </div>
                 </div>
             </div>
