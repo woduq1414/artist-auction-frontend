@@ -151,7 +151,7 @@ const AuthPage: React.FC = () => {
                     />
 
                     <input
-                        type="text"
+                        type="password"
                         id="passwordInput"
                         className={`block w-full max-w-lg px-4 py-3 mb-3 border border-gray-200 rouded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none 
                         ${isEmailMode ? '' : 'hidden'}

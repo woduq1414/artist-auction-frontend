@@ -163,37 +163,28 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <div className="w-full px-6 py-8">
                         <>
                             <div className="border-b border-gray-200 dark:border-neutral-700">
-                                <nav className="flex space-x-1" aria-label="Tabs" role="tablist">
+                                <nav className="flex space-x-5" aria-label="Tabs" role="tablist">
                                     <button
                                         type="button"
-                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500 active"
+                                        className="inline-flex items-center px-1 py-2 text-gray-500 border-b-2 border-transparent text-md hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500 active"
                                         id="tabs-with-underline-item-1"
                                         data-hs-tab="#tabs-with-underline-1"
                                         aria-controls="tabs-with-underline-1"
                                         role="tab"
                                     >
-                                        Tab 1
+                                        소개
                                     </button>
                                     <button
                                         type="button"
-                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
+                                        className="inline-flex items-center px-1 py-2 text-gray-500 border-b-2 border-transparent text-md hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
                                         id="tabs-with-underline-item-2"
                                         data-hs-tab="#tabs-with-underline-2"
                                         aria-controls="tabs-with-underline-2"
                                         role="tab"
                                     >
-                                        Tab 2
+                                        포트폴리오
                                     </button>
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center px-1 py-4 text-sm text-gray-500 border-b-2 border-transparent hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 gap-x-2 whitespace-nowrap hover:text-blue-600 focus:outline-none focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
-                                        id="tabs-with-underline-item-3"
-                                        data-hs-tab="#tabs-with-underline-3"
-                                        aria-controls="tabs-with-underline-3"
-                                        role="tab"
-                                    >
-                                        Tab 3
-                                    </button>
+                               
                                 </nav>
                             </div>
                             <div className="mt-3">

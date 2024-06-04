@@ -63,7 +63,7 @@ const RegisterPage: React.FC = () => {
     const [emailError, setEmailError] = useState<any>('');
 
 
-    const [password, setPassword] = useState<string>('');
+    const [password, setPassword] = useState<any>(null);
 
     const [passwordError, setPasswordError] = useState<any>('');
 
@@ -77,6 +77,8 @@ const RegisterPage: React.FC = () => {
     const [subCategoryList, setSubCategoryList] = useState<any[]>([]);
     const [preSubCategoryList, setPreSubCategoryList] = useState<any[]>([]);
     const [secondCategory, setSecondCategory] = useState<any>(null);
+
+    
 
     const [title, setTitle] = useState<string>('');
 
@@ -101,6 +103,9 @@ const RegisterPage: React.FC = () => {
 
     let mainImageUploaderRef = useRef<any>(null);
     let exampleImageUploaderRef = useRef<any>(null);
+
+
+    let thirdStepperContentRef = useRef<any>(null);
 
     const cookies = new Cookies();
     const socialLoginInfo = cookies.get('socialLoginInfo',)
@@ -129,6 +134,10 @@ const RegisterPage: React.FC = () => {
 
                 setSocialLoginType(userInfo.loginType);
                 setSocialLoginId(userInfo.accessToken);
+
+                if (userInfo.loginType != 'password') {
+                    setPassword(null);
+                }
             } catch (e) {
                 console.log(e);
             }
@@ -250,6 +259,8 @@ const RegisterPage: React.FC = () => {
                 document.getElementById('secondCategoryExtra')?.classList.remove('hidden');
 
                 select.open();
+
+                thirdStepperContentRef.current.scrollTop = thirdStepperContentRef.current.scrollHeight;
 
             }
         });
@@ -451,12 +462,14 @@ const RegisterPage: React.FC = () => {
                         </ul>
                         {/* End Stepper Nav */}
                         {/* Stepper Content */}
-                        <div className="flex-grow mt-2 overflow-y-auto">
+                        <div className="flex-grow mt-2 overflow-y-auto"     ref={thirdStepperContentRef}>
 
                             <div
                                 className={`${step === 1 ? 'block' : 'hidden'}`}
                             >
-                                <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
+                                <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6"
+                                
+                                >
 
                                     <div className='flex flex-col gap-2'>
                                         <label
@@ -585,7 +598,10 @@ const RegisterPage: React.FC = () => {
                             <div
                                 className={`${step === 3 ? 'block' : 'hidden'}`}
                             >
-                                <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6">
+                                <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6"
+                            
+                                
+                                >
                                     <div className='flex flex-col gap-2'>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
@@ -1118,6 +1134,7 @@ const RegisterPage: React.FC = () => {
 
                                             submitButtonRef.current.disabled = true;
 
+                                            
                                             let res = await fetch(Config().baseUrl + '/auth/artist', {
                                                 method: 'POST',
                                                 headers: {
