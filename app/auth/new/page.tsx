@@ -1155,7 +1155,7 @@ const RegisterPage: React.FC = () => {
                                                 })
                                             })
 
-                                            submitButtonRef.current.disabled = false;
+                                       
 
                                             console.log(res);
 
@@ -1171,6 +1171,7 @@ const RegisterPage: React.FC = () => {
                                                 window.location.href = '/';
 
                                             } else {
+                                                submitButtonRef.current.disabled = false;
                                                 toast.error('회원가입에 실패했습니다.', {
                                                     position: "top-right",
                                                     autoClose: 3000,
