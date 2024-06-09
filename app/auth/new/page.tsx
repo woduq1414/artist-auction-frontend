@@ -78,7 +78,7 @@ const RegisterPage: React.FC = () => {
     const [preSubCategoryList, setPreSubCategoryList] = useState<any[]>([]);
     const [secondCategory, setSecondCategory] = useState<any>(null);
 
-    
+
 
     const [title, setTitle] = useState<string>('');
 
@@ -462,13 +462,13 @@ const RegisterPage: React.FC = () => {
                         </ul>
                         {/* End Stepper Nav */}
                         {/* Stepper Content */}
-                        <div className="flex-grow mt-2 overflow-y-auto"     ref={thirdStepperContentRef}>
+                        <div className="flex-grow mt-2 overflow-y-auto" ref={thirdStepperContentRef}>
 
                             <div
                                 className={`${step === 1 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6"
-                                
+
                                 >
 
                                     <div className='flex flex-col gap-2'>
@@ -599,8 +599,8 @@ const RegisterPage: React.FC = () => {
                                 className={`${step === 3 ? 'block' : 'hidden'}`}
                             >
                                 <div className="w-[700px] max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6"
-                            
-                                
+
+
                                 >
                                     <div className='flex flex-col gap-2'>
                                         <label
@@ -670,7 +670,9 @@ const RegisterPage: React.FC = () => {
                                     }
 
 
-                                    <div className='flex flex-col gap-2'>
+                                    <div className={`flex flex-col gap-2
+                                        
+                                        `}>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
                                             className="block text-lg font-semibold "
@@ -681,7 +683,8 @@ const RegisterPage: React.FC = () => {
                                             type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            placeholder="본인 이름을 입력해주세요."
+                                            placeholder={selectedUserType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
+                                            }
                                             aria-describedby="hs-inline-input-helper-text"
                                             onChange={(e) => setName(e.target.value)}
                                         />
@@ -710,7 +713,10 @@ const RegisterPage: React.FC = () => {
 
                                     </div>
 
-                                    <div className='flex flex-col gap-2'>
+                                    <div className={`flex flex-col gap-2
+                                        ${selectedUserType !== 'artist' ? 'hidden' : ''
+                                        }
+                                        `}>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
                                             className="block text-lg font-semibold "
@@ -838,7 +844,10 @@ const RegisterPage: React.FC = () => {
                                         }
 
                                     </div>
-                                    <div className='flex flex-col gap-2'>
+                                    <div className={`flex flex-col gap-2
+                                          ${selectedUserType !== 'artist' ? 'hidden' : ''
+                                        }
+                                        `}>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
                                             className="block text-lg font-semibold "
@@ -868,7 +877,7 @@ const RegisterPage: React.FC = () => {
 
                                     </div>
                                     {/* <div className='h-[14rem]'></div> */}
-                                    <div className='flex flex-col gap-2'>
+                                    <div className='flex-col hidden gap-2'>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
                                             className="block text-lg font-semibold dark:text-white"
@@ -1055,7 +1064,7 @@ const RegisterPage: React.FC = () => {
                                 onClick={
                                     async (e) => {
 
-                                        if(emailError && emailError.type === 'error'){
+                                        if (emailError && emailError.type === 'error') {
                                             toast.error('이메일을 확인해주세요.', {
                                                 position: "top-right",
                                                 autoClose: 3000,
@@ -1069,7 +1078,7 @@ const RegisterPage: React.FC = () => {
                                             });
                                             return;
                                         }
-                                        if(nicknameError && nicknameError.type === 'error'){
+                                        if (nicknameError && nicknameError.type === 'error') {
                                             toast.error('닉네임을 확인해주세요.', {
                                                 position: "top-right",
                                                 autoClose: 3000,
@@ -1083,7 +1092,7 @@ const RegisterPage: React.FC = () => {
                                             });
                                             return;
                                         }
-                                        if(birthDateError && birthDateError.type === 'error'){
+                                        if (selectedUserType == 'artist' && birthDateError && birthDateError.type === 'error') {
                                             toast.error('생년월일을 확인해주세요.', {
                                                 position: "top-right",
                                                 autoClose: 3000,
@@ -1111,31 +1120,53 @@ const RegisterPage: React.FC = () => {
                                             });
                                             return;
                                         }
-                                        
+
                                         // e.preventDefault();
-                                        console.log(email, password, name, nickname, birthYear, birthMonth, birthDay, gender, firstCategory, secondCategory);
-                                        if (email === '' || name === '' || nickname === '' || birthYear === '' || birthMonth === '' || birthDay === '' || gender === '' || firstCategory === null || secondCategory === null || (
-                                            socialLoginType === 'password' && password === ''
+                                        if (selectedUserType === 'artist') {
+                                            if (email === '' || name === '' || nickname === '' || birthYear === '' || birthMonth === '' || birthDay === '' || gender === '' || (
+                                                socialLoginType === 'password' && password === ''
 
-                                        )) {
-                                            toast.error('입력하지 않은 정보가 있습니다.', {
-                                                position: "top-right",
-                                                autoClose: 3000,
-                                                hideProgressBar: false,
-                                                closeOnClick: true,
-                                                pauseOnHover: true,
-                                                draggable: true,
-                                                progress: undefined,
-                                                theme: "light",
+                                            )) {
+                                                toast.error('입력하지 않은 정보가 있습니다.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
 
-                                            });
-                                            return;
+                                                });
+                                                return;
+                                            }
                                         } else {
+                                            if (email === '' || nickname === '' || name == '' || (
+                                                socialLoginType === 'password' && password === ''
 
-                                            submitButtonRef.current.disabled = true;
+                                            )) {
+                                                toast.error('입력하지 않은 정보가 있습니다.', {
+                                                    position: "top-right",
+                                                    autoClose: 3000,
+                                                    hideProgressBar: false,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    progress: undefined,
+                                                    theme: "light",
 
-                                            
-                                            let res = await fetch(Config().baseUrl + '/auth/artist', {
+                                                });
+                                                return;
+                                            }
+                                        }
+
+
+                                        submitButtonRef.current.disabled = true;
+
+                                        let res;
+
+                                        if (selectedUserType === 'artist') {
+                                            res = await fetch(Config().baseUrl + '/auth/artist', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json',
@@ -1148,43 +1179,63 @@ const RegisterPage: React.FC = () => {
                                                     'nickname': nickname,
                                                     'birthdate': Date.parse(birthYear + '-' + birthMonth + '-' + birthDay),
                                                     'gender': gender,
-                                                    'favorite_category': secondCategory,
+                                                    // 'favorite_category': secondCategory,
                                                     'login_type': socialLoginType,
                                                     'social_id': socialLoginId,
                                                     'account_type': selectedUserType
                                                 })
                                             })
 
-                                       
+                                        }else{
+                                            res = await fetch(Config().baseUrl + '/auth/company', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
+                                                },
+                                                body: JSON.stringify({
+                                                    'email': email,
+                                                    'password': password,
+                                                    'name': name,
+                                                    'nickname': nickname,
+                                                 
+                                                    // 'favorite_category': secondCategory,
+                                                    'login_type': socialLoginType,
+                                                    'social_id': socialLoginId,
+                                                    'account_type': selectedUserType
+                                                })
+                                            })
+                                        }
 
-                                            console.log(res);
 
-                                            if (res.status === 201) {
-                                                let data = await res.json()
-                                                let accessToken = data.data.accessToken;
-                                                const cookies = new Cookies();
-                                                cookies.set('accessToken', accessToken, {
-                                                    path: '/',
-                                                    domain: Config().cookieDomain,
-                                                });
 
-                                                window.location.href = '/';
+                                        console.log(res);
 
-                                            } else {
-                                                submitButtonRef.current.disabled = false;
-                                                toast.error('회원가입에 실패했습니다.', {
-                                                    position: "top-right",
-                                                    autoClose: 3000,
-                                                    hideProgressBar: false,
-                                                    closeOnClick: true,
-                                                    pauseOnHover: true,
-                                                    draggable: true,
-                                                    progress: undefined,
-                                                    theme: "light",
+                                        if (res.status === 201) {
+                                            let data = await res.json()
+                                            let accessToken = data.data.accessToken;
+                                            const cookies = new Cookies();
+                                            cookies.set('accessToken', accessToken, {
+                                                path: '/',
+                                                domain: Config().cookieDomain,
+                                            });
 
-                                                });
-                                                
-                                            }
+                                            window.location.href = '/';
+
+                                        } else {
+                                            submitButtonRef.current.disabled = false;
+                                            toast.error('회원가입에 실패했습니다.', {
+                                                position: "top-right",
+                                                autoClose: 3000,
+                                                hideProgressBar: false,
+                                                closeOnClick: true,
+                                                pauseOnHover: true,
+                                                draggable: true,
+                                                progress: undefined,
+                                                theme: "light",
+
+                                            });
+
                                         }
                                     }
                                 }

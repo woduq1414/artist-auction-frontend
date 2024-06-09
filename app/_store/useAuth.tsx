@@ -9,6 +9,7 @@ interface Auth {
   refreshToken: string;
 
   nickname: string;
+  accountType: string;
   profileImage: string;
   id: string;
   isLogin: boolean;
@@ -27,6 +28,7 @@ export const useAuth = create<Auth>((set) => ({
   nickname: '',
   id: '',
   profileImage: '',
+  accountType: '',
   isLogin: false,
   setInfo: (info: any) => set({ ...info }),
   checkAuth: async () => {

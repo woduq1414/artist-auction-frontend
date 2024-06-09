@@ -24,7 +24,7 @@ export default function MyPage() {
 
     // const data = await Data();
     // console.log(data);
-    const { checkAuth, isLogin, profileImage, nickname, id } = useAuth();
+    const { checkAuth, isLogin, profileImage, nickname, id, accountType } = useAuth();
 
     const [goodsList, setGoodsList] = useState(undefined) as any;
     const [tempProfileImage, setTempProfileImage] = useState(undefined) as any;
@@ -53,7 +53,10 @@ export default function MyPage() {
     }
 
     useEffect(() => {
-        getMyGoodsList();
+        if(accountType === 'artist'){
+            getMyGoodsList();
+        }
+     
     }, []);
 
     const router = useRouter();
