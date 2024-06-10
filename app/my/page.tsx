@@ -53,11 +53,14 @@ export default function MyPage() {
     }
 
     useEffect(() => {
+        
         if(accountType === 'artist'){
             getMyGoodsList();
         }
      
-    }, []);
+    }, [accountType]);
+
+    
 
     const router = useRouter();
 
@@ -148,13 +151,13 @@ export default function MyPage() {
                         <button type="button" className="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
                         
                         onClick={()=>{
-                            router.push(`/pf/${
+                            router.push(`/profile/${
                                 id
                             }`)
                         
                         }}
                         >
-                            포트폴리오로 이동 
+                            프로필로 이동 
                             <ArrowRightIcon className="w-4 h-4" />
                         </button>
 

@@ -36,7 +36,7 @@ export function middleware(request: NextRequest) {
 
   }
   const GUEST_PAGES = ['/auth'];
-  const USER_PAGES = ['/market/new', '/my'];
+  const USER_PAGES = ['/market/new', '/market/edit', '/my', '/profile/edit'];
   // console.log(pathname);
   const url = request.nextUrl.clone()
 

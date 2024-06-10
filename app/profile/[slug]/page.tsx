@@ -152,7 +152,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         <button type="button" className="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
 
                             onClick={() => {
-
+                                router.push(`/profile/edit`)
                             }}
                         >
                             프로필 수정
