@@ -25,12 +25,13 @@ import { toast } from 'react-toastify';
 import Config from '@/config/config.export';
 import _debounce from 'lodash/debounce';
 import errorBuilder from '@/app/_common/errorBuilder';
+import { useAuth } from '@/app/_store/useAuth';
 // import  { HSStepper } from 'preline';
 
 
 const EditProfilePage: React.FC = () => {
 
-    const [step, setStep] = useState(3);
+    const [tap, setTap] = useState(1);
 
     const stepList = [
         "약관 동의",
@@ -42,15 +43,58 @@ const EditProfilePage: React.FC = () => {
 
     const initialStep = 1;
 
+    const {
+        accountType, loginType, nickname
+    } = useAuth();
+
+    useEffect(() => {
+        setNicknameInput(nickname);
+    }, [nickname])
+
+    useEffect(() => {
+        getProfile();
+
+    }, [])
+
+    async function getProfile() {
+        let res = await fetch(Config().baseUrl + `/auth/edit-profile`, {
+            method: 'GET',
+            headers: {
+
+                'Accept': 'application/json',
+                "Authorization": "Bearer " + new Cookies().get('accessToken')
+
+            },
+
+        })
+
+        if (res.status != 200) {
+
+        }
+
+        const data = (await res.json())?.data;
+
+        setName(data.name);
+        setEmailInput(data.email);
+        setDescription(data.description);
+        setContent(data.content);
+
+    }
 
 
-    const [selectedUserType, setSelectedUserType] = useState<any>(null);
+
+
+    const [content, setContent] = useState<any>('');
 
 
     const [name, setName] = useState<string>('');
-    const [nickname, setNickname] = useState<string>('');
+    const [nicknameInput, setNicknameInput] = useState<string>('');
     const [nicknameError, setNicknameError] = useState<any>('');
-    const [email, setEmail] = useState<string>('');
+
+    const [description, setDescription] = useState<string>('');
+    const [descriptionError, setDescriptionError] = useState<any>('');
+
+    const [emailInput, setEmailInput] = useState<string>('');
 
 
     const [password, setPassword] = useState<any>(null);
@@ -58,7 +102,7 @@ const EditProfilePage: React.FC = () => {
     const [passwordError, setPasswordError] = useState<any>('');
 
 
-
+    const [editor, setEditor] = useState<any>(null);
 
 
 
@@ -66,7 +110,6 @@ const EditProfilePage: React.FC = () => {
 
 
 
-    const [description, setDescription] = useState<string>('');
     const [price, setPrice] = useState<number>(0);
 
     const [endDate, setEndDate] = useState<string>('');
@@ -97,7 +140,14 @@ const EditProfilePage: React.FC = () => {
 
 
 
-
+    useEffect(
+        () => {
+            if(editor && content !== ''){
+                editor.commands.setContent(content);
+            }
+          
+        }, [content, editor]
+    )
 
 
 
@@ -161,7 +211,7 @@ const EditProfilePage: React.FC = () => {
 
     }, 1000), []);
     function handleChangeNickname(e: any) {
-        setNickname(e.target.value);
+        setNicknameInput(e.target.value);
         // byte check
 
         let byteLength = 0;
@@ -205,11 +255,35 @@ const EditProfilePage: React.FC = () => {
                         {/* End Stepper Nav */}
                         {/* Stepper Content */}
 
-                        <div className='bg-slate-100 w-[250px] flex-shrink-0'>
+                        <div className='bg-slate-100 w-[300px] flex-shrink-0 flex flex-col py-10'>
+                            <div className={`px-1 py-3 mx-8 text-lg border-b-2 cursor-pointer
+                            ${tap === 1 ? 'border-primary-light text-primary' : ''
+                                }
+                            `}
+                                onClick={
+                                    () => {
+                                        setTap(1);
+                                    }
+                                }
+                            >
+                                개인 정보 수정
+                            </div>
+                            <div className={`px-1 py-3 mx-8 text-lg border-b-2 cursor-pointer
+                            ${tap === 2 ? 'border-primary-light text-primary' : ''
+                                }
+                            `}
+                                onClick={
+                                    () => {
+                                        setTap(2);
+                                    }
+                                }
 
+                            >
+                                소개 수정
+                            </div>
                         </div>
 
-                        <div className="flex flex-col flex-grow mt-2 overflow-y-auto " ref={thirdStepperContentRef}>
+                        <div className="flex flex-col flex-grow mt-2 overflow-y-auto " >
 
 
                             {/* First Contnet */}
@@ -217,7 +291,9 @@ const EditProfilePage: React.FC = () => {
                             {/* End First Contnet */}
                             {/* First Contnet */}
                             <div
-                                className={`${step === 3 ? 'block' : 'hidden'}`}
+                                className={
+                                    tap === 1 ? '' : 'hidden'
+                                }
                             >
                                 <div className=" max-w-[90%] mx-auto px-5 py-8 space-y-2 border-dashed rounded-xl flex flex-col gap-6
                                 justify-center items-center
@@ -239,7 +315,7 @@ const EditProfilePage: React.FC = () => {
                                             type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            placeholder={selectedUserType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
+                                            placeholder={accountType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
                                             }
                                             aria-describedby="hs-inline-input-helper-text"
                                             value={name}
@@ -262,14 +338,14 @@ const EditProfilePage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="이메일을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
-                                            value={email}
+                                            value={emailInput}
                                             disabled={true}
 
                                         />
 
                                     </div>
                                     {
-                                        socialLoginType === 'password' &&
+                                        loginType === 'password' &&
                                         <div className='flex flex-col w-full max-w-xl gap-2'>
                                             <label
                                                 htmlFor="inline-input-label-with-helper-text"
@@ -333,7 +409,7 @@ const EditProfilePage: React.FC = () => {
                                             placeholder="다른 이용자들에게 보일 이름을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
                                             onChange={handleChangeNickname}
-                                            value={nickname}
+                                            value={nicknameInput}
                                         />
 
                                         {
@@ -349,6 +425,79 @@ const EditProfilePage: React.FC = () => {
                             </div>
 
                             {/* End First Contnet */}
+
+                            <div
+                                className={
+                                    tap === 2 ? '' : 'hidden'
+                                }
+                            >
+                                <div className=" w-full max-w-[90%] mx-auto px-5 py-8 border-dashed rounded-xl flex flex-col
+                                
+                                "
+
+
+                                >
+
+                                    <label
+                                        htmlFor="inline-input-label-with-helper-text"
+                                        className={`block text-lg font-semibold mb-2
+                                            ${accountType !== 'artist' ? 'hidden' : ''
+                                            }
+                                            `}
+                                    >
+                                        {
+                                            accountType === 'artist' ? '한 줄 소개' : ''
+                                        }
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="inline-input-label-with-helper-text"
+                                        className={`block w-full max-w-2xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none 
+                                            
+                                            ${accountType !== 'artist' ? 'hidden' : ''
+                                            }
+                                            mb-2
+                                            `}
+                                        placeholder={accountType == 'artist' ? '한 줄 소개를 입력해주세요.' : '회사 한 줄 소개를 입력해주세요.'
+                                        }
+                                        aria-describedby="hs-inline-input-helper-text"
+                                        value={description}
+                                        onChange={(e) => {
+                                            setDescription(e.target.value)
+                                            if (e.target.value.length > 50) {
+                                                setDescriptionError({ type: "error", message: `한 줄 소개는 50자 이내로 입력해주세요. (${e.target.value.length} / 50)` });
+                                            } else {
+                                                setDescriptionError({ type: "good", message: `(${e.target.value.length} / 50)` })
+                                            }
+                                        }}
+
+                                    />
+                                    {
+                                        errorBuilder(descriptionError)
+                                    }
+
+
+                                    <label
+                                        htmlFor="inline-input-label-with-helper-text"
+                                        className="block mt-10 mb-2 text-lg font-semibold"
+                                    >
+                                        {
+                                            accountType === 'artist' ? '아티스트 자기 소개' : '회사 소개'
+                                        }
+                                    </label>
+                                    <CustomEditor setEditor={
+                                        setEditor
+
+                                    }
+                                    // initialContent={content}
+                                    />
+
+
+
+
+
+                                </div>
+                            </div>
                             {/* Final Contnet */}
 
                             {/* End Final Contnet */}
@@ -399,8 +548,8 @@ const EditProfilePage: React.FC = () => {
                                             }
 
                                             // e.preventDefault();
-                                            if (selectedUserType === 'artist') {
-                                                if (nickname === '' || (
+                                            if (accountType === 'artist') {
+                                                if (nicknameInput === '' || (
                                                     socialLoginType === 'password' && password === ''
 
                                                 )) {
@@ -418,7 +567,7 @@ const EditProfilePage: React.FC = () => {
                                                     return;
                                                 }
                                             } else {
-                                                if (email === '' || nickname === '' || name == '' || (
+                                                if (emailInput === '' || nicknameInput === '' || name == '' || (
                                                     socialLoginType === 'password' && password === ''
 
                                                 )) {
@@ -442,7 +591,7 @@ const EditProfilePage: React.FC = () => {
 
                                             let res;
 
-                                            if (selectedUserType === 'artist') {
+                                            if (accountType === 'artist') {
                                                 res = await fetch(Config().baseUrl + '/auth/artist', {
                                                     method: 'PUT',
                                                     headers: {
@@ -453,7 +602,7 @@ const EditProfilePage: React.FC = () => {
 
                                                         'password': password,
 
-                                                        'nickname': nickname,
+                                                        'nickname': nicknameInput,
 
                                                     })
                                                 })
@@ -468,7 +617,7 @@ const EditProfilePage: React.FC = () => {
                                                     body: JSON.stringify({
                                                         'password': password,
 
-                                                        'nickname': nickname,
+                                                        'nickname': nicknameInput,
 
                                                     })
                                                 })

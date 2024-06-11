@@ -11,6 +11,8 @@ interface Auth {
   nickname: string;
   accountType: string;
   profileImage: string;
+
+  loginType: string;
   id: string;
   isLogin: boolean;
 
@@ -28,6 +30,7 @@ export const useAuth = create<Auth>((set) => ({
   nickname: '',
   id: '',
   profileImage: '',
+  loginType: '',
   accountType: '',
   isLogin: false,
   setInfo: (info: any) => set({ ...info }),
