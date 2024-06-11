@@ -47,9 +47,7 @@ const EditProfilePage: React.FC = () => {
         accountType, loginType, nickname
     } = useAuth();
 
-    useEffect(() => {
-        setNicknameInput(nickname);
-    }, [nickname])
+
 
     useEffect(() => {
         getProfile();
@@ -76,6 +74,7 @@ const EditProfilePage: React.FC = () => {
 
         setName(data.name);
         setEmailInput(data.email);
+        setNicknameInput(data.nickname);
         setDescription(data.description);
         setContent(data.content);
 
@@ -142,10 +141,10 @@ const EditProfilePage: React.FC = () => {
 
     useEffect(
         () => {
-            if(editor && content !== ''){
+            if (editor && content !== '') {
                 editor.commands.setContent(content);
             }
-          
+
         }, [content, editor]
     )
 
@@ -315,8 +314,8 @@ const EditProfilePage: React.FC = () => {
                                             type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            placeholder={accountType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
-                                            }
+                                            // placeholder={accountType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
+                                            // }
                                             aria-describedby="hs-inline-input-helper-text"
                                             value={name}
                                             disabled={true}
@@ -590,57 +589,68 @@ const EditProfilePage: React.FC = () => {
                                             submitButtonRef.current.disabled = true;
 
                                             let res;
-
-                                            if (accountType === 'artist') {
-                                                res = await fetch(Config().baseUrl + '/auth/artist', {
-                                                    method: 'PUT',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        'Accept': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-
+                                            let data;
+                                            if (tap === 1) {
+                                                if (socialLoginType === 'password') {
+                                                    data = {
                                                         'password': password,
-
                                                         'nickname': nicknameInput,
-
-                                                    })
-                                                })
-
-                                            } else {
-                                                res = await fetch(Config().baseUrl + '/auth/company', {
-                                                    method: 'PUT',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        'Accept': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        'password': password,
-
+                                                    }
+                                                } else {
+                                                    data = {
                                                         'nickname': nicknameInput,
+                                                    }
 
-                                                    })
-                                                })
+                                                }
+                                            } else if (tap === 2) {
+                                                data = {
+                                                    'description': description,
+                                                    'content': content
+                                                }
                                             }
+                                            res = await fetch(Config().baseUrl + '/auth/edit-profile', {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
+                                                    'Authorization': 'Bearer ' + new Cookies().get('accessToken')
+                                                },
 
+                                                body: JSON.stringify(data)
+                                            })
 
 
                                             console.log(res);
 
-                                            if (res.status === 201) {
-                                                let data = await res.json()
-                                                let accessToken = data.data.accessToken;
-                                                const cookies = new Cookies();
-                                                cookies.set('accessToken', accessToken, {
-                                                    path: '/',
-                                                    domain: Config().cookieDomain,
-                                                });
+                                            if (res.status === 200) {
+                                                if (tap == 1) {
+                                                    let data = await res.json()
+                                                    let accessToken = data.data.accessToken;
+                                                    const cookies = new Cookies();
+                                                    cookies.set('accessToken', accessToken, {
+                                                        path: '/',
+                                                        domain: Config().cookieDomain,
+                                                    });
 
-                                                window.location.href = '/';
+                                                    window.location.reload();
+                                                }else {
+                                                    toast.success('프로필 수정이 완료되었습니다.', {
+                                                        position: "top-right",
+                                                        autoClose: 3000,
+                                                        hideProgressBar: false,
+                                                        closeOnClick: true,
+                                                        pauseOnHover: true,
+                                                        draggable: true,
+                                                        progress: undefined,
+                                                        theme: "light",
+
+                                                    });
+                                                }
+
 
                                             } else {
                                                 submitButtonRef.current.disabled = false;
-                                                toast.error('회원가입에 실패했습니다.', {
+                                                toast.error('수정에 실패했습니다.', {
                                                     position: "top-right",
                                                     autoClose: 3000,
                                                     hideProgressBar: false,
