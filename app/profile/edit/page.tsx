@@ -463,10 +463,10 @@ const EditProfilePage: React.FC = () => {
                                         value={description}
                                         onChange={(e) => {
                                             setDescription(e.target.value)
-                                            if (e.target.value.length > 50) {
-                                                setDescriptionError({ type: "error", message: `한 줄 소개는 50자 이내로 입력해주세요. (${e.target.value.length} / 50)` });
+                                            if (e.target.value.length > 100) {
+                                                setDescriptionError({ type: "error", message: `한 줄 소개는 100자 이내로 입력해주세요. (${e.target.value.length} / 100)` });
                                             } else {
-                                                setDescriptionError({ type: "good", message: `(${e.target.value.length} / 50)` })
+                                                setDescriptionError({ type: "good", message: `(${e.target.value.length} / 100)` })
                                             }
                                         }}
 

@@ -418,7 +418,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         <span className="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-800 ">웹 디자인 전문</span>
                       </div>
                       <div className="font-light text-left text-md line-clamp-2">
-                        안녕하세요 저는 김민수입니다. 그리고 세상을 뒤흔들어놓고 뒤집어놓을 디자이너라고 자부합니다. 저는 디자인을 통해 세상을 놀라게 할 수 있는 무언가를 만들어드리겠습니다. 그리고 엄청나게 기가 막힌 디자인을 매일 같이 뽑아내는 것이 저의 일상이니 많은 관심 부탁드립니다. 그럼 오늘도 좋은 하루 보내세요.
+                        {artist.description}
                       </div>
                       <div className="flex items-center justify-end w-full">
                         <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">

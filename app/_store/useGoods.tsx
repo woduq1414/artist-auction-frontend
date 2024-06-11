@@ -38,7 +38,9 @@ export const useGoods = create<Goods>((set) => ({
     artist : {
       id : '',
       nickname : '',
-      profile_image : ''
+      profile_image : '',
+      description : '',
+
     },
     // backgroundList : [],
     isFetchFinished : false
@@ -73,7 +75,8 @@ export const useGoods = create<Goods>((set) => ({
       artist : {
         id : data.artist.id,
         nickname : data.artist.nickname,
-        profile_image : data.artist.profile_image
+        profile_image : data.artist.profile_image,
+        description : data.artist.description
       },
       
     })
@@ -105,7 +108,8 @@ export const useGoods = create<Goods>((set) => ({
   artist : {
     id : '',
     nickname : '',
-    profile_image : ''
+    profile_image : '',
+    description : '',
   },
   price : 0,
   category : '',
