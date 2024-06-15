@@ -28,6 +28,7 @@ import errorBuilder from '@/app/_common/errorBuilder';
 import { useAuth } from '@/app/_store/useAuth';
 import { useGoods } from '@/app/_store/useGoods';
 import { error } from 'console';
+import Skeleton from 'react-loading-skeleton';
 // import  { HSStepper } from 'preline';
 
 
@@ -35,7 +36,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     let slug = params.slug;
 
     const [tap, setTap] = useState(1);
-    const { backgroundList, mainImage, getGoods, price, reset } = useGoods();
+    const { backgroundList, mainImage, getGoods, price, reset, title, artist, } = useGoods();
 
     const stepList = [
         "약관 동의",
@@ -160,6 +161,29 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
                                 >
+
+                                    {
+                                        title === undefined ? <div className="w-full max-w-xl">
+                                            <Skeleton
+
+                                                height={115} />
+                                        </div> : (
+                                            <div className='flex flex-row w-full max-w-xl px-2 py-3 text-xl font-semibold text-center bg-slate-100'>
+
+                                                <div className='flex-shrink-0'>
+                                                    <img src={mainImage.url} alt="logo" className="h-[100px]" />
+                                                </div>
+                                                <div className='flex flex-col items-start justify-center flex-grow pl-3 gap'>
+                                                    <div className='text-2xl font-semibold'>
+                                                        {title}
+                                                    </div>
+                                                    <div className='text-sm text-gray-500'>
+                                                        {artist.nickname}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    }
 
                                     <div className={`flex flex-col  max-w-xl w-full gap-2
                                     
