@@ -15,6 +15,7 @@ import { useSwipeable } from "react-swipeable";
 import Skeleton from "react-loading-skeleton";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/_store/useAuth";
+import { toast } from "react-toastify";
 
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -519,7 +520,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                 아티스트에게 1:1 문의
               </button>
 
-              <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none">
+              <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
+              onClick={()=>{
+                if(accountType == 'company'){
+                  router.push(`/market/${
+                    slug
+                  }/deal/new`)
+                }else{
+                  toast.error("거래를 진행할 수 있는 권한이 없습니다.")                  
+                }
+              }}
+              
+              >
                 거래 진행
               </button>
 
