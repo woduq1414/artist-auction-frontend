@@ -188,44 +188,74 @@ export default function MyPage() {
 
                             <div className="w-full  overflow-y-auto max-h-[400px]">
                                 {
-                                    goodsList === undefined ?
+                                    dealList === undefined ?
                                         <Skeleton height={200} />
                                         :
-                                        goodsList.length === 0 ?
+                                        dealList.length === 0 ?
                                             <div className="py-20 text-center bg-gray-100 font-xl">
                                                 아직 거래가 없습니다.
                                             </div>
                                             :
                                             <div className="flex flex-col ">
                                                 {
-                                                    goodsList.map((item: any) => {
+                                                    dealList.map((item: any) => {
                                                         return (
                                                             <div key={item.id} className={`flex flex-row items-center w-full border-b border-gray-200
+                                                                px-2 py-3
                                                         ${item.status === 'draft' ? 'bg-gray-100' : ''
                                                                 }
                                                         `}>
-                                                                <div className="flex-shrink-0 text-lg font-semibold">
+                                                                <div className="flex flex-col items-center justify-center flex-shrink-0 text-lg font-semibold w-[80px]">
                                                                     <img src={
-                                                                        item.image.media.link
-                                                                    } className={`h-[100px] my-3 ring-gray-200 ring-1`}
+                                                                        item.company.profile_image ? item.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+
+                                                                    } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
                                                                         height={100}
                                                                     />
+                                                                    <span className="text-gray-800 text-[0.9rem]">
+                                                                        {
+                                                                            item.company.nickname
+                                                                        }
+                                                                    </span>
                                                                 </div>
-                                                                <div className="flex flex-col items-start justify-center flex-grow gap-3 ml-5">
-                                                                    <div className="text-2xl font-semibold">
+                                                                <div className="flex flex-col items-start justify-center flex-grow gap-2 ml-5">
+                                                                    <div className="flex flex-row items-center text-2xl font-semibold">
                                                                         <Link href={
                                                                             `/market/${item.id}`
 
                                                                         }>
                                                                             {item.title}
-                                                                        </Link></div>
-                                                                    <div className="text-sm text-gray-500">{new Date(Date.parse(item.created_at)).toISOString().substring(0, 10)} 등록</div>
+                                                                        </Link>
+                                                                        <span className="ml-2 inline-flex items-center gap-x-1.5 py-1 px-3 rounded-full text-xs font-medium bg-primary-light text-white">{
+                                                                            item.status === 'pending' ? '거래 대기' : item.status === 'completed' ? '거래완료' : '거래취소'
+                                                                        }</span>
+                                                                    </div>
+                                                                    <div className="flex flex-row items-center text-gray-500 cursor-pointer text-md"
+                                                                        onClick={
+                                                                            (e) => {
+                                                                                router.push(`/market/${item.artist_goods.id}`)
+                                                                            }
+                                                                        }
+
+
+                                                                    >{`[ ${item.artist_goods.title} ] 상품에 대한 거래`}
+                                                                       
+                                                                    </div>
 
 
                                                                 </div>
-                                                                <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-2">
+                                                                <div className="flex flex-row items-center justify-center flex-shrink-0 gap-5 mr-2">
+                                                                    <div className="flex flex-col items-end ">
+                                                                        <div className="text-lg font-medium ">
+                                                                            희망 거래가 <span className="text-2xl font-bold">{item.price.toLocaleString()}</span> 만원
+                                                                        </div>
+                                                                        <div className="text-sm font-medium text-gray-500">
+                                                                            최소 거래가 {(item.artist_goods.price / 10000).toLocaleString()} 만원
+                                                                        </div>
+                                                                    </div>
+
                                                                     <div className={`p-3 rounded-full cursor-pointer bg-primary
-                                                                ${item.status != 'draft' ? 'hidden' : ''}
+                                                                ${item.status != 'pending' ? 'hidden' : ''}
                                                                 
                                                                 `}
                                                                         onClick={
@@ -234,40 +264,11 @@ export default function MyPage() {
                                                                             }
                                                                         }>
 
-                                                                        <PencilSquareIcon className="w-4 h-4 text-white" />
+                                                                        <ArrowRightIcon className="w-4 h-4 text-white" />
                                                                     </div>
 
                                                                 </div>
-                                                                <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-5">
-                                                                    <div className={`p-3 rounded-full cursor-pointer bg-gray-200 
-                                                                ${item.status != 'draft' ? 'hidden' : ''}
-                                                                
-                                                                `}
 
-                                                                        onClick={
-                                                                            async (e) => {
-                                                                                const cfm = confirm(`[${item.title}] 상품의 임시저장본을 삭제하시겠습니까?`);
-
-                                                                                if (cfm) {
-                                                                                    const res = await fetch(Config().baseUrl + '/artist/goods/' + item.id, {
-                                                                                        method: 'DELETE',
-                                                                                        headers: {
-                                                                                            'Accept': 'application/json',
-                                                                                            "Authorization": "Bearer " + new Cookies().get('accessToken')
-                                                                                        },
-                                                                                    })
-                                                                                    console.log(res);
-                                                                                    if (res.status === 200) {
-                                                                                        window.location.reload();
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }>
-
-                                                                        <TrashIcon className="w-4 h-4 text-gray-500" />
-                                                                    </div>
-
-                                                                </div>
                                                             </div>
                                                         )
 
@@ -275,7 +276,7 @@ export default function MyPage() {
                                                 }
                                             </div>
                                 }
-                       
+
                             </div>
                         </div>
                         <div className="w-full px-6 py-8">
