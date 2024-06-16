@@ -569,7 +569,7 @@ const RegisterPage: React.FC = () => {
                                         }>
                                             <div className='flex flex-col flex-grow gap-2'>
                                                 <div className='text-3xl font-semibold text-gray-800'>
-                                                    기업
+                                                    의뢰인(회사)
                                                 </div>
 
                                                 <div className='text-lg text-gray-600'>
@@ -683,7 +683,7 @@ const RegisterPage: React.FC = () => {
                                             type="text"
                                             id="inline-input-label-with-helper-text"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
-                                            placeholder={selectedUserType == 'artist' ? '본인 이름을 입력해주세요.' : '회사명 또는 의뢰자명을 입력해주세요.'
+                                            placeholder={selectedUserType == 'artist' ? '본인 이름을 입력해주세요.' : '의뢰인(회사)명을 입력해주세요.'
                                             }
                                             aria-describedby="hs-inline-input-helper-text"
                                             onChange={(e) => setName(e.target.value)}

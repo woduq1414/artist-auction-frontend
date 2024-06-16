@@ -457,7 +457,7 @@ const EditProfilePage: React.FC = () => {
                                             }
                                             mb-2
                                             `}
-                                        placeholder={accountType == 'artist' ? '한 줄 소개를 입력해주세요.' : '회사 한 줄 소개를 입력해주세요.'
+                                        placeholder={accountType == 'artist' ? '한 줄 소개를 입력해주세요.' : '의뢰인(회사) 한 줄 소개를 입력해주세요.'
                                         }
                                         aria-describedby="hs-inline-input-helper-text"
                                         value={description}
@@ -481,7 +481,7 @@ const EditProfilePage: React.FC = () => {
                                         className="block mt-10 mb-2 text-lg font-semibold"
                                     >
                                         {
-                                            accountType === 'artist' ? '아티스트 자기 소개' : '회사 소개'
+                                            accountType === 'artist' ? '아티스트 자기 소개' : '의뢰인(회사) 소개'
                                         }
                                     </label>
                                     <CustomEditor setEditor={

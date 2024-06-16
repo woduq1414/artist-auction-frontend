@@ -530,7 +530,33 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         }
                                     </div>
 
+                                    <div className='flex flex-col w-full max-w-xl gap-2 px-10 py-2 bg-white'>
+                                        <div className='flex flex-row items-center justify-between text-md'>
+                                            <div>
+                                                거래 가격
+                                            </div>
+                                            <div>
+                                                <span className='text-xl font-bold'>{(dealPrice * 10000).toLocaleString()}</span> 원
+                                            </div>
+                                        </div>
+                                        <div className='flex flex-row items-center justify-between text-md'>
+                                            <div>
+                                                부가 가치세
+                                            </div>
+                                            <div>
+                                                <span className='text-xl font-bold'>{(dealPrice * 1000).toLocaleString()}</span> 원
+                                            </div>
+                                        </div>
 
+                                        <div className='flex flex-row items-center justify-between pt-2 border-t-2 text-md'>
+                                            <div>
+                                                합계
+                                            </div>
+                                            <div>
+                                                <span className='text-2xl font-bold'>{(dealPrice * 11000).toLocaleString()}</span> 원
+                                            </div>
+                                        </div>
+                                    </div>
 
 
                                 </div>

@@ -221,13 +221,13 @@ export default function MyPage() {
                                                                 <div className="flex flex-col items-start justify-center flex-grow gap-2 ml-5">
                                                                     <div className="flex flex-row items-center text-2xl font-semibold">
                                                                         <Link href={
-                                                                            `/market/${item.id}`
+                                                                            `/market/deal/${item.id}`
 
                                                                         }>
                                                                             {item.title}
                                                                         </Link>
                                                                         <span className="ml-2 inline-flex items-center gap-x-1.5 py-1 px-3 rounded-full text-xs font-medium bg-primary-light text-white">{
-                                                                            item.status === 'pending' ? '거래 대기' : item.status === 'completed' ? '거래완료' : '거래취소'
+                                                                            item.status === 'pending' ? '거래 대기' : item.status === 'accept' ? '결제 대기 중' : '거래취소'
                                                                         }</span>
                                                                     </div>
                                                                     <div className="flex flex-row items-center text-gray-500 cursor-pointer text-md"
@@ -255,16 +255,16 @@ export default function MyPage() {
                                                                     </div>
 
                                                                     <div className={`p-3 rounded-full cursor-pointer bg-primary
-                                                                ${item.status != 'pending' ? 'hidden' : ''}
                                                                 
                                                                 `}
                                                                         onClick={
                                                                             (e) => {
-                                                                                router.push(`/market/${item.id}/edit`)
+                                                                                router.push(`/market/deal/${item.id}`)
                                                                             }
                                                                         }>
 
-                                                                        <ArrowRightIcon className="w-4 h-4 text-white" />
+                                                                        <ArrowRightIcon className="w-4 h-4 text-white" 
+                                                                        />
                                                                     </div>
 
                                                                 </div>
