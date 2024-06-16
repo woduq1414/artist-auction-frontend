@@ -422,7 +422,13 @@ export default function Page({ params }: { params: { slug: string } }) {
                         {artist.description}
                       </div>
                       <div className="flex items-center justify-end w-full">
-                        <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                        onClick={()=>{
+                          router.push(
+                            "/profile/artist/" + artist.id
+                          )
+                        }}
+                        >
                           포트폴리오로 이동
                           <ArrowRightIcon className="w-4 h-4" />
                         </button>

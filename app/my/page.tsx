@@ -75,6 +75,8 @@ export default function MyPage() {
         if (accountType === 'artist') {
             getMyGoodsList();
             getMyDealList();
+        } else if (accountType === "company") {
+            getMyDealList();
         }
 
     }, [accountType]);
@@ -206,17 +208,34 @@ export default function MyPage() {
                                                                 }
                                                         `}>
                                                                 <div className="flex flex-col items-center justify-center flex-shrink-0 text-lg font-semibold w-[80px]">
-                                                                    <img src={
-                                                                        item.company.profile_image ? item.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                                                                    {
+                                                                        accountType === "artist" ? (<>
+                                                                            <img src={
+                                                                                item.company.profile_image ? item.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
-                                                                    } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
-                                                                        height={100}
-                                                                    />
-                                                                    <span className="text-gray-800 text-[0.9rem]">
-                                                                        {
-                                                                            item.company.nickname
-                                                                        }
-                                                                    </span>
+                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                                                                height={100}
+                                                                            />
+                                                                            <span className="text-gray-800 text-[0.9rem]">
+                                                                                {
+                                                                                    item.company.nickname
+                                                                                }
+                                                                            </span>
+                                                                        </>) : (<>
+                                                                            <img src={
+                                                                                item.artist.profile_image ? item.artist.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+
+                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                                                                height={100}
+                                                                            />
+                                                                            <span className="text-gray-800 text-[0.9rem]">
+                                                                                {
+                                                                                    item.artist.nickname
+                                                                                }
+                                                                            </span>
+                                                                        </>)
+                                                                    }
+
                                                                 </div>
                                                                 <div className="flex flex-col items-start justify-center flex-grow gap-2 ml-5">
                                                                     <div className="flex flex-row items-center text-2xl font-semibold">
@@ -239,7 +258,7 @@ export default function MyPage() {
 
 
                                                                     >{`[ ${item.artist_goods.title} ] 상품에 대한 거래`}
-                                                                       
+
                                                                     </div>
 
 
@@ -263,7 +282,7 @@ export default function MyPage() {
                                                                             }
                                                                         }>
 
-                                                                        <ArrowRightIcon className="w-4 h-4 text-white" 
+                                                                        <ArrowRightIcon className="w-4 h-4 text-white"
                                                                         />
                                                                     </div>
 

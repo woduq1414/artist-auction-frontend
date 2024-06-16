@@ -101,7 +101,8 @@ export default function Page({ params }: { params: { slug: string } }) {
       </div> */}
             <div className="w-[80%] mx-auto h-full">
                 <div className="flex flex-row w-[100%] mt-10 h-full bg-white min-h-[80vh] shadow-md">
-                    <div className="w-[350px]  flex-shrink-0 bg-slate-50 flex flex-col items-center pt-10">
+                    <div className="w-[350px]  flex-shrink-0 bg-slate-50 flex flex-col  pt-10 items-center">
+
                         {
                             deal ? <img className="inline-block w-[80%] mx-auto cursor-pointer" src={
                                 deal ? deal.artist_goods.image.media.path : '/images/default-profile-image.jpg'
@@ -120,10 +121,33 @@ export default function Page({ params }: { params: { slug: string } }) {
                             {deal ? <Link href={
                                 `/market/${deal.artist_goods.id}`
 
-                            }><div className="mt-2 text-2xl font-bold">{deal.artist_goods.title}</div> </Link> : <Skeleton
+                            }><div className="mt-2 text-2xl font-bold text-center">{deal.artist_goods.title}</div> </Link> : <Skeleton
                                 className="mt-2"
                                 width={100} height={20} />}
                         </div>
+
+
+                        {
+                            deal && <>
+                                <div className="w-[80%] mx-auto mt-6 text-xl font-semibold ">
+                                    의뢰인
+                                </div>
+                                <div className="w-[80%] mx-auto mt-2 flex flex-col items-start">
+                                    <div className="flex flex-col items-center">
+                                        <img src={
+                                            deal.company.profile_image ? deal.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+
+                                        } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                            height={100}
+                                        />
+                                        <span className="text-gray-800 text-[0.9rem]">
+                                            {
+                                                deal.company.nickname
+                                            }
+                                        </span>
+                                    </div>
+                                </div></>
+                        }
                         {/* <div className="w-full">
                             {deal ? <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{profile.description}</div> : <Skeleton
                                 className="mx-8 mt-6 "
