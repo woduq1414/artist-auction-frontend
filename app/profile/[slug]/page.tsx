@@ -26,7 +26,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     // console.log(data);
     const { checkAuth, isLogin, profileImage, nickname, id } = useAuth();
 
-    const [goodsList, setGoodsList] = useState(undefined) as any;
+    const [profile, setProfile] = useState(undefined) as any;
+    const [isMe, setIsMe] = useState(false) as any;
     const [tempProfileImage, setTempProfileImage] = useState(undefined) as any;
     const [tempProfileImageTitle, setTempProfileImageTitle] = useState(undefined) as any;
     const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false) as any;
@@ -36,8 +37,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     let cropperModalOpenRef = React.createRef<HTMLButtonElement>();
     let cropperRef = React.createRef<any>();
 
-    async function getMyGoodsList() {
-        const res = await fetch(Config().baseUrl + '/artist/goods/my',
+    async function getProfile() {
+        const res = await fetch(Config().baseUrl + '/auth/profile/' + params.slug,
             {
                 method: 'GET',
                 headers: {
@@ -48,20 +49,28 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         );
         const data = await res.json();
-        console.log(data.data.items)
-        setGoodsList(data.data.items);
+        console.log(data.data)
+        setProfile(data.data);
     }
 
     useEffect(() => {
         import('preline/preline').then((module) => {
             // alert(props.cat  egory)
-       
+
             const { HSStaticMethods, HSSelect, HSOverlay } = module;
             HSStaticMethods.autoInit(['tabs']);
 
 
         })
+        getProfile();
     }, []);
+
+
+    useEffect(() => {
+        if (id === params.slug) {
+            setIsMe(true);
+        }
+    }, [id])
 
     const router = useRouter();
 
@@ -89,16 +98,23 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <div className="w-[350px]  flex-shrink-0 bg-slate-50 flex flex-col items-center">
                         <div className="relative inline-block mt-[2.75rem]">
                             <img className="inline-block w-[120px] h-[120px] rounded-full" src={
-                                profileImage ? profileImage : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                                profile && profile.profile_image ? profile.profile_image.media.path : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
                             } alt="Image Description" />
-                            <div className="absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900"
+                            <div className={`absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900
+                            ${!isMe && `hidden`
+                                }
+                            `}
                                 onClick={openProfileImageUploader}
                             >
                                 <PencilIcon className="w-3 h-3 text-gray-500" />
                             </div>
-                            <div className="absolute top-0 w-[120px] h-[120px] rounded-full flex items-center justify-center  start-0 ring-1 ring-white dark:ring-neutral-900
-                          duration-300 bg-gray-500 opacity-0 bg-opacity-30  text-sm font-semibold hover:opacity-100 cursor-pointer text-white"
+                            <div className={`absolute top-0 w-[120px] h-[120px] rounded-full flex items-center justify-center  start-0 ring-1 ring-white dark:ring-neutral-900
+                          duration-300 bg-gray-500 opacity-0 bg-opacity-30  text-sm font-semibold hover:opacity-100 cursor-pointer text-white
+                          ${!isMe && `hidden`
+                                }
+                          `
+                            }
                                 onClick={openProfileImageUploader}
                             >
                                 프로필 사진 변경
@@ -143,13 +159,21 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                         </div>
                         <div className="">
-                            {nickname ? <div className="mt-6 text-2xl font-bold">{nickname}</div> : <Skeleton
+                            {profile ? <div className="mt-6 text-2xl font-bold">{profile.nickname}</div> : <Skeleton
                                 className="mt-6"
                                 width={100} height={20} />}
                         </div>
+                        <div className="w-full">
+                            {profile ? <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{profile.description}</div> : <Skeleton
+                                className="mx-8 mt-6 "
+                                width={350 - 64}
+                                height={100} />}
+                        </div>
 
-
-                        <button type="button" className="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                        <button type="button" className={`inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800
+                        ${!isMe && `hidden`
+                            }
+                        `}
 
                             onClick={() => {
                                 router.push(`/profile/edit`)
@@ -184,7 +208,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                     >
                                         포트폴리오
                                     </button>
-                               
+
                                 </nav>
                             </div>
                             <div className="mt-3">
@@ -193,13 +217,12 @@ export default function Page({ params }: { params: { slug: string } }) {
                                     role="tabpanel"
                                     aria-labelledby="tabs-with-underline-item-1"
                                 >
-                                    <p className="text-gray-500 dark:text-neutral-400">
-                                        This is the{" "}
-                                        <em className="font-semibold text-gray-800 dark:text-neutral-200">
-                                            first
-                                        </em>{" "}
-                                        item's tab body.
-                                    </p>
+                                    {
+                                        profile ? <div dangerouslySetInnerHTML={
+                                            { __html: profile.content }
+
+                                        } /> : <Skeleton count={5} />
+                                    }
                                 </div>
                                 <div
                                     id="tabs-with-underline-2"

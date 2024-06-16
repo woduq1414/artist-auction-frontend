@@ -605,7 +605,7 @@ const EditProfilePage: React.FC = () => {
                                             } else if (tap === 2) {
                                                 data = {
                                                     'description': description,
-                                                    'content': content
+                                                    'content': editor?.getHTML()
                                                 }
                                             }
                                             res = await fetch(Config().baseUrl + '/auth/edit-profile', {
