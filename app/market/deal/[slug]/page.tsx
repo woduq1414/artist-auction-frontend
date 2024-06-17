@@ -25,7 +25,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     // const data = await Data();
     // console.log(data);
-    const { checkAuth, isLogin, profileImage, nickname, id } = useAuth();
+    const { checkAuth, isLogin, profileImage, nickname, id, accountType } = useAuth();
 
     const [deal, setDeal] = useState(undefined) as any;
 
@@ -145,11 +145,11 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                 )
                                             }}
                                         />
-                                        <span className="text-gray-800 text-[0.9rem] cursor-pointer"    onClick={() => {
-                                                router.push(
-                                                    "/profile/company/" + deal.company.id
-                                                )
-                                            }}>
+                                        <span className="text-gray-800 text-[0.9rem] cursor-pointer" onClick={() => {
+                                            router.push(
+                                                "/profile/company/" + deal.company.id
+                                            )
+                                        }}>
                                             {
                                                 deal.company.nickname
                                             }
@@ -169,15 +169,71 @@ export default function Page({ params }: { params: { slug: string } }) {
                     </div>
                     {
                         deal && <div className="flex-col w-full px-6 py-10">
-                            <div className="flex flex-col gap-2">
-                                <div className="text-2xl font-semibold">
-                                    프로젝트 제목
+                            <div className="flex flex-row">
+                                <div className="flex flex-col flex-grow gap-2">
+                                    <div className="text-2xl font-semibold">
+                                        프로젝트 제목
+
+                                    </div>
+                                    <div className="text-lg">
+                                        {
+                                            deal.title
+                                        }
+                                    </div>
 
                                 </div>
-                                <div className="text-lg">
-                                    {
-                                        deal.title
-                                    }
+                                <div className="flex-shrink-0">
+                                    <div className={`flex flex-row gap-2
+                                                                        ${accountType === 'artist' ? 'hidden' : ''}
+                                                                        `}>
+                                        <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 ">
+                                            <div className={`p-3 rounded-full cursor-pointer bg-gray-200
+                                                        
+                                                                
+                                                                `}
+                                                onClick={
+                                                    (e) => {
+                                                        router.push(`/market/deal/${deal.id}/edit`)
+                                                    }
+                                                }>
+
+                                                <PencilSquareIcon className="w-4 h-4 text-gray-500" />
+                                            </div>
+
+                                        </div>
+                                        <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-2">
+                                            <div className={`p-3 rounded-full cursor-pointer bg-gray-200 
+                                                           
+                                                                
+                                                                `}
+
+                                                onClick={
+                                                    async (e) => {
+                                                        const cfm = confirm(`[${deal.title}] 거래를 취소하시겠습니까?`);
+
+                                                        if (cfm) {
+                                                            const res = await fetch(Config().baseUrl + '/artist/goods/deal/' + deal.id, {
+                                                                method: 'DELETE',
+                                                                headers: {
+                                                                    'Accept': 'application/json',
+                                                                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                                },
+                                                            })
+                                                            console.log(res);
+                                                            if (res.status === 200) {
+                                                                window.location.reload();
+                                                            }
+                                                        }
+                                                    }
+                                                }>
+
+                                                <TrashIcon className="w-4 h-4 text-gray-500" />
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2 mt-8">
