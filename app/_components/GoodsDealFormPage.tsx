@@ -541,7 +541,7 @@ const GoodsDealFormPage: React.FC<{
                                         </div>
                                         <div className='flex flex-row items-center justify-between text-md'>
                                             <div>
-                                                부가 가치세
+                                                부가 가치세 (10%)
                                             </div>
                                             <div>
                                                 <span className='text-xl font-bold'>{(dealPrice * 1000).toLocaleString()}</span> 원

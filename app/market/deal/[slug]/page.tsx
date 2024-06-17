@@ -128,7 +128,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
                         {
-                            deal && <>
+                            deal && (accountType === 'artist' ? <>
                                 <div className="w-[80%] mx-auto mt-6 text-xl font-semibold ">
                                     의뢰인
                                 </div>
@@ -155,7 +155,37 @@ export default function Page({ params }: { params: { slug: string } }) {
                                             }
                                         </span>
                                     </div>
-                                </div></>
+                                </div>
+                            </> : <>
+                                <div className="w-[80%] mx-auto mt-6 text-xl font-semibold ">
+                                    아티스트
+                                </div>
+                                <div className="w-[80%] mx-auto mt-2 flex flex-col items-start">
+                                    <div className="flex flex-col items-center">
+                                        <img src={
+                                            deal.artist.profile_image ? deal.artist.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+
+                                        } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500 cursor-pointer`}
+                                            height={100}
+                                            onClick={() => {
+                                                router.push(
+                                                    "/profile/artist/" + deal.artist.id
+                                                )
+                                            }}
+                                        />
+                                        <span className="text-gray-800 text-[0.9rem] cursor-pointer" onClick={() => {
+                                            router.push(
+                                                "/profile/artist/" + deal.artist.id
+                                            )
+                                        }}>
+                                            {
+                                                deal.artist.nickname
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </>
+                            )
                         }
                         {/* <div className="w-full">
                             {deal ? <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{profile.description}</div> : <Skeleton
@@ -285,41 +315,70 @@ export default function Page({ params }: { params: { slug: string } }) {
                                     }
                             `}>
                                 <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                                    의뢰인과 1:1 대화
-                                </button>
-
-                                <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
-                                    disabled={
-                                        deal.status == "pending" ? false : true
-                                    }
-                                    onClick={async () => {
-                                        if (deal.status !== "pending") {
-                                            return;
-                                        }
-                                        let res = await fetch(Config().baseUrl + '/artist/goods/deal/' + params.slug + "/accept", {
-                                            method: 'PUT',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                                'Accept': 'application/json',
-                                                "Authorization": "Bearer " + new Cookies().get('accessToken')
-                                            },
-
-                                        })
-
-                                        if (res.status === 201) {
-                                            window.location.reload()
-                                        } else {
-                                            toast.error(
-                                                "알 수 없는 이유로 실패하였습니다."
-                                            )
-                                        }
-                                    }}
-
-                                >
                                     {
-                                        deal.status == "pending" ? "거래 진행" : "결제 대기 중"
+                                        accountType === 'artist' ? "의뢰인과 1:1 대화" : "아티스트와 1:1 대화"
                                     }
                                 </button>
+
+                                {
+                                    (() => {
+                                        let disabledStatusDict: { [key: string]: { [key: string]: boolean } } = {
+                                            "artist" : {
+                                                "pending": false,
+                                                "accept": true,
+                                            },
+                                            "company": {
+                                                "pending": true,
+                                                "accept": false,
+                                            }
+                                        }
+
+                                        let activeButtonTextDict: { [key: string]: { [key: string]: string } } = {
+                                            "artist" : {
+                                                "pending": "거래 수락",
+                                                "accept": "결제 대기 중"
+                                            },
+                                            "company": {
+                                                "pending": "수락 대기 중",
+                                                "accept": "결제 진행"
+                                            }
+                                        }
+                                        
+                                        let disabledStatus = disabledStatusDict[accountType][deal.status];
+                                        let activeButtonText = activeButtonTextDict[accountType][deal.status];
+                                        
+                                        return (<button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
+                                            disabled={disabledStatus}
+                                            onClick={async () => {
+                                                if (deal.status !== "pending") {
+                                                    return;
+                                                }
+                                                let res = await fetch(Config().baseUrl + '/artist/goods/deal/' + params.slug + "/accept", {
+                                                    method: 'PUT',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                        'Accept': 'application/json',
+                                                        "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                    },
+
+                                                })
+
+                                                if (res.status === 201) {
+                                                    window.location.reload()
+                                                } else {
+                                                    toast.error(
+                                                        "알 수 없는 이유로 실패하였습니다."
+                                                    )
+                                                }
+                                            }}
+
+                                        >
+                                            {
+                                                activeButtonText
+                                            }
+                                        </button>)
+                                    })()
+                                }
 
                             </div>
                         </div>
