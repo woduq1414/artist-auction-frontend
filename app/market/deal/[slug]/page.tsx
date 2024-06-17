@@ -137,10 +137,19 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         <img src={
                                             deal.company.profile_image ? deal.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
-                                        } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                        } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500 cursor-pointer`}
                                             height={100}
+                                            onClick={() => {
+                                                router.push(
+                                                    "/profile/company/" + deal.company.id
+                                                )
+                                            }}
                                         />
-                                        <span className="text-gray-800 text-[0.9rem]">
+                                        <span className="text-gray-800 text-[0.9rem] cursor-pointer"    onClick={() => {
+                                                router.push(
+                                                    "/profile/company/" + deal.company.id
+                                                )
+                                            }}>
                                             {
                                                 deal.company.nickname
                                             }

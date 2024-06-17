@@ -206,17 +206,30 @@ export default function MyPage() {
                                                                 px-2 py-3
                                                         ${item.status === 'draft' ? 'bg-gray-100' : ''
                                                                 }
-                                                        `}>
+                                                                
+                                                        `}
+                                                                
+                                                            >
                                                                 <div className="flex flex-col items-center justify-center flex-shrink-0 text-lg font-semibold w-[80px]">
                                                                     {
                                                                         accountType === "artist" ? (<>
                                                                             <img src={
                                                                                 item.company.profile_image ? item.company.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
-                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500 cursor-pointer`}
                                                                                 height={100}
+
+                                                                                onClick={() => {
+                                                                                    router.push(
+                                                                                        "/profile/company/" + item.company.id
+                                                                                    )
+                                                                                }}
                                                                             />
-                                                                            <span className="text-gray-800 text-[0.9rem]">
+                                                                            <span className="text-gray-800 text-[0.9rem] cursor-pointer" onClick={() => {
+                                                                                router.push(
+                                                                                    "/profile/company/" + item.company.id
+                                                                                )
+                                                                            }}>
                                                                                 {
                                                                                     item.company.nickname
                                                                                 }
@@ -225,10 +238,19 @@ export default function MyPage() {
                                                                             <img src={
                                                                                 item.artist.profile_image ? item.artist.profile_image.media.link : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
-                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500`}
+                                                                            } className={`w-[60px] h-[60px] rounded-full ring-1 ring-gray-500 cursor-pointer`}
                                                                                 height={100}
+                                                                                onClick={() => {
+                                                                                    router.push(
+                                                                                        "/profile/artist/" + item.artist.id
+                                                                                    )
+                                                                                }}
                                                                             />
-                                                                            <span className="text-gray-800 text-[0.9rem]">
+                                                                            <span className="text-gray-800 text-[0.9rem] cursor-pointer" onClick={() => {
+                                                                                router.push(
+                                                                                    "/profile/artist/" + item.artist.id
+                                                                                )
+                                                                            }}>
                                                                                 {
                                                                                     item.artist.nickname
                                                                                 }
@@ -273,18 +295,59 @@ export default function MyPage() {
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className={`p-3 rounded-full cursor-pointer bg-primary
+                                                                    <div className={`flex flex-row gap-2
+                                                                        ${accountType === 'artist' ? 'hidden' : ''}
+                                                                        `}>
+                                                                        <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 ">
+                                                                            <div className={`p-3 rounded-full cursor-pointer bg-primary
+                                                        
                                                                 
                                                                 `}
-                                                                        onClick={
-                                                                            (e) => {
-                                                                                router.push(`/market/deal/${item.id}`)
-                                                                            }
-                                                                        }>
+                                                                                onClick={
+                                                                                    (e) => {
+                                                                                        router.push(`/market/deal/${item.id}/edit`)
+                                                                                    }
+                                                                                }>
 
-                                                                        <ArrowRightIcon className="w-4 h-4 text-white"
-                                                                        />
+                                                                                <PencilSquareIcon className="w-4 h-4 text-white" />
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 mr-2">
+                                                                            <div className={`p-3 rounded-full cursor-pointer bg-gray-200 
+                                                           
+                                                                
+                                                                `}
+
+                                                                                onClick={
+                                                                                    async (e) => {
+                                                                                        const cfm = confirm(`[${item.title}] 거래를 취소하시겠습니까?`);
+
+                                                                                        if (cfm) {
+                                                                                            const res = await fetch(Config().baseUrl + '/artist/goods/deal/' + item.id, {
+                                                                                                method: 'DELETE',
+                                                                                                headers: {
+                                                                                                    'Accept': 'application/json',
+                                                                                                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                                                                },
+                                                                                            })
+                                                                                            console.log(res);
+                                                                                            if (res.status === 200) {
+                                                                                                window.location.reload();
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }>
+
+                                                                                <TrashIcon className="w-4 h-4 text-gray-500" />
+                                                                            </div>
+
+                                                                        </div>
+
+
                                                                     </div>
+
+
 
                                                                 </div>
 
