@@ -1,7 +1,11 @@
+'use client';
 import Image from "next/image";
 import Link from "next/link";
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import CategoryList from "./_components/CategoryList";
+import { useEffect } from "react";
+import { useAuth } from "./_store/useAuth";
+import { set } from "lodash";
 
 // const fetchData = async () => {
 //   const response = await fetch("http://127.0.0.1", {
@@ -20,68 +24,58 @@ import CategoryList from "./_components/CategoryList";
 // }
 
 
-export default async function Home() {
+export default  function Home() {
 
-  // const data = await Data();
-  // console.log(data);
+  
+  // on scroll event
+
+  
+  const { setIsNavSearchBarShow } = useAuth();
+  useEffect(() => {
+    setIsNavSearchBarShow(false);
+    window.addEventListener('scroll', () => {
+      const getTop = (el: { offsetTop: any; offsetParent: any; }): number => el.offsetTop + (el.offsetParent && getTop(el.offsetParent))
+      const searchBar = document.getElementById('mainPageSearchBar');
+      if(searchBar && window.scrollY > getTop(searchBar)){
+        setIsNavSearchBarShow(true);
+      }else{
+        setIsNavSearchBarShow(false);
+      }
+    });
+  }, []);
+
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
-      <div className="min-w-full min-h-screen bg-primary">
-        <div className="flex flex-row items-center justify-between">
+      <div
+        className="h-[80px] md:h-[64px]"
+      />
 
-
-          <div className="relative flex items-center flex-shrink-0 min-h-screen ">
-
-            <div className="absolute bottom-[8vh] ml-[3vw] w-[90vh] max-w-[95vw] sm:hidden">
-              <Image src={'/images/brush.png'} alt='logo' width={1600} height={1600} />
-            </div>
-            <div className="absolute bottom-[25vh] ml-[12vw] w-[90vw] max-w-[80vw] hidden sm:flex
-            
-            ">
-              <Image src={'/images/brush.png'} alt='logo' width={400} height={400} />
-            </div>
-
-
-
-          </div>
-          <div className="flex flex-col items-end justify-center flex-grow min-h-screen sm:items-center">
-            <div className="mt-[10vh] mr-12 flex flex-col items-end sm:items-center sm:mr-0">
-
-
-            {/* sm:[text-shadow:-0px_0_white,0_1px_white,0px_0_white,0_-0px_white] */}
-
-              <div className="z-10 font-semibold text-right text-8xl md:text-6xl sm:text-5xl sm:text-center ">
-                BROWSE ARTIST<br />BID INSTANTLY
-              </div>
-
-              {/* search bar */}
-              <div className="relative flex mt-3 sm:mt-8">
-                <EllipsisVerticalIcon className="absolute left-0 flex items-center w-10 h-10 text-black top-5 sm:h-7 sm:top-3 " />
-                <input className="w-[30rem] max-w-[80vw] h-20 pl-10 text-xl rounded-l-[20px] placeholder:font-bold
+      <div className="w-[calc(100%-72px)] h-[calc(100vh-80px-32px)]  mx-10 mt-4  my-auto relative">
+        <img src="/images/main_image.jpg" alt="hero"
+          className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl"
+        />
+        <div className="absolute top-0 left-0 mt-6 ml-10">
+          <div className="relative flex mt-3 sm:mt-8" id="mainPageSearchBar">
+            <EllipsisVerticalIcon className="absolute left-0 flex items-center w-10 h-10 text-black top-5 sm:h-7 sm:top-3 " />
+            <input className="w-[30rem] max-w-[80vw] h-20 pl-10 text-xl rounded-l-[20px] placeholder:font-bold
                 sm:text-sm sm:h-14 sm:pl-8
                 " type="text" placeholder="프리랜서 아티스트 구인구직 마켓플레이스" />
-                <button className="w-20 h-20 sm:h-14 bg-black rounded-r-[20px] flex justify-center items-center
+            <button className="w-16 h-20 sm:h-14 bg-black rounded-r-[20px] flex justify-center items-center
                 sm:w-14
                 ">
-                  <MagnifyingGlassIcon className="w-10 h-10 text-white sm:w-7" />
-                </button>
-              </div>
-            </div>
+              <MagnifyingGlassIcon className="w-6 h-10 text-white sm:w-7" />
+            </button>
+          </div>
 
+          <div className="mt-4 font-medium leading-[1.15] text-white text-7xl drop-shadow-[2px_2px_#333333]">
+            BROWSE ARTIST,<br />BID INSTANTLY
           </div>
         </div>
       </div>
-      <div className="flex flex-row justify-center gap gap-8  items-center h-20 min-w-full px-30% bg-gray-400 md:gap-2">
-        <div className="text-2xl font-bold text-white sm:text-sm">
-          협력사
-        </div>
-        <img src={"/images/company-toss.png"} alt="companylogo" className="h-24 md:h-12 sm:h-8" />
-        <img src={"/images/company-samsung.png"} alt="companylogo" className="h-12 pr-3 md:h-6 sm:h-4" />
-        <img src={"/images/company-kakaopay.png"} alt="companylogo" className="h-8 pr-3 md:h-4 sm:h-3"/> 
-        <img src={"/images/company-modusign.png"} alt="companylogo" className="h-14 md:h-7 sm:h-5" />
+      <div className="mt-4 h-[500px] bg-primary">
+        안녕하세요
       </div>
-      <CategoryList />
 
     </main>
   );

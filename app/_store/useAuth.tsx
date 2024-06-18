@@ -19,6 +19,9 @@ interface Auth {
   setInfo: (info: any) => void;
   checkAuth: () => void;
 
+  isNavSearchBarShow: boolean;
+  setIsNavSearchBarShow: (flag: boolean) => void;
+
 
 
 }
@@ -32,6 +35,8 @@ export const useAuth = create<Auth>((set) => ({
   profileImage: '',
   loginType: '',
   accountType: '',
+  isNavSearchBarShow: true,
+  setIsNavSearchBarShow: (flag: boolean) => set({ isNavSearchBarShow: flag }),
   isLogin: false,
   setInfo: (info: any) => set({ ...info }),
   checkAuth: async () => {

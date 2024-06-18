@@ -7,7 +7,7 @@ import localFont from 'next/font/local'
 import { useEffect, useState, useRef } from 'react';
 import Link from "next/link"
 import Image from "next/image"
-import { XMarkIcon } from '@heroicons/react/24/solid';
+import { EllipsisVerticalIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 
 import PrelineScript from "./_components/PrelineScript";
@@ -46,7 +46,7 @@ export default function RootLayout({
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { checkAuth, isLogin, profileImage, nickname } = useAuth();
+  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow } = useAuth();
 
   const [isNavExist, setIsNavExist] = useState(false);
 
@@ -54,6 +54,21 @@ export default function RootLayout({
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+
+  const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState('원하는 아티스트가 있나요?');
+
+  function randomSearchBarPlaceHolder() {
+    let placeholderList = [
+      "원하는 아티스트가 있나요?",
+      "어떤 아티스트를 찾으시나요?",
+      "원하는 디자인을 검색해보세요!",
+      "당신이 찾는 아티스트는 누구인가요?",
+      "아티스트가 필요하신가요?"
+    ]
+    let randomIndex = Math.floor(Math.random() * placeholderList.length);
+    setSearchBarPlaceHolder(placeholderList[randomIndex]);
+  }
   useEffect(() => {
 
 
@@ -65,6 +80,11 @@ export default function RootLayout({
     if (searchParams.get('nav') === 'false') {
       setIsNavReact(false);
     }
+    if (pathname !== '/') {
+      setIsNavSearchBarShow(true);
+    } else {
+      randomSearchBarPlaceHolder();
+    }
 
 
 
@@ -73,6 +93,7 @@ export default function RootLayout({
 
   useEffect(() => {
     checkAuth();
+    randomSearchBarPlaceHolder();
   }, [])
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
@@ -80,26 +101,7 @@ export default function RootLayout({
 
 
 
-  // useEffect(() => {
 
-  // const handleScroll = () => {
-  //   const currentScrollY = window.scrollY;
-
-  //   if (currentScrollY > 100) {
-  //     setIsWhiteNav(true);
-  //   } else {
-  //     setIsWhiteNav(false);
-  //   }
-  //   // 마지막 스크롤 위치 업데이트
-  //   setLastScrollY(currentScrollY);
-  // };
-
-  // 스크롤 이벤트 리스너 등록
-  // window.addEventListener('scroll', handleScroll);
-
-  // 클린업 함수에서 이벤트 리스너 제거
-  // return () => window.removeEventListener('scroll', handleScroll);
-  // }, [lastScrollY]); // lastScrollY가 변경될 때마다 useEffect가 실행됩니다.
 
 
   return (
@@ -118,17 +120,31 @@ export default function RootLayout({
 
         <div className={`fixed top-0 z-[9000] flex items-center justify-center w-full h-20 py-4 flex-wrap md:flex-row md:flex-nowrap md:h-16 md:px-4 md:justify-between md:py-4 transition ease-in-out duration-300 ${isWhiteNav ? 'bg-white bg-opacity-85 shadow-md shadow-black/5' : ''}
         md:bg-white md:bg-opacity-85 md:shadow-md md:shadow-black/5
+        px-3
         ${!isNavExist ? 'hidden' : ''}
         `}>
-          <div className="flex items-center w-[250px] ml-6 md:ml-0">
+          <div className="flex items-center ml-6 md:ml-0">
             <Link href={
               isNavReact ? "/" : "#"
 
             }>
-              <img src={'/images/logo.png'} alt='logo' width={250} height={150} />
+              <img src={'/images/logo.png'} alt='logo' width={220} height={100} />
             </Link>
+            <div className={`relative flex ml-5
+              ${!isNavSearchBarShow && pathname == "/" ? 'opacity-0' : 'opacity-100'}
+              transition ease-in-out duration-200 
+              `}>
+              <input className="w-[15rem] max-w-[80vw] h-10  text-sm rounded-l-[5px] placeholder:font-medium
+                sm:text-sm sm:h-14 border border-gray-300 focus:w-[20rem] focus:outline-none 
+                " type="text" placeholder={searchBarPlaceHolder} />
+              <button className="w-8 h-10 sm:h-14 bg-black rounded-r-[5px] flex justify-center items-center
+                sm:w-14
+                ">
+                <MagnifyingGlassIcon className="w-4 h-5 text-white sm:w-7" />
+              </button>
+            </div>
           </div>
-          <div className={`flex flex-row items-center md:flex-col  ml-auto mr-10 
+          <div className={`flex flex-row items-center md:flex-col  ml-auto mr-6 
            md:hidden
           `}>
             {/* <Link className="text-lg font-semibold text-pro" href="#">
