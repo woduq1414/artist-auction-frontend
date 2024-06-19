@@ -38,6 +38,7 @@
     "env-cmd": "^10.1.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "event-source-polyfill": "^1.0.31",
     "fast-average-color": "^9.4.0",
     "jodit-react": "^4.1.2",
     "lodash": "^4.17.21",
@@ -66,6 +67,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@tailwindcss/forms": "^0.5.7"
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/event-source-polyfill": "^1.0.5"
   }
 }

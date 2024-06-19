@@ -22,6 +22,9 @@ interface Auth {
   isNavSearchBarShow: boolean;
   setIsNavSearchBarShow: (flag: boolean) => void;
 
+  notifyCount: number;
+  plusNotifyCount: () => void;
+  minusNotifyCount: () => void;
 
 
 }
@@ -36,9 +39,17 @@ export const useAuth = create<Auth>((set) => ({
   loginType: '',
   accountType: '',
   isNavSearchBarShow: true,
+  notifyCount: 0,
   setIsNavSearchBarShow: (flag: boolean) => set({ isNavSearchBarShow: flag }),
   isLogin: false,
   setInfo: (info: any) => set({ ...info }),
+
+
+  plusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount + 1 })),
+  minusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount - 1 })),
+
+
+
   checkAuth: async () => {
     // const res = await fetcher('/auth/check');
     // const data = res.json();

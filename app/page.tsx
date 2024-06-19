@@ -35,7 +35,12 @@ export default function Home() {
   useEffect(() => {
     setIsNavSearchBarShow(false);
     window.addEventListener('scroll', () => {
-      const getTop = (el: { offsetTop: any; offsetParent: any; }): number => el.offsetTop + (el.offsetParent && getTop(el.offsetParent))
+      const getTop = (el: { offsetTop: any; offsetParent: any; }): number => {
+
+        if(!el) return 0;
+  
+        return el.offsetTop + (el.offsetParent && getTop(el.offsetParent))
+      }
       const searchBar = document.getElementById('mainPageSearchBar');
       let searchBarTop = getTop(searchBar as any);
       if (searchBar && window.scrollY > searchBarTop) {

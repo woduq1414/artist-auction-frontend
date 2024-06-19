@@ -8,8 +8,9 @@ import { useEffect, useState, useRef } from 'react';
 import Link from "next/link"
 import Image from "next/image"
 import { EllipsisVerticalIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { BellIcon } from '@heroicons/react/24/outline';
 
-
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 import PrelineScript from "./_components/PrelineScript";
 import path from 'path'
 
@@ -22,6 +23,7 @@ import { Cookies } from 'react-cookie';
 
 import Config from '@/config/config.export'
 import "react-loading-skeleton/dist/skeleton.css";
+import { headers } from 'next/headers'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -39,6 +41,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const EventSource = EventSourcePolyfill;
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isWhiteNav, setIsWhiteNav] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,7 +49,9 @@ export default function RootLayout({
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow } = useAuth();
+
+
+  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount } = useAuth();
 
   const [isNavExist, setIsNavExist] = useState(false);
 
@@ -69,6 +74,34 @@ export default function RootLayout({
     let randomIndex = Math.floor(Math.random() * placeholderList.length);
     setSearchBarPlaceHolder(placeholderList[randomIndex]);
   }
+
+  function connectSSERequest() {
+    const sse = new EventSource(Config().baseUrl.replace("/api/v1", "") + '/sse/notify',
+      {
+        headers: {
+          "Authorization": "Bearer " + new Cookies().get('accessToken'),
+        },
+        withCredentials: true
+      }
+    );
+    sse.onmessage = (event: { data: any }) => {
+      console.log(event.data);
+      plusNotifyCount();
+      
+      toast.info(JSON.parse(event.data).message, {
+        
+        position: "top-right",
+        
+        autoClose :15000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  }
+
+
   useEffect(() => {
 
 
@@ -94,7 +127,19 @@ export default function RootLayout({
   useEffect(() => {
     checkAuth();
     randomSearchBarPlaceHolder();
+    
   }, [])
+
+
+  useEffect(() => {
+    if(isLogin){
+      connectSSERequest();
+    }
+
+  }, [isLogin])
+
+
+
 
   const modalBackgroundRef = useRef<HTMLDivElement>(null);
 
@@ -174,7 +219,7 @@ export default function RootLayout({
 
               </button>
             </Link>
-
+            {/* <BellIcon className="w-6 h-6 mr-6 text-gray-600" /> */}
             <div className={`hs-dropdown relative inline-flex ${!isLogin ? 'hidden' : ' '}`}>
               <button
                 id="hs-dropdown-custom-trigger"
@@ -212,14 +257,22 @@ export default function RootLayout({
                 className="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-60 bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-neutral-800 dark:border dark:border-neutral-700"
                 aria-labelledby="hs-dropdown-custom-trigger"
               >
-                <a
+                <Link
+                  className="flex items-center px-3 py-2 text-gray-800 rounded-lg text-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                  href={
+                    isNavReact ? "/my" : "#"
+                  }
+                >
+                  알림<span className={`ml-[10px] rounded-full px-2 py-1 text-xs text-white bg-primary-light ${notifyCount == 0 ? 'hidden' : ''}`}>{notifyCount >= 50 ? "50+" : notifyCount}</span>
+                </Link>
+                <Link
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href={
                     isNavReact ? "/my" : "#"
                   }
                 >
                   내 정보
-                </a>
+                </Link>
                 <a
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href="#"
@@ -243,6 +296,8 @@ export default function RootLayout({
                 </a>
 
               </div>
+
+
             </div>
 
           </div>
