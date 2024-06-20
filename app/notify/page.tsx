@@ -5,7 +5,8 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCategory } from "../_store/useCategory";
 import { useEffect, useState } from "react";
 
-import { ArrowRightIcon, MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon, TrashIcon } from "@heroicons/react/24/solid";
+import { ArrowRightIcon, MagnifyingGlassIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { QueueListIcon } from "@heroicons/react/24/solid";
 import Config from "@/config/config.export";
 import { get, set } from "lodash";
@@ -24,10 +25,10 @@ class Notify {
     description: string;
     action: string;
     receiver_id: string[];
-    created_at: string;
+    created_at: number;
     type: string;
 
-    constructor(title: string, description: string, action: string, receiver_id: string[], created_at: string, type: string) {
+    constructor(title: string, description: string, action: string, receiver_id: string[], created_at: number, type: string) {
 
         this.title = title;
         this.description = description;
@@ -47,11 +48,11 @@ export default function MyPage() {
 
     // const data = await Data();
     // console.log(data);
-    const { notifyCount } = useAuth();
+    const { notifyCount, setNotifyCount, notifyList, setNotifyList, notifyRead, setNotifyRead } = useAuth();
 
-    const [tmpNotifyCount, setTmpNotifyCount] = useState(notifyCount);
+    // const [tmpNotifyCount, setTmpNotifyCount] = useState(notifyCount);
+    const [tmpNotifyRead, setTmpNotifyRead] = useState(0);
 
-    const [notifyList, setNotifyList] = useState<Notify[]>([]);
 
     let profileImageUploaderRef = React.createRef<HTMLInputElement>();
     let uploadProfileImageButtonRef = React.createRef<HTMLButtonElement>();
@@ -59,7 +60,7 @@ export default function MyPage() {
     let cropperRef = React.createRef<any>();
 
     async function getNotifyList() {
-        const res = await fetch(Config().baseUrl + '/notify',
+        const res = await fetch(Config().baseUrl + '/notify?is_read=true',
             {
                 method: 'GET',
                 headers: {
@@ -71,7 +72,9 @@ export default function MyPage() {
         );
         const data = await res.json();
 
-        setNotifyList(data.data.reverse());
+        setNotifyList(data.data.notify_list.reverse());
+        setNotifyRead(data.data.notify_read);
+
     }
 
 
@@ -79,29 +82,20 @@ export default function MyPage() {
     useEffect(() => {
 
         getNotifyList();
-
+        setTmpNotifyRead(0);
+        setNotifyCount(0);
     }, []);
 
+
     useEffect(() => {
-        if (notifyCount > tmpNotifyCount) {
-            getNotifyList();
-            setTmpNotifyCount(notifyCount);
+        if (tmpNotifyRead == 0) {
+            setTmpNotifyRead(notifyRead);
         }
-    }, [notifyCount]);
-
-    useEffect(() => {
-        import('preline/preline').then((module) => {
-            // alert(props.cat  egory)
+    }, [notifyRead]);
 
 
 
-            const { HSStaticMethods } = module;
-            HSStaticMethods.autoInit();
 
-
-        })
-
-    }, [notifyList]);
 
     const router = useRouter();
 
@@ -114,8 +108,26 @@ export default function MyPage() {
             <div className="w-[40%] mx-auto h-full min-w-[650px]">
                 <div className="flex flex-col w-[100%] mt-10 h-full bg-white min-h-[80vh] shadow-md px-6">
 
-                    <div className="w-full my-5 text-2xl font-semibold text-center">
-                        알림
+                    <div className="flex flex-row items-center justify-between w-full my-5">
+                        <div className="ml-3 w-7" />
+                        <div className="w-full text-2xl font-semibold text-center">
+                            알림
+                        </div>
+                        <TrashIcon className="mr-3 text-gray-500 cursor-pointer w-7 h-7" onClick={() => {
+                            confirm("모든 알림을 삭제하시겠습니까?") && fetch(Config().baseUrl + '/notify/all',
+                                {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                    },
+                                }
+
+                            ).then(() => {
+                                setNotifyList([]);
+                            })
+                        }} />
                     </div>
                     <div className="overflow-y-auto max-h-[70vh] overflow-x-hidden">
                         {
@@ -123,18 +135,23 @@ export default function MyPage() {
                                 return (
                                     <div
                                         key={notify.created_at}
-                                        id={"dismiss-alert-" + notify.created_at.replace('.', '').replaceAll(':', "")}
+                                        id={"dismiss-alert-" + notify.created_at}
                                         className="w-full p-4 text-sm text-gray-800 transition duration-300 border-b rounded-lg hs-removing:translate-x-5 hs-removing:opacity-0 dark:bg-teal-800/10 dark:border-teal-900 dark:text-teal-500"
                                         role="alert"
                                     >
                                         <div className="flex flex-row items-center w-full">
                                             <div className="flex flex-row items-center ms-2">
                                                 <div className="block w-full font-medium text-[1.0rem] text-wrap items-center ">
-                                                    <div className={`mr-[5px] mb-[1px] rounded-full w-[8px] h-[8px] text-xs text-white bg-primary-light inline-block`}></div>
-                                                    {notify.title}님께서 거래 요청
+                                                    <div className={`
+                                                       
+                                                        mr-[5px] mb-[1px] rounded-full w-[8px] h-[8px] text-xs text-white bg-primary-light inline-block
+                                                         ${notify.created_at > tmpNotifyRead ? "animate-pulse" : "hidden"
+                                                        }
+                                                        `}></div>
+                                                    {notify.title}님께서 거래 요청{notify.created_at}
                                                     <br />
                                                     <div className="mt-1 text-sm font-medium text-gray-500">
-                                                        {dateDiffToKor(new Date(notify.created_at))}
+                                                        {dateDiffToKor(notify.created_at)}
                                                     </div>
                                                 </div>
 

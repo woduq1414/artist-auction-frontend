@@ -25,8 +25,13 @@ interface Auth {
   notifyCount: number;
   plusNotifyCount: () => void;
   minusNotifyCount: () => void;
+  setNotifyCount: (count: number) => void;
 
+  notifyList: any[];
+  setNotifyList: (list: any[]) => void;
 
+  notifyRead: number;
+  setNotifyRead: (count: number) => void;
 }
 
 
@@ -40,6 +45,10 @@ export const useAuth = create<Auth>((set) => ({
   accountType: '',
   isNavSearchBarShow: true,
   notifyCount: 0,
+  notifyList: [],
+  notifyRead : 0,
+  setNotifyList: (list: any[]) => set({ notifyList: list }),
+  setNotifyRead: (count: number) => set({ notifyRead: count }),
   setIsNavSearchBarShow: (flag: boolean) => set({ isNavSearchBarShow: flag }),
   isLogin: false,
   setInfo: (info: any) => set({ ...info }),
@@ -47,7 +56,7 @@ export const useAuth = create<Auth>((set) => ({
 
   plusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount + 1 })),
   minusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount - 1 })),
-
+  setNotifyCount: (count: number) => set({ notifyCount: count }),
 
 
   checkAuth: async () => {

@@ -24,6 +24,7 @@ import { Cookies } from 'react-cookie';
 import Config from '@/config/config.export'
 import "react-loading-skeleton/dist/skeleton.css";
 import { headers } from 'next/headers'
+import { get } from 'lodash'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -51,7 +52,10 @@ export default function RootLayout({
 
 
 
-  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount } = useAuth();
+  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount , setNotifyCount,
+
+    setNotifyList, setNotifyRead
+  } = useAuth();
 
   const [isNavExist, setIsNavExist] = useState(false);
 
@@ -87,19 +91,66 @@ export default function RootLayout({
     );
     sse.onmessage = (event: { data: any }) => {
       console.log(event.data);
-      plusNotifyCount();
-      
+     
+
       toast.info(JSON.parse(event.data).title, {
-        
+
         position: "top-right",
-        
-        autoClose :15000,
+
+        autoClose: 15000,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
       });
+
+      if(window.location.pathname == '/notify'){
+    
+        getNotifyList(true);
+      }else{
+        plusNotifyCount();
+      }
     }
+  }
+
+  async function getNotifyList(is_read = false) {
+    const res = await fetch(Config().baseUrl + '/notify' + (is_read == true ? '?is_read=true' : ''),
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer " + new Cookies().get('accessToken')
+        },
+      }
+
+    );
+    const data = await res.json();
+
+    if (res.status !== 200) {
+      return;
+    }
+
+    const notifyList = data.data.notify_list
+    const notifyRead = data.data.notify_read
+
+    let cnt = 0;
+    for(let i = 0; i < notifyList.length; i++){
+      if(notifyList[notifyList.length - 1 - i].created_at > notifyRead){
+        cnt++;
+      }else{
+        break;
+      }
+    }
+    if(is_read){
+      setNotifyCount(0);
+    }else{
+      setNotifyCount(cnt);
+    }
+
+
+    setNotifyList(notifyList.reverse());
+    setNotifyRead(notifyRead);
+
   }
 
 
@@ -128,12 +179,12 @@ export default function RootLayout({
   useEffect(() => {
     checkAuth();
     randomSearchBarPlaceHolder();
-    
+    getNotifyList();
   }, [])
 
 
   useEffect(() => {
-    if(isLogin){
+    if (isLogin) {
       connectSSERequest();
     }
 
