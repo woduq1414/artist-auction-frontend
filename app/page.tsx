@@ -66,7 +66,7 @@ export default function Home() {
         `}>
         {
           ["Design", "Illustration", "Animation"].map((category, index) => (
-            <div className="text-lg">
+            <div className="text-lg" key={category}>
               {category}
             </div>
           ))

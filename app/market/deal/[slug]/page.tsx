@@ -287,6 +287,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         deal.request_image_list ? (
                                             deal.request_image_list.map((x: { url: string | undefined; }) => {
                                                 return <img
+                                                    key={x.url}
                                                     className="h-[150px]"
                                                     src={
                                                         x.url
