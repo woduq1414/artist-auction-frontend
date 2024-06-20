@@ -52,7 +52,7 @@ export const useCategory = create<Category>((set) => ({
     if (category === 'all') {
       category = '';
     }
-    let url = Config().baseUrl + `/artist/goods?`
+    let url = Config().baseUrl + `/artist/goods/?`
     if (category) {
       url += `category=${category}&`
     }
