@@ -80,6 +80,7 @@ export default function RootLayout({
       {
         headers: {
           "Authorization": "Bearer " + new Cookies().get('accessToken'),
+          "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Credentials": "true"
         },
         withCredentials: true
       }
@@ -88,7 +89,7 @@ export default function RootLayout({
       console.log(event.data);
       plusNotifyCount();
       
-      toast.info(JSON.parse(event.data).message, {
+      toast.info(JSON.parse(event.data).title, {
         
         position: "top-right",
         
@@ -238,6 +239,7 @@ export default function RootLayout({
                 <span className="text-gray-600 font-semibold text-md truncate max-w-[7.5rem] dark:text-neutral-400">
                   {nickname}
                 </span>
+                <span className={`ml-[0px] rounded-full w-[6px] h-[6px] text-xs text-white bg-primary-light ${notifyCount == 0 ? 'hidden' : ''}`}></span>
                 <svg
                   className="hs-dropdown-open:rotate-180 size-4"
                   xmlns="http://www.w3.org/2000/svg"
@@ -260,7 +262,7 @@ export default function RootLayout({
                 <Link
                   className="flex items-center px-3 py-2 text-gray-800 rounded-lg text-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href={
-                    isNavReact ? "/my" : "#"
+                    isNavReact ? "/notify" : "#"
                   }
                 >
                   알림<span className={`ml-[10px] rounded-full px-2 py-1 text-xs text-white bg-primary-light ${notifyCount == 0 ? 'hidden' : ''}`}>{notifyCount >= 50 ? "50+" : notifyCount}</span>
