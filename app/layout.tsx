@@ -25,6 +25,7 @@ import Config from '@/config/config.export'
 import "react-loading-skeleton/dist/skeleton.css";
 import { headers } from 'next/headers'
 import { get } from 'lodash'
+import notifyParser from './_common/notifyParser'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -91,9 +92,14 @@ export default function RootLayout({
     );
     sse.onmessage = (event: { data: any }) => {
       console.log(event.data);
-     
+      let data = JSON.parse(event.data).title;
 
-      toast.info(JSON.parse(event.data).title, {
+      toast.info(<span
+        dangerouslySetInnerHTML={
+          { __html: notifyParser(data) }
+
+      }
+      />, {
 
         position: "top-right",
 

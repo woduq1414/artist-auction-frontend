@@ -17,6 +17,7 @@ import { useAuth } from "../_store/useAuth";
 import { Cookies } from "react-cookie";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import notifyParser from "../_common/notifyParser";
 
 
 class Notify {
@@ -148,7 +149,21 @@ export default function MyPage() {
                                                          ${notify.created_at > tmpNotifyRead ? "animate-pulse" : "hidden"
                                                         }
                                                         `}></div>
-                                                    {notify.title}님께서 거래 요청{notify.created_at}
+                                                    <span dangerouslySetInnerHTML={
+                                                        { __html : notifyParser(notify.title) }
+
+                                                    }
+                                                    onClick={()=>{
+                                                        const action = notify.action;
+                                                        const token = action.split('/')[0];
+                                                        const id = action.split('/')[1];
+                                                        if(token === 'artist_goods_deal'){
+                                                            router.push('/market/deal/' + id);
+                                                        }
+                                                    }}
+                                                    >
+                                                        
+                                                    </span>
                                                     <br />
                                                     <div className="mt-1 text-sm font-medium text-gray-500">
                                                         {dateDiffToKor(notify.created_at)}

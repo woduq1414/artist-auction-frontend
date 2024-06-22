@@ -495,7 +495,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                                         console.log(data);
 
-                                        let res2 = await fetch(Config().baseUrl + '/artist/profile-image?image_media_id=' + data.data[0].id, {
+                                        let res2 = await fetch(Config().baseUrl + '/auth/profile-image?image_media_id=' + data.data[0].id, {
                                             method: 'PUT',
                                             headers: {
 

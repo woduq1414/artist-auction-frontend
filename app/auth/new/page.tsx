@@ -344,7 +344,7 @@ const RegisterPage: React.FC = () => {
             });
             return;
         } else {
-            let res = await fetch(Config().baseUrl + '/artist/check-nickname?nickname=' + nickname, {
+            let res = await fetch(Config().baseUrl + '/auth/check-nickname?nickname=' + nickname, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
