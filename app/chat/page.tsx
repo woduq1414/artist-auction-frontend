@@ -68,6 +68,7 @@ export default function MyPage() {
                         "targetId": chatting.company.id,
                         "targetNickname": chatting.company.nickname,
                         "targetProfileImage": chatting.company.profile_image ? chatting.company.profile_image.media.path : undefined,
+                        "lastMessage": chatting.last_message ? chatting.last_message : ""
 
                     }
                 ))
@@ -79,6 +80,7 @@ export default function MyPage() {
                         "targetId": chatting.artist.id,
                         "targetNickname": chatting.artist.nickname,
                         "targetProfileImage": chatting.artist.profile_image ? chatting.artist.profile_image.media.path : undefined,
+                        "lastMessage": chatting.last_message ? chatting.last_message : ""
                     }
                 ))
             );
@@ -172,11 +174,26 @@ export default function MyPage() {
             HSStaticMethods.autoInit(['tooltip']);
 
         });
-        if(chatContainerRef.current){
+        if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
 
         }
-      
+
+        // update last_message at chattingRoomList
+
+        const newChattingRoomList = chattingRoomList.map((chatting: any) => {
+            if (chatting.targetId === selectedChattingRoom.targetId) {
+                return {
+                    ...chatting,
+                    "lastMessage": chattingList[chattingList.length - 1].message
+                }
+            } else {
+                return chatting;
+            }
+        });
+
+        setChattingRoomList(newChattingRoomList);
+
     }, [chattingList]);
 
     async function submitChatting() {
@@ -184,10 +201,10 @@ export default function MyPage() {
             return;
         }
 
-        if(!selectedChattingRoom.content){
+        if (!selectedChattingRoom.content) {
             await makeChattingRoom(selectedChattingRoom.targetId);
         }
-       
+
 
         // const data = {
         //     "type": "text",
@@ -202,7 +219,7 @@ export default function MyPage() {
         setChattingList([...chattingList, {
             "sender": "me",
             "message": chattingInputRef.current.value,
-            "type" : "text",
+            "type": "text",
             "created_at": Date.now()
         }]);
 
@@ -234,7 +251,7 @@ export default function MyPage() {
                                                 {chatting.targetNickname}
                                             </div>
                                             <div className="text-sm text-gray-500">
-                                                {chatting.data}
+                                                {chatting.lastMessage}
                                             </div>
                                         </div>
                                     </div>
