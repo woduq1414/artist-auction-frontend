@@ -53,9 +53,9 @@ export default function RootLayout({
 
 
 
-  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount , setNotifyCount,
+  const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount, setNotifyCount,
 
-    setNotifyList, setNotifyRead
+    setNotifyList, setNotifyRead, plusChatCount, chatCount, setChatCount, setChattingList, chattingList
   } = useAuth();
 
   const [isNavExist, setIsNavExist] = useState(false);
@@ -64,7 +64,7 @@ export default function RootLayout({
 
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  const chattingListStateRef = useRef(chattingList);
 
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState('원하는 아티스트가 있나요?');
 
@@ -80,7 +80,12 @@ export default function RootLayout({
     setSearchBarPlaceHolder(placeholderList[randomIndex]);
   }
 
+  useEffect(() => {
+    chattingListStateRef.current = chattingList;
+  }, [chattingList])
+
   function connectSSERequest() {
+    // return;
     const sse = new EventSource(Config().baseUrl.replace("/api/v1", "") + '/sse/notify',
       {
         headers: {
@@ -90,15 +95,20 @@ export default function RootLayout({
         withCredentials: true
       }
     );
+
+ 
+
     sse.onmessage = (event: { data: any }) => {
-      console.log(event.data);
-      let data = JSON.parse(event.data).title;
+      let data = JSON.parse(event.data)
+      let title = data.title;
+
+      const isChatingMessage = data.type == 'chatting_message';
 
       toast.info(<span
         dangerouslySetInnerHTML={
-          { __html: notifyParser(data) }
+          { __html: notifyParser(title) }
 
-      }
+        }
       />, {
 
         position: "top-right",
@@ -110,11 +120,25 @@ export default function RootLayout({
         progress: undefined,
       });
 
-      if(window.location.pathname == '/notify'){
-    
+ 
+
+      if (window.location.pathname == '/notify') {
+        if(isChatingMessage){
+          plusChatCount(1);
+        }
         getNotifyList(true);
-      }else{
+      } else if (window.location.pathname == '/chat') {
+        if(!isChatingMessage){
+          plusNotifyCount();
+        }else{
+          console.log(JSON.parse(data.description));
+          setChattingList([...chattingListStateRef.current, JSON.parse(data.description)]);
+        }
+      }
+      if (!isChatingMessage) {
         plusNotifyCount();
+      } else {
+        plusChatCount(1);
       }
     }
   }
@@ -140,16 +164,16 @@ export default function RootLayout({
     const notifyRead = data.data.notify_read
 
     let cnt = 0;
-    for(let i = 0; i < notifyList.length; i++){
-      if(notifyList[notifyList.length - 1 - i].created_at > notifyRead){
+    for (let i = 0; i < notifyList.length; i++) {
+      if (notifyList[notifyList.length - 1 - i].created_at > notifyRead) {
         cnt++;
-      }else{
+      } else {
         break;
       }
     }
-    if(is_read){
+    if (is_read) {
       setNotifyCount(0);
-    }else{
+    } else {
       setNotifyCount(cnt);
     }
 
@@ -296,7 +320,7 @@ export default function RootLayout({
                 <span className="text-gray-600 font-semibold text-md truncate max-w-[7.5rem] dark:text-neutral-400">
                   {nickname}
                 </span>
-                <span className={`ml-[0px] rounded-full w-[6px] h-[6px] text-xs text-white bg-primary-light ${notifyCount == 0 ? 'hidden' : ''}`}></span>
+                <span className={`ml-[0px] rounded-full w-[6px] h-[6px] text-xs text-white bg-primary-light ${notifyCount == 0 && chatCount == 0 ? 'hidden' : ''}`}></span>
                 <svg
                   className="hs-dropdown-open:rotate-180 size-4"
                   xmlns="http://www.w3.org/2000/svg"
@@ -325,6 +349,14 @@ export default function RootLayout({
                   알림<span className={`ml-[10px] rounded-full px-2 py-1 text-xs text-white bg-primary-light ${notifyCount == 0 ? 'hidden' : ''}`}>{notifyCount >= 50 ? "50+" : notifyCount}</span>
                 </Link>
                 <Link
+                  className="flex items-center px-3 py-2 text-gray-800 rounded-lg text-md hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                  href={
+                    isNavReact ? "/chat" : "#"
+                  }
+                >
+                  채팅<span className={`ml-[10px] rounded-full px-2 py-1 text-xs text-white bg-primary-light ${chatCount == 0 ? 'hidden' : ''}`}>{chatCount >= 50 ? "50+" : chatCount}</span>
+                </Link>
+                <Link
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href={
                     isNavReact ? "/my" : "#"
@@ -332,6 +364,7 @@ export default function RootLayout({
                 >
                   내 정보
                 </Link>
+
                 <a
                   className="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-md text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
                   href="#"

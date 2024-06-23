@@ -27,6 +27,14 @@ interface Auth {
   minusNotifyCount: () => void;
   setNotifyCount: (count: number) => void;
 
+  chatCount : number;
+  setChatCount : (count : number) => void;
+  plusChatCount : (count : number) => void;
+  minusChatCount : (count : number) => void;
+
+  chattingList: any[];
+  setChattingList: (list: any[]) => void;
+
   notifyList: any[];
   setNotifyList: (list: any[]) => void;
 
@@ -57,6 +65,14 @@ export const useAuth = create<Auth>((set) => ({
   plusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount + 1 })),
   minusNotifyCount: () => set((state) => ({ notifyCount: state.notifyCount - 1 })),
   setNotifyCount: (count: number) => set({ notifyCount: count }),
+
+  chatCount : 0,
+  setChatCount : (count : number) => set({ chatCount : count }),
+  plusChatCount : (count : number) => set((state) => ({ chatCount : state.chatCount + count })),
+  minusChatCount : (count : number) => set((state) => ({ chatCount : state.chatCount - count })),
+
+  chattingList: [],
+  setChattingList: (list: any[]) => set({ chattingList: list }),
 
 
   checkAuth: async () => {

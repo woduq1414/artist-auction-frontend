@@ -161,6 +161,7 @@ export default function MyPage() {
                                                             router.push('/market/deal/' + id);
                                                         }
                                                     }}
+                                                    className="cursor-pointer"
                                                     >
                                                         
                                                     </span>
