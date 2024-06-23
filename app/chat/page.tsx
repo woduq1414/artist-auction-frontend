@@ -27,7 +27,7 @@ export default function MyPage() {
 
     // const data = await Data();
     // console.log(data);
-    const { checkAuth, isLogin, profileImage, nickname, id, accountType, chattingList, setChattingList } = useAuth();
+    const { checkAuth, isLogin, profileImage, nickname, id, accountType, chattingList, setChattingList, selectedChattingRoom, setSelectedChattingRoom, chattingRoomList, setChattingRoomList } = useAuth();
 
     const [goodsList, setGoodsList] = useState(undefined) as any;
     const [dealList, setDealList] = useState(undefined) as any;
@@ -68,7 +68,8 @@ export default function MyPage() {
                         "targetId": chatting.company.id,
                         "targetNickname": chatting.company.nickname,
                         "targetProfileImage": chatting.company.profile_image ? chatting.company.profile_image.media.path : undefined,
-                        "lastMessage": chatting.last_message ? chatting.last_message : ""
+                        "lastMessage": chatting.last_message ? chatting.last_message : "",
+                        "unreadCount": chatting.unread_count ? chatting.unread_count : 0
 
                     }
                 ))
@@ -80,7 +81,8 @@ export default function MyPage() {
                         "targetId": chatting.artist.id,
                         "targetNickname": chatting.artist.nickname,
                         "targetProfileImage": chatting.artist.profile_image ? chatting.artist.profile_image.media.path : undefined,
-                        "lastMessage": chatting.last_message ? chatting.last_message : ""
+                        "lastMessage": chatting.last_message ? chatting.last_message : "",
+                        "unreadCount": chatting.unread_count ? chatting.unread_count : 0
                     }
                 ))
             );
@@ -144,10 +146,59 @@ export default function MyPage() {
 
 
     const router = useRouter();
+    const queryString = useSearchParams();
 
-    const [selectedChattingRoom, setSelectedChattingRoom] = useState(undefined) as any;
+    async function getProfile(type: string, userId: string) {
+        const res = await fetch(Config().baseUrl + '/auth/profile/' + type + '/' + userId,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                },
+            }
 
-    const [chattingRoomList, setChattingRoomList] = useState([]) as any;
+        );
+        const data = await res.json();
+        console.log(data.data)
+        return data.data;
+    }
+
+    async function getTargetProfile() {
+        const artistId = queryString.get("artistId")
+        const companyId = queryString.get("companyId")
+        if (artistId) {
+
+            let targetProfile = await getProfile("artist", artistId)
+
+            setSelectedChattingRoom({
+                "targetId": queryString.get("artistId"),
+                "targetNickname": targetProfile.nickname,
+                "targetProfileImage": targetProfile.profile_image ? targetProfile.profile_image.media.path : undefined,
+                "lastMessage": "",
+                "unreadCount": 0
+            });
+
+        }else if (companyId) {
+            let targetProfile = await getProfile("company", companyId)
+
+            setSelectedChattingRoom({
+                "targetId": queryString.get("companyId"),
+                "targetNickname": targetProfile.nickname,
+                "targetProfileImage": targetProfile.profile_image ? targetProfile.profile_image.media.path : undefined,
+                "lastMessage": "",
+                "unreadCount": 0
+            });
+        }
+
+    }
+
+    useEffect(() => {
+   
+        getTargetProfile();
+
+
+    }, []);
 
     useEffect(() => {
         getChattingRoomList();
@@ -180,19 +231,24 @@ export default function MyPage() {
         }
 
         // update last_message at chattingRoomList
-
-        const newChattingRoomList = chattingRoomList.map((chatting: any) => {
-            if (chatting.targetId === selectedChattingRoom.targetId) {
-                return {
-                    ...chatting,
-                    "lastMessage": chattingList[chattingList.length - 1].message
-                }
-            } else {
-                return chatting;
+        if (chattingList && chattingList.length > 0) {
+            if(chattingList[chattingList.length - 1].sender !== 'me'){
+                return;
             }
-        });
+            const newChattingRoomList = chattingRoomList.map((chattingRoom: any) => {
+                if (selectedChattingRoom && chattingRoom.targetId === selectedChattingRoom.targetId) {
+                    return {
+                        ...chattingRoom,
+                        "lastMessage": chattingList[chattingList.length - 1].message
+                    }
+                } else {
+                    return chattingRoom;
+                }
+            });
 
-        setChattingRoomList(newChattingRoomList);
+            setChattingRoomList(newChattingRoomList);
+        }
+
 
     }, [chattingList]);
 
@@ -201,8 +257,9 @@ export default function MyPage() {
             return;
         }
 
-        if (!selectedChattingRoom.content) {
+        if (!selectedChattingRoom.lastMessage) {
             await makeChattingRoom(selectedChattingRoom.targetId);
+            await getChattingRoomList();
         }
 
 
@@ -238,10 +295,13 @@ export default function MyPage() {
                         {
                             chattingRoomList.map((chatting: any, index: any) => {
                                 return (
-                                    <div className="flex flex-row items-center w-full px-5 py-3 border-b border-gray-300 cursor-pointer hover:bg-gray-100" onClick={() => {
+                                    <div className="flex flex-row items-center w-full py-3 pl-5 pr-5 border-b border-gray-300 cursor-pointer hover:bg-gray-100" onClick={() => {
                                         setSelectedChattingRoom(chatting);
                                         getChattingList(chatting.targetId);
-                                    }}>
+                                    }} key={
+                                        chatting.targetId
+
+                                    }>
                                         <img
                                             className="w-12 h-12 mr-2 rounded-full"
                                             src={chatting.targetProfileImage ? chatting.targetProfileImage : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"}
@@ -252,6 +312,13 @@ export default function MyPage() {
                                             </div>
                                             <div className="text-sm text-gray-500">
                                                 {chatting.lastMessage}
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col items-center justify-center ml-auto">
+                                            <div className={`px-2 py-1 text-xs text-center text-white rounded-full bg-primary-light
+                                                ${chatting.unreadCount === 0 ? 'hidden' : ''}
+                                                `}>
+                                                {chatting.unreadCount}
                                             </div>
                                         </div>
                                     </div>
@@ -283,7 +350,10 @@ export default function MyPage() {
                                             if (chatting.sender === 'me') {
                                                 return (
 
-                                                    <div className="mb-1 ">
+                                                    <div className="mb-1 " key={
+                                                        chatting.created_at
+
+                                                    }>
                                                         <div className="flex flex-col items-end hs-tooltip  [--placement:top]">
                                                             {/* Card */}
                                                             <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
@@ -309,14 +379,17 @@ export default function MyPage() {
                                                 const isPrevChattingYou = chattingList[index - 1] && chattingList[index - 1].sender === 'you';
                                                 return (
 
-                                                    <div className="flex flex-col mb-1">
+                                                    <div className="flex flex-col mb-1" key={
+                                                        chatting.created_at
+
+                                                    }>
                                                         <div className="flex flex-row gap-2">
                                                             {
                                                                 !isPrevChattingYou ? <img
                                                                     className="inline-block rounded-full w-9 h-9"
                                                                     src={selectedChattingRoom.targetProfileImage ? selectedChattingRoom.targetProfileImage : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
                                                                     } />
-                                                                    : <div className="w-9 h-9"></div>
+                                                                    : <div className="ml-1 w-9 h-9"></div>
                                                             }
 
 

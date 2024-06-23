@@ -32,6 +32,12 @@ interface Auth {
   plusChatCount : (count : number) => void;
   minusChatCount : (count : number) => void;
 
+  selectedChattingRoom: any;
+  setSelectedChattingRoom: (room: any) => void;
+
+  chattingRoomList: any[];
+  setChattingRoomList: (list: any[]) => void;
+
   chattingList: any[];
   setChattingList: (list: any[]) => void;
 
@@ -73,6 +79,12 @@ export const useAuth = create<Auth>((set) => ({
 
   chattingList: [],
   setChattingList: (list: any[]) => set({ chattingList: list }),
+
+  chattingRoomList: [],
+  setChattingRoomList: (list: any[]) => set({ chattingRoomList: list }),
+
+  selectedChattingRoom: undefined,
+  setSelectedChattingRoom: (room: any) => set({ selectedChattingRoom: room }),
 
 
   checkAuth: async () => {

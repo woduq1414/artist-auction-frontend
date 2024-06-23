@@ -55,7 +55,7 @@ export default function RootLayout({
 
   const { checkAuth, isLogin, profileImage, nickname, isNavSearchBarShow, setIsNavSearchBarShow, plusNotifyCount, notifyCount, setNotifyCount,
 
-    setNotifyList, setNotifyRead, plusChatCount, chatCount, setChatCount, setChattingList, chattingList
+    setNotifyList, setNotifyRead, plusChatCount, chatCount, setChatCount, setChattingList, chattingList, selectedChattingRoom, setSelectedChattingRoom, chattingRoomList, setChattingRoomList
   } = useAuth();
 
   const [isNavExist, setIsNavExist] = useState(false);
@@ -65,6 +65,9 @@ export default function RootLayout({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const chattingListStateRef = useRef(chattingList);
+  const chattingRoomListStateRef = useRef(chattingRoomList);
+  const selectedChattingRoomStateRef = useRef(selectedChattingRoom);
+  // const sele
 
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState('원하는 아티스트가 있나요?');
 
@@ -84,8 +87,16 @@ export default function RootLayout({
     chattingListStateRef.current = chattingList;
   }, [chattingList])
 
+  useEffect(() => {
+    chattingRoomListStateRef.current = chattingRoomList;
+  }, [chattingRoomList])
+
+  useEffect(() => {
+    selectedChattingRoomStateRef.current = selectedChattingRoom;
+  }, [selectedChattingRoom])
+
   function connectSSERequest() {
-    return;
+    // return;
     const sse = new EventSource(Config().baseUrl.replace("/api/v1", "") + '/sse/notify',
       {
         headers: {
@@ -96,7 +107,7 @@ export default function RootLayout({
       }
     );
 
- 
+
 
     sse.onmessage = (event: { data: any }) => {
       let data = JSON.parse(event.data)
@@ -104,35 +115,61 @@ export default function RootLayout({
 
       const isChatingMessage = data.type == 'chatting_message';
 
-      toast.info(<span
-        dangerouslySetInnerHTML={
-          { __html: notifyParser(title) }
+      if (isChatingMessage && window.location.pathname == '/chat') {
+      } else {
+        toast.info(<span
+          dangerouslySetInnerHTML={
+            { __html: notifyParser(title) }
 
-        }
-      />, {
+          }
+        />, {
 
-        position: "top-right",
+          position: "top-right",
 
-        autoClose: 15000,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+          autoClose: 15000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
 
- 
+
+
 
       if (window.location.pathname == '/notify') {
-        if(isChatingMessage){
+        if (isChatingMessage) {
           plusChatCount(1);
         }
         getNotifyList(true);
       } else if (window.location.pathname == '/chat') {
-        if(!isChatingMessage){
+        if (!isChatingMessage) {
           plusNotifyCount();
-        }else{
+        } else {
           console.log(JSON.parse(data.description));
           setChattingList([...chattingListStateRef.current, JSON.parse(data.description)]);
+
+          const from = JSON.parse(data.description).from;
+          const message = JSON.parse(data.description).message;
+          const newChattingRoomList = chattingRoomListStateRef.current.map((chattingRoom: any) => {
+            if (from === chattingRoom.targetId) {
+              return {
+                ...chattingRoom,
+                "lastMessage": message
+              }
+            } else {
+              return chattingRoom;
+            }
+          });
+          console.log(newChattingRoomList);
+
+          setChattingRoomList(newChattingRoomList);
+
+
+
+          if (selectedChattingRoom && selectedChattingRoom.targetId == JSON.parse(data.description).from) {
+
+          }
         }
       }
       if (!isChatingMessage) {

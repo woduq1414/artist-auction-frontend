@@ -522,7 +522,13 @@ export default function Page({ params }: { params: { slug: string } }) {
                 accountType == 'artist' ? 'invisible' : ''
               }
               `}>
-              <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+              <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+              onClick={()=>{
+                router.push(
+                  "/chat?artistId=" + artist.id
+                )
+              }}
+              >
                 아티스트에게 1:1 문의
               </button>
 
