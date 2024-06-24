@@ -315,7 +315,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                             <div className={`sticky flex gap-3 my-2 top-[calc(100vh-70px)] z-50 bg-white py-3 flex-row items-center
                                     }
                             `}>
-                                <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                                <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                                    onClick={() => {
+                                        if (accountType === 'artist') {
+                                            router.push('/chat?companyId=' + deal.company.id)
+                                        }
+                                        else {
+                                            router.push(
+                                                "/chat?artistId=" + deal.artist.id
+                                            )
+                                        }
+                                    }}
+                                >
                                     {
                                         accountType === 'artist' ? "의뢰인과 1:1 대화" : "아티스트와 1:1 대화"
                                     }
@@ -324,7 +335,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                 {
                                     (() => {
                                         let disabledStatusDict: { [key: string]: { [key: string]: boolean } } = {
-                                            "artist" : {
+                                            "artist": {
                                                 "pending": false,
                                                 "accept": true,
                                             },
@@ -335,7 +346,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         }
 
                                         let activeButtonTextDict: { [key: string]: { [key: string]: string } } = {
-                                            "artist" : {
+                                            "artist": {
                                                 "pending": "거래 수락",
                                                 "accept": "결제 대기 중"
                                             },
@@ -344,10 +355,10 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                 "accept": "결제 진행"
                                             }
                                         }
-                                        
+
                                         let disabledStatus = disabledStatusDict[accountType][deal.status];
                                         let activeButtonText = activeButtonTextDict[accountType][deal.status];
-                                        
+
                                         return (<button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
                                             disabled={disabledStatus}
                                             onClick={async () => {
@@ -540,6 +551,6 @@ export default function Page({ params }: { params: { slug: string } }) {
                 </div>
             </div>
 
-        </main>
+        </main >
     );
 }

@@ -27,7 +27,7 @@ export default function MyPage() {
 
     // const data = await Data();
     // console.log(data);
-    const { checkAuth, isLogin, profileImage, nickname, id, accountType, chattingList, setChattingList, selectedChattingRoom, setSelectedChattingRoom, chattingRoomList, setChattingRoomList } = useAuth();
+    const { checkAuth, isLogin, profileImage, nickname, id, accountType, chattingList, setChattingList, selectedChattingRoom, setSelectedChattingRoom, chattingRoomList, setChattingRoomList, setChatCount, chatCount } = useAuth();
 
     const [goodsList, setGoodsList] = useState(undefined) as any;
     const [dealList, setDealList] = useState(undefined) as any;
@@ -35,6 +35,8 @@ export default function MyPage() {
     const [tempProfileImage, setTempProfileImage] = useState(undefined) as any;
     const [tempProfileImageTitle, setTempProfileImageTitle] = useState(undefined) as any;
     const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false) as any;
+
+    const [isFetchingChattingList, setIsFetchingChattingList] = useState(false) as any;
 
     let profileImageUploaderRef = React.createRef<HTMLInputElement>();
     let uploadProfileImageButtonRef = React.createRef<HTMLButtonElement>();
@@ -90,6 +92,8 @@ export default function MyPage() {
     }
 
     async function getChattingList(targetId: string) {
+
+        setIsFetchingChattingList(true);
         const res = await fetch(Config().baseUrl + '/chatting/' + targetId,
             {
                 method: 'GET',
@@ -103,10 +107,16 @@ export default function MyPage() {
         const data = await res.json();
 
         setChattingList(data.data.content);
+
+
+        setIsFetchingChattingList(false);
+
     }
 
 
     async function makeChattingRoom(targetId: string) {
+
+
         const res = await fetch(Config().baseUrl + '/chatting/' + targetId,
             {
                 method: 'POST',
@@ -179,7 +189,7 @@ export default function MyPage() {
                 "unreadCount": 0
             });
 
-        }else if (companyId) {
+        } else if (companyId) {
             let targetProfile = await getProfile("company", companyId)
 
             setSelectedChattingRoom({
@@ -194,7 +204,7 @@ export default function MyPage() {
     }
 
     useEffect(() => {
-   
+
         getTargetProfile();
 
 
@@ -232,7 +242,7 @@ export default function MyPage() {
 
         // update last_message at chattingRoomList
         if (chattingList && chattingList.length > 0) {
-            if(chattingList[chattingList.length - 1].sender !== 'me'){
+            if (chattingList[chattingList.length - 1].sender !== 'me') {
                 return;
             }
             const newChattingRoomList = chattingRoomList.map((chattingRoom: any) => {
@@ -254,6 +264,9 @@ export default function MyPage() {
 
     async function submitChatting() {
         if (chattingInputRef === null || chattingInputRef.current === null) {
+            return;
+        }
+        if (chattingInputRef.current.value.replaceAll(" ", "") === '') {
             return;
         }
 
@@ -296,8 +309,15 @@ export default function MyPage() {
                             chattingRoomList.map((chatting: any, index: any) => {
                                 return (
                                     <div className="flex flex-row items-center w-full py-3 pl-5 pr-5 border-b border-gray-300 cursor-pointer hover:bg-gray-100" onClick={() => {
+                                        setChatCount(
+                                            chatCount - chattingRoomList[index].unreadCount
+                                        )
+
+                                        chattingRoomList[index].unreadCount = 0;
+
                                         setSelectedChattingRoom(chatting);
                                         getChattingList(chatting.targetId);
+
                                     }} key={
                                         chatting.targetId
 
@@ -346,21 +366,20 @@ export default function MyPage() {
                                 </div>
                                 <div className="flex flex-col flex-grow px-6 py-3 overflow-y-auto max-h-[calc(100vh-300px)]" ref={chatContainerRef}>
                                     {
-                                        chattingList.map((chatting: any, index: any) => {
+                                        isFetchingChattingList ? <div className="flex flex-col items-center justify-center w-full h-full bg-white">
+                                            <Skeleton containerClassName="flex-1" height={300} />
+                                        </div> : chattingList.map((chatting: any, index: any) => {
                                             if (chatting.sender === 'me') {
                                                 return (
 
-                                                    <div className="mb-1 " key={
+                                                    <div className="flex flex-row justify-end w-full mb-1 group" key={
                                                         chatting.created_at
 
                                                     }>
-                                                        <div className="flex flex-col items-end hs-tooltip  [--placement:top]">
+                                                        <div className="flex flex-row items-end ">
                                                             {/* Card */}
-                                                            <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
-                                                                {chatting.message}
-                                                            </div>
-                                                            {/* End Card */}
-                                                            <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700 dark:text-neutral-500">
+
+                                                            <span className="z-10 inline-block px-2 py-1 text-xs font-medium text-gray-600 opacity-0 group-hover:opacity-100 ">
 
                                                                 {
                                                                     (() => {
@@ -369,6 +388,11 @@ export default function MyPage() {
                                                                     })()
                                                                 }
                                                             </span>
+                                                            <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
+                                                                {chatting.message}
+                                                            </div>
+                                                            {/* End Card */}
+
                                                         </div>
                                                     </div>
 
@@ -383,7 +407,7 @@ export default function MyPage() {
                                                         chatting.created_at
 
                                                     }>
-                                                        <div className="flex flex-row gap-2">
+                                                        <div className="flex flex-row gap-2 group">
                                                             {
                                                                 !isPrevChattingYou ? <img
                                                                     className="inline-block rounded-full w-9 h-9"
@@ -393,21 +417,21 @@ export default function MyPage() {
                                                             }
 
 
-                                                            <div className="flex flex-col items-start w-full hs-tooltip  [--placement:top]">
+                                                            <div className="flex flex-row items-end w-full hs-tooltip  [--placement:top]">
                                                                 {/* Card */}
                                                                 <div className="max-w-[75%] px-3 py-2 text-gray-800 border-gray-200 border-2 shadow-sm  rounded-2xl break-all whitespace-pre-wrap">
                                                                     {chatting.message}
                                                                 </div>
                                                                 {/* End Card */}
-                                                                <span className="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity bg-gray-900 rounded shadow-sm opacity-0 hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible dark:bg-neutral-700 dark:text-neutral-500">
+                                                                <span className="z-10 inline-block px-2 py-1 text-xs font-medium text-gray-600 opacity-0 group-hover:opacity-100 ">
 
-                                                                    {
-                                                                        (() => {
-                                                                            let date = new Date(chatting.created_at);
-                                                                            return date.toLocaleString('ko-KR', { hour: '2-digit', minute: '2-digit', 'day': '2-digit', 'month': '2-digit', 'year': 'numeric' })
-                                                                        })()
-                                                                    }
-                                                                </span>
+                                                                {
+                                                                    (() => {
+                                                                        let date = new Date(chatting.created_at);
+                                                                        return date.toLocaleString('ko-KR', { hour: '2-digit', minute: '2-digit', 'day': '2-digit', 'month': '2-digit', 'year': 'numeric' })
+                                                                    })()
+                                                                }
+                                                            </span>
                                                             </div>
                                                         </div>
 

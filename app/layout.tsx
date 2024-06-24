@@ -26,6 +26,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { headers } from 'next/headers'
 import { get } from 'lodash'
 import notifyParser from './_common/notifyParser'
+import { read } from 'fs'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -67,6 +68,7 @@ export default function RootLayout({
   const chattingListStateRef = useRef(chattingList);
   const chattingRoomListStateRef = useRef(chattingRoomList);
   const selectedChattingRoomStateRef = useRef(selectedChattingRoom);
+  const chatCountStateRef = useRef(chatCount);
   // const sele
 
   const [searchBarPlaceHolder, setSearchBarPlaceHolder] = useState('원하는 아티스트가 있나요?');
@@ -94,6 +96,10 @@ export default function RootLayout({
   useEffect(() => {
     selectedChattingRoomStateRef.current = selectedChattingRoom;
   }, [selectedChattingRoom])
+
+  useEffect(() => {
+    chatCountStateRef.current = chatCount;
+  }, [chatCount])
 
   function connectSSERequest() {
     // return;
@@ -155,7 +161,8 @@ export default function RootLayout({
             if (from === chattingRoom.targetId) {
               return {
                 ...chattingRoom,
-                "lastMessage": message
+                "lastMessage": message,
+                "unreadCount": selectedChattingRoomStateRef.current && chattingRoom.targetId == selectedChattingRoomStateRef.current.targetId ? 0 : chattingRoom.unreadCount + 1,
               }
             } else {
               return chattingRoom;
@@ -167,17 +174,40 @@ export default function RootLayout({
 
 
 
-          if (selectedChattingRoom && selectedChattingRoom.targetId == JSON.parse(data.description).from) {
+          if (selectedChattingRoomStateRef.current) {
+            
+            if (selectedChattingRoomStateRef.current.targetId != from) {
+              plusChatCount(1);
+            }
+            
+            readChatting(selectedChattingRoomStateRef.current.targetId);
 
+          }else{
+            plusChatCount(1);
+          
           }
         }
+      }else{
+        if(isChatingMessage){
+          plusChatCount(1);
+        }else{
+          plusNotifyCount();
+        }
       }
-      if (!isChatingMessage) {
-        plusNotifyCount();
-      } else {
-        plusChatCount(1);
-      }
+    
     }
+  }
+  async function readChatting(targetId: string) {
+    const res = await fetch(Config().baseUrl + '/chatting' + '/' + targetId + '/read',
+      {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer " + new Cookies().get('accessToken')
+        },
+      }
+
+    );
   }
 
   async function getNotifyList(is_read = false) {
@@ -214,6 +244,7 @@ export default function RootLayout({
       setNotifyCount(cnt);
     }
 
+    setChatCount(data.data.chatting_unread_count);
 
     setNotifyList(notifyList.reverse());
     setNotifyRead(notifyRead);
