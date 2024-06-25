@@ -197,6 +197,7 @@ export default function Home() {
                 <div className={`px-3 py-1 text-gray-800 bg-white border border-gray-600 cursor-pointer rounded-xl text-md
                   ${selectedSubCategory === subCategory ? "bg-gray-600 text-white" : "hover:bg-gray-200 "}
                   `}
+                  key={subCategory}
                 onClick={() => {
                   if (selectedSubCategory === subCategory) {
                     setSelectedSubCategory('');
