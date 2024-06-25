@@ -23,7 +23,7 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 export default function MyPage() {
 
-    const chattingInputRef = React.createRef<HTMLTextAreaElement>();
+    let chattingInputRef = React.createRef<HTMLTextAreaElement>();
 
     // const data = await Data();
     // console.log(data);
@@ -260,10 +260,13 @@ export default function MyPage() {
     }, [chattingList]);
 
     async function submitChatting() {
-        if (chattingInputRef === null || chattingInputRef.current === null) {
-            return;
-        }
-        if (chattingInputRef.current.value.replaceAll(" ", "") === '') {
+        // if (chattingInputRef === null || chattingInputRef.current === null) {
+        //     return;
+        // }
+        const chattingInput = document.getElementById("chattingInput") as HTMLTextAreaElement;
+        const chattingInputValue = chattingInput.value;
+
+        if (chattingInputValue.replaceAll(" ", "") === '') {
             return;
         }
 
@@ -271,8 +274,7 @@ export default function MyPage() {
             await makeChattingRoom(selectedChattingRoom.targetId);
             await getChattingRoomList();
         }
-        console.log(chattingInputRef);
-
+    
 
         // const data = {
         //     "type": "text",
@@ -281,17 +283,17 @@ export default function MyPage() {
 
         addChatting(selectedChattingRoom.targetId, {
             "type": "text",
-            "message": chattingInputRef.current.value
+            "message": chattingInputValue
         });
 
         setChattingList([...chattingList, {
             "sender": "me",
-            "message": chattingInputRef.current.value,
+            "message": chattingInputValue,
             "type": "text",
             "created_at": Date.now()
         }]);
 
-        chattingInputRef.current.value = "";
+        chattingInput.value = '';
 
 
     }
@@ -452,7 +454,7 @@ export default function MyPage() {
 
                                                 <div className="relative flex-row w-full">
                                                     <textarea
-
+                                                        id = "chattingInput"
                                                         className="w-full h-10 py-2 pl-3 pr-[3rem] border-2 border-gray-300 rounded-full focus:ring-primary focus:border-primary focus:ring-1
                                                         overflow-hidden focus:outline-none resize-none
                                                         "
