@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import CategoryList from "./_components/CategoryList";
-import { useEffect, useRef, useState } from "react";
+import { JSXElementConstructor, PromiseLikeOfReactNode, ReactElement, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
 import { useAuth } from "./_store/useAuth";
 import { set } from "lodash";
+import { HomeIcon } from "@heroicons/react/24/outline";
 
 // const fetchData = async () => {
 //   const response = await fetch("http://127.0.0.1", {
@@ -29,7 +30,40 @@ export default function Home() {
 
   // on scroll event
 
-  const [isCategoryBarShow, setIsCategoryBarShow ] = useState(false);
+  const categoryData = [
+    {
+      title: "Design",
+      subCategory: [
+        "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
+    },
+    {
+      title: "Illustration",
+      subCategory: [
+        "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
+    },
+    {
+      title: "Animation",
+      subCategory: [
+        "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
+    }
+  ]
+
+  const [isCategoryBarShow, setIsCategoryBarShow] = useState(false);
+
+  const [selectedCategory, setSelectedCategory] = useState<any>({
+    title: "Design",
+    subCategory: [
+      "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
+  },);
+
+  const [selectedSubCategory, setSelectedSubCategory] = useState<any>("어린이 그림책");
+
+
+  const [delayedSelectedCategory, setDelayedSelectedCategory] = useState<any>({
+    title: "Design",
+    subCategory: [
+      "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
+  },);
   let categoryListRef = useRef(null);
   const { setIsNavSearchBarShow } = useAuth();
   useEffect(() => {
@@ -37,8 +71,8 @@ export default function Home() {
     window.addEventListener('scroll', () => {
       const getTop = (el: { offsetTop: any; offsetParent: any; }): number => {
 
-        if(!el) return 0;
-  
+        if (!el) return 0;
+
         return el.offsetTop + (el.offsetParent && getTop(el.offsetParent))
       }
       const searchBar = document.getElementById('mainPageSearchBar');
@@ -51,12 +85,20 @@ export default function Home() {
 
       if (categoryListRef.current && window.scrollY > (categoryListRef.current as HTMLElement).offsetTop - 300) {
         setIsCategoryBarShow(true);
-      }else{
+      } else {
         setIsCategoryBarShow(false);
       }
     });
   }, []);
 
+  useEffect(() => {
+    if (true) {
+      setTimeout(() => {
+        setDelayedSelectedCategory(selectedCategory);
+      }, 700);
+    }
+    setSelectedSubCategory('');
+  }, [selectedCategory]);
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
@@ -65,9 +107,9 @@ export default function Home() {
         
         `}>
         {
-          ["Design", "Illustration", "Animation"].map((category, index) => (
-            <div className="text-lg" key={category}>
-              {category}
+          categoryData.map((category, index) => (
+            <div className="text-lg" key={category.title}>
+              {category.title}
             </div>
           ))
         }
@@ -79,7 +121,7 @@ export default function Home() {
 
       <div className="w-[calc(100%-72px)] h-[calc(100vh-80px-32px)]  mx-10 mt-4  my-auto relative">
         <img src="/images/main_image.jpg" alt="hero"
-          className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl"
+          className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl z-[1000]"
         />
         <div className="absolute top-0 left-0 mt-6 ml-10">
           <div className="relative flex mt-3 sm:mt-8" id="mainPageSearchBar">
@@ -99,8 +141,104 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="mt-4 h-[5000px] bg-primary" ref={categoryListRef}>
-        안녕하세요
+      <div className="relative flex flex-row justify-center w-full mt-6 mb-6" ref={categoryListRef}>
+        <div className=" w-[calc(100%-72px)] flex flex-row flex-wrap justify-center gap-3">
+          {
+            categoryData.map((category, index) => (
+              <div className={`w-[calc(33.3%-8px)] h-[calc(90vh-100px)] hover:scale-[1.03] duration-500 relative 
+                ${selectedCategory ? "-translate-y-20 opacity-0 duration-700 -z-40 cursor-auto" : "z-[500]"}
+              `}
+                key={category.title}
+              >
+                <img src={`/images/main_${category.title.toLowerCase()
+                  }.jpg`} alt="hero" className="object-cover object-center w-full h-full cursor-pointer rounded-2xl"
+                  onClick={() => {
+                    if (selectedCategory) return;
+                    setSelectedCategory(category)
+                  }}
+                />
+                <div className="absolute text-lg font-semibold text-white bottom-3 left-6">
+                  {category.title}
+                </div>
+              </div>
+            ))
+          }
+
+        </div>
+        <div className={`absolute top-0 left-[75px] w-[calc(100%-150px)] flex flex-col mx-3
+          duration-700 ${delayedSelectedCategory ? "opacity-100 z-50 " : "opacity-0 z-0"}
+          ${!selectedCategory ? "-z-30 hidden" : "visible"}
+          `}
+
+        >
+          <div className="flex flex-row items-center gap-3 ">
+            <HomeIcon className="w-6 h-6 text-gray-500"
+              onClick={() => setSelectedCategory(undefined)}
+            />
+            <div className="ml-2 text-lg font-semibold text-gray-500">
+              /
+            </div>
+            <div className="text-lg font-semibold text-gray-500">
+              {
+                delayedSelectedCategory?.title
+              }
+            </div>
+
+          </div>
+          <div className="mt-5 text-3xl font-semibold text-gray-600">
+            {delayedSelectedCategory?.title}
+          </div>
+          <div className="mt-5 text-lg font-semibold text-gray-600">
+            스타일
+          </div>
+          <div className="flex flex-row flex-wrap gap-3 mt-2">
+            {
+              delayedSelectedCategory?.subCategory.map((subCategory: string, index: any) => (
+                <div className={`px-3 py-1 text-gray-800 bg-white border border-gray-600 cursor-pointer rounded-xl text-md
+                  ${selectedSubCategory === subCategory ? "bg-gray-600 text-white" : "hover:bg-gray-200 "}
+                  `}
+                onClick={() => {
+                  if (selectedSubCategory === subCategory) {
+                    setSelectedSubCategory('');
+                  } else {
+                    setSelectedSubCategory(subCategory);
+                  }
+                }}
+                >
+                  {subCategory}
+                </div>
+              ))
+            }
+          </div>
+          <div className="flex flex-row w-full gap-5 mt-5 overflow-hidden">
+            {
+              [1, 2, 3, 4, 5].map((i, index) => (
+                <div className="flex flex-col" key={index}>
+                  <div className={`w-[calc(21vw)] h-[calc(21vw)]  duration-500 relative 
+  
+  `}>
+                    <img src={`/images/main_${delayedSelectedCategory?.title.toLowerCase()
+                      }.jpg`} alt="hero" className="object-cover object-center w-full h-full cursor-pointer rounded-2xl"
+
+                    />
+
+                  </div>
+                  <div className="flex flex-col ml-1">
+                    <div className="mt-3 text-xl font-semibold text-gray-800">
+                      작가1
+                    </div>
+                    <div className="mt-2 text-lg text-gray-800">
+                      디자인 고수입니다.
+                    </div>
+                    <div className="text-lg font-semibold text-gray-800">
+                      From 100,000원
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
       </div>
 
     </main>
