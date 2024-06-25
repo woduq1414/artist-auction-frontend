@@ -50,20 +50,12 @@ export default function Home() {
 
   const [isCategoryBarShow, setIsCategoryBarShow] = useState(false);
 
-  const [selectedCategory, setSelectedCategory] = useState<any>({
-    title: "Design",
-    subCategory: [
-      "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
-  },);
+  const [selectedCategory, setSelectedCategory] = useState<any>();
 
   const [selectedSubCategory, setSelectedSubCategory] = useState<any>("어린이 그림책");
 
 
-  const [delayedSelectedCategory, setDelayedSelectedCategory] = useState<any>({
-    title: "Design",
-    subCategory: [
-      "어린이 그림책", "손그림 느낌", "웹툰", "광고 이미지", "교육용", "스케치"]
-  },);
+  const [delayedSelectedCategory, setDelayedSelectedCategory] = useState<any>();
   let categoryListRef = useRef(null);
   const { setIsNavSearchBarShow } = useAuth();
   useEffect(() => {
@@ -102,7 +94,7 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
-      <div className={`h-[50px] sticky top-[0px]  w-full text-gray-700 bg-white border-b-2 z-[100] transition duration-500 flex flex-row items-center px-10 gap-[80px]
+      <div className={`h-[50px] sticky top-[0px]  w-full text-gray-700 bg-white border-b-2  transition duration-500 flex flex-row items-center px-10 gap-[80px]
         ${isCategoryBarShow ? "translate-y-[80px] opacity-100" : "translate-y-[0px] opacity-0"}
         
         `}>
@@ -121,7 +113,7 @@ export default function Home() {
 
       <div className="w-[calc(100%-72px)] h-[calc(100vh-80px-32px)]  mx-10 mt-4  my-auto relative">
         <img src="/images/main_image.jpg" alt="hero"
-          className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl z-[1000]"
+          className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl z-[-1]"
         />
         <div className="absolute top-0 left-0 mt-6 ml-10">
           <div className="relative flex mt-3 sm:mt-8" id="mainPageSearchBar">
@@ -146,7 +138,7 @@ export default function Home() {
           {
             categoryData.map((category, index) => (
               <div className={`w-[calc(33.3%-8px)] h-[calc(90vh-100px)] hover:scale-[1.03] duration-500 relative 
-                ${selectedCategory ? "-translate-y-20 opacity-0 duration-700 -z-40 cursor-auto" : "z-[500]"}
+                ${selectedCategory ? "-translate-y-20 opacity-0 duration-700 z-[1] cursor-auto" : "z-[500]"}
               `}
                 key={category.title}
               >
@@ -172,7 +164,7 @@ export default function Home() {
 
         >
           <div className="flex flex-row items-center gap-3 ">
-            <HomeIcon className="w-6 h-6 text-gray-500"
+            <HomeIcon className="w-6 h-6 text-gray-500 cursor-pointer"
               onClick={() => setSelectedCategory(undefined)}
             />
             <div className="ml-2 text-lg font-semibold text-gray-500">
