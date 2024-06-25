@@ -23,7 +23,7 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 export default function MyPage() {
 
-    let chattingInputRef = React.createRef<HTMLTextAreaElement>();
+    const chattingInputRef = React.createRef<HTMLTextAreaElement>();
 
     // const data = await Data();
     // console.log(data);
@@ -38,10 +38,7 @@ export default function MyPage() {
 
     const [isFetchingChattingList, setIsFetchingChattingList] = useState(false) as any;
 
-    let profileImageUploaderRef = React.createRef<HTMLInputElement>();
-    let uploadProfileImageButtonRef = React.createRef<HTMLButtonElement>();
-    let cropperModalOpenRef = React.createRef<HTMLButtonElement>();
-    let cropperRef = React.createRef<any>();
+
 
     let chatContainerRef = React.createRef<HTMLDivElement>();
 
@@ -274,6 +271,7 @@ export default function MyPage() {
             await makeChattingRoom(selectedChattingRoom.targetId);
             await getChattingRoomList();
         }
+        console.log(chattingInputRef);
 
 
         // const data = {
