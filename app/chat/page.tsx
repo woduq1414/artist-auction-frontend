@@ -38,9 +38,50 @@ export default function MyPage() {
 
     const [isFetchingChattingList, setIsFetchingChattingList] = useState(false) as any;
 
+    const chattingFileUploaderRef = React.createRef<HTMLInputElement>();
 
 
     let chatContainerRef = React.createRef<HTMLDivElement>();
+
+    async function sendImage(file: any) {
+
+        const formData = new FormData();
+
+        formData.append('files', file);
+
+        let res = await fetch(Config().baseUrl + '/image/', {
+            method: 'POST',
+            headers: {
+                "Authorization": "Bearer " + new Cookies().get('accessToken')
+            },
+            body: formData
+        })
+
+        if (res.status !== 200) return;
+
+        let data = await res.json();
+
+        let chattingImage = {
+            url: data.data[0].media.link,
+            id: data.data[0].id
+        }
+
+
+        let chatting = await addChatting(selectedChattingRoom.targetId, {
+            "type": "image",
+            "message": chattingImage.id
+        });
+
+        setChattingList([...chattingList, {
+            "sender": "me",
+            "message": chatting.data.message,
+            "type": "image",
+            "created_at": Date.now()
+        }]);
+
+
+    }
+
 
     async function getChattingRoomList() {
         const res = await fetch(Config().baseUrl + '/chatting/list',
@@ -147,6 +188,7 @@ export default function MyPage() {
         const resData = await res.json();
         console.log(resData);
         // getChattingList(targetId);
+        return resData;
     }
 
 
@@ -244,9 +286,10 @@ export default function MyPage() {
             }
             const newChattingRoomList = chattingRoomList.map((chattingRoom: any) => {
                 if (selectedChattingRoom && chattingRoom.targetId === selectedChattingRoom.targetId) {
+                    const lastMessage = chattingList[chattingList.length - 1].type === "text" ? chattingList[chattingList.length - 1].message : "사진을 보냈습니다.";
                     return {
                         ...chattingRoom,
-                        "lastMessage": chattingList[chattingList.length - 1].message
+                        "lastMessage": lastMessage
                     }
                 } else {
                     return chattingRoom;
@@ -274,7 +317,7 @@ export default function MyPage() {
             await makeChattingRoom(selectedChattingRoom.targetId);
             await getChattingRoomList();
         }
-    
+
 
         // const data = {
         //     "type": "text",
@@ -323,14 +366,14 @@ export default function MyPage() {
 
                                     }>
                                         <img
-                                            className="w-12 h-12 mr-2 rounded-full"
+                                            className="flex-shrink-0 w-12 h-12 mr-2 rounded-full"
                                             src={chatting.targetProfileImage ? chatting.targetProfileImage : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"}
                                         />
-                                        <div className="flex flex-col items-start">
+                                        <div className="flex flex-col items-start flex-grow w-[70%]">
                                             <div className="text-lg font-semibold text-gray-800">
                                                 {chatting.targetNickname}
                                             </div>
-                                            <div className="text-sm text-gray-500">
+                                            <div className="max-w-[90%] text-sm text-gray-500 truncate">
                                                 {chatting.lastMessage}
                                             </div>
                                         </div>
@@ -350,7 +393,18 @@ export default function MyPage() {
                     </div>
                     <div className="flex flex-col w-full">
                         {
-                            selectedChattingRoom ? <div className="flex flex-col h-full">
+                            selectedChattingRoom ? <div className="flex flex-col h-full" onPaste={(event) => {
+                                const items = event.clipboardData.items;
+
+                                for (let i = 0; i < items.length; i++) {
+                                    if (items[i].type.indexOf("image") !== -1) {
+                                        const blob = items[i].getAsFile();
+                                        sendImage(blob);
+
+                                        break;
+                                    }
+                                }
+                            }}>
                                 <div className="flex items-center justify-between flex-shrink-0 w-full px-5 py-3 text-xl bg-slate-50">
                                     <div>
                                         <ArrowLeftIcon className="w-5 h-5 cursor-pointer" onClick={() => setSelectedChattingRoom(undefined)} />
@@ -376,7 +430,7 @@ export default function MyPage() {
                                                         chatting.created_at
 
                                                     }>
-                                                        <div className="flex flex-row items-end ">
+                                                        <div className="flex flex-row items-end justify-end">
                                                             {/* Card */}
 
                                                             <span className="z-10 inline-block px-2 py-1 text-xs font-medium text-gray-600 opacity-0 group-hover:opacity-100 ">
@@ -388,9 +442,15 @@ export default function MyPage() {
                                                                     })()
                                                                 }
                                                             </span>
-                                                            <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
-                                                                {chatting.message}
-                                                            </div>
+                                                            {
+                                                                chatting.type == "text" ?
+                                                                    <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
+                                                                        {chatting.message}
+                                                                    </div> : chatting.type == "image" ?
+                                                                        <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl " />
+                                                                        : <div></div>
+
+                                                            }
                                                             {/* End Card */}
 
                                                         </div>
@@ -419,19 +479,25 @@ export default function MyPage() {
 
                                                             <div className="flex flex-row items-end w-full hs-tooltip  [--placement:top]">
                                                                 {/* Card */}
-                                                                <div className="max-w-[75%] px-3 py-2 text-gray-800 border-gray-200 border-2 shadow-sm  rounded-2xl break-all whitespace-pre-wrap">
-                                                                    {chatting.message}
-                                                                </div>
+                                                                {
+                                                                    chatting.type == "text" ?
+                                                                        <div className="max-w-[75%] px-3 py-2 text-gray-800 border-gray-200 border shadow-sm  rounded-2xl break-all whitespace-pre-wrap">
+                                                                            {chatting.message}
+                                                                        </div> : chatting.type == "image" ?
+                                                                            <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl " />
+                                                                            : <div></div>
+
+                                                                }
                                                                 {/* End Card */}
                                                                 <span className="z-10 inline-block px-2 py-1 text-xs font-medium text-gray-600 opacity-0 group-hover:opacity-100 ">
 
-                                                                {
-                                                                    (() => {
-                                                                        let date = new Date(chatting.created_at);
-                                                                        return date.toLocaleString('ko-KR', { hour: '2-digit', minute: '2-digit', 'day': '2-digit', 'month': '2-digit', 'year': 'numeric' })
-                                                                    })()
-                                                                }
-                                                            </span>
+                                                                    {
+                                                                        (() => {
+                                                                            let date = new Date(chatting.created_at);
+                                                                            return date.toLocaleString('ko-KR', { hour: '2-digit', minute: '2-digit', 'day': '2-digit', 'month': '2-digit', 'year': 'numeric' })
+                                                                        })()
+                                                                    }
+                                                                </span>
                                                             </div>
                                                         </div>
 
@@ -454,7 +520,7 @@ export default function MyPage() {
 
                                                 <div className="relative flex-row w-full">
                                                     <textarea
-                                                        id = "chattingInput"
+                                                        id="chattingInput"
                                                         className="w-full h-10 py-2 pl-3 pr-[3rem] border-2 border-gray-300 rounded-full focus:ring-primary focus:border-primary focus:ring-1
                                                         overflow-hidden focus:outline-none resize-none
                                                         "
@@ -473,7 +539,22 @@ export default function MyPage() {
                                                     />
                                                     <PaperClipIcon className="absolute top-[45%] translate-y-[-50%] right-5 w-5 h-5 text-gray-600 cursor-pointer" onClick={() => {
                                                         console.log('upload file');
+                                                        chattingFileUploaderRef.current?.click();
                                                     }} />
+                                                    <input
+                                                        id="chattingFileUploader"
+                                                        type="file"
+                                                        style={{ display: 'none' }}
+                                                        ref={chattingFileUploaderRef}
+
+                                                        accept="image/*"
+                                                        onChange={async (e) => {
+                                                            if (e.target.files && e.target.files.length > 0) {
+                                                                sendImage(e.target.files[0]);
+                                                            }
+
+                                                        }}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="flex-shrink">

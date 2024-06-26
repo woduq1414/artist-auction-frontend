@@ -138,7 +138,7 @@ export default function Home() {
           {
             categoryData.map((category, index) => (
               <div className={`w-[calc(33.3%-8px)] h-[calc(90vh-100px)] hover:scale-[1.03] duration-500 relative 
-                ${selectedCategory ? "-translate-y-20 opacity-0 duration-700 z-[1] cursor-auto" : "z-[500]"}
+                ${selectedCategory ? "-translate-y-10 opacity-0 duration-700 z-[1] cursor-auto" : "z-[500]"}
               `}
                 key={category.title}
               >
@@ -186,8 +186,8 @@ export default function Home() {
           <div className="flex flex-row flex-wrap gap-3 mt-2">
             {
               delayedSelectedCategory?.subCategory.map((subCategory: string, index: any) => (
-                <div className={`px-3 py-1 text-gray-800 bg-white border border-gray-600 cursor-pointer rounded-xl text-md
-                  ${selectedSubCategory === subCategory ? "bg-gray-600 text-white" : "hover:bg-gray-200 "}
+                <div className={`px-3 py-1   border border-gray-600 cursor-pointer rounded-xl text-md
+                  ${selectedSubCategory === subCategory ? " bg-gray-600 text-white " : "hover:bg-gray-200 bg-white text-gray-800"}
                   `}
                   key={subCategory}
                 onClick={() => {

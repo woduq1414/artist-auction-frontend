@@ -159,9 +159,11 @@ export default function RootLayout({
           const message = JSON.parse(data.description).message;
           const newChattingRoomList = chattingRoomListStateRef.current.map((chattingRoom: any) => {
             if (from === chattingRoom.targetId) {
+              const lastMessage = message.type === "text" ? message : "사진을 보냈습니다.";
+                  
               return {
                 ...chattingRoom,
-                "lastMessage": message,
+                "lastMessage": lastMessage,
                 "unreadCount": selectedChattingRoomStateRef.current && chattingRoom.targetId == selectedChattingRoomStateRef.current.targetId ? 0 : chattingRoom.unreadCount + 1,
               }
             } else {
