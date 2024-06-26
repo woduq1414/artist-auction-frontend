@@ -1,12 +1,13 @@
 'use client';
 import Image from "next/image";
 import Link from "next/link";
-import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon, ChevronRightIcon, EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import CategoryList from "./_components/CategoryList";
 import { JSXElementConstructor, PromiseLikeOfReactNode, ReactElement, ReactFragment, ReactPortal, useEffect, useRef, useState } from "react";
 import { useAuth } from "./_store/useAuth";
 import { set } from "lodash";
 import { HomeIcon } from "@heroicons/react/24/outline";
+import React from "react";
 
 // const fetchData = async () => {
 //   const response = await fetch("http://127.0.0.1", {
@@ -54,6 +55,11 @@ export default function Home() {
 
   const [selectedSubCategory, setSelectedSubCategory] = useState<any>("어린이 그림책");
 
+  const artistContainerRef = React.useRef<HTMLDivElement>(null);
+  const pfRef = React.useRef<HTMLDivElement>(null);
+
+
+  
 
   const [delayedSelectedCategory, setDelayedSelectedCategory] = useState<any>();
   let categoryListRef = useRef(null);
@@ -158,10 +164,14 @@ export default function Home() {
 
         </div>
         <div className={`absolute top-0 left-[75px] w-[calc(100%-150px)] flex flex-col mx-3
-          duration-700 ${delayedSelectedCategory ? "opacity-100 z-50 " : "opacity-0 z-0"}
-          ${!selectedCategory ? "-z-30 hidden" : "visible"}
+          duration-700 
+          ${selectedCategory ? (
+            delayedSelectedCategory ? "opacity-100 z-50 " : "opacity-0 z-0"
+          ) : (
+            delayedSelectedCategory ? "-z-30 hidden opacity-0" : "opacity-0 z-0"
+          )}
+          
           `}
-
         >
           <div className="flex flex-row items-center gap-3 ">
             <HomeIcon className="w-6 h-6 text-gray-500 cursor-pointer"
@@ -183,30 +193,77 @@ export default function Home() {
           <div className="mt-5 text-lg font-semibold text-gray-600">
             스타일
           </div>
-          <div className="flex flex-row flex-wrap gap-3 mt-2">
+          <div className="relative flex flex-row flex-wrap gap-3 mt-2">
             {
               delayedSelectedCategory?.subCategory.map((subCategory: string, index: any) => (
                 <div className={`px-3 py-1   border border-gray-600 cursor-pointer rounded-xl text-md
                   ${selectedSubCategory === subCategory ? " bg-gray-600 text-white " : "hover:bg-gray-200 bg-white text-gray-800"}
                   `}
                   key={subCategory}
-                onClick={() => {
-                  if (selectedSubCategory === subCategory) {
-                    setSelectedSubCategory('');
-                  } else {
-                    setSelectedSubCategory(subCategory);
-                  }
-                }}
+                  onClick={() => {
+                    if (selectedSubCategory === subCategory) {
+                      setSelectedSubCategory('');
+                    } else {
+                      setSelectedSubCategory(subCategory);
+                    }
+                  }}
                 >
                   {subCategory}
                 </div>
               ))
             }
+
+            <div className={`absolute top-[0px] right-[0] flex items-center justify-between  h-[30px] 
+                             z-[200] gap gap-6
+                             
+            
+                            `} >
+              <div>
+                <ChevronLeftIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
+                  onClick={() => {
+                    if (artistContainerRef.current != null && pfRef.current != null) {
+                      let pfContainerScrollX = artistContainerRef.current.scrollLeft;
+                      let pfWIdth = pfRef.current.offsetWidth
+
+                      let targetScrollX = (Math.ceil(pfContainerScrollX / (pfWIdth + 12)) - 1) * (pfWIdth + 12)
+
+                      artistContainerRef.current.scrollTo({ top: 0, left: targetScrollX, behavior: 'smooth' })
+
+                    }
+                  }}
+                />
+              </div>
+              <div>
+                <ChevronRightIcon className='w-12 h-12 p-2 bg-white rounded-full shadow-md cursor-pointer'
+                  onClick={() => {
+                    if (artistContainerRef.current != null && pfRef.current != null) {
+                      let pfContainerScrollX = artistContainerRef.current.scrollLeft;
+                      let pfWIdth = pfRef.current.offsetWidth
+
+                      let targetScrollX = (Math.floor(pfContainerScrollX / (pfWIdth + 12)) + 1) * (pfWIdth + 12)
+
+                      artistContainerRef.current.scrollTo({ top: 0, left: targetScrollX, behavior: 'smooth' })
+
+                    }
+                  }}
+                />
+              </div>
+
+            </div>
           </div>
-          <div className="flex flex-row w-full gap-5 mt-5 overflow-hidden">
+          <div className="flex flex-row w-full gap-5 mt-5 overflow-hidden"
+            ref={artistContainerRef}
+          >
             {
-              [1, 2, 3, 4, 5].map((i, index) => (
-                <div className="flex flex-col" key={index}>
+              [1, 2, 3, 4, 5, 6].map((i, index) => (
+                <div className="flex flex-col"
+                 
+                  key={index}
+                  ref={index === 0 ? pfRef : null
+
+                  }
+
+                >
                   <div className={`w-[calc(21vw)] h-[calc(21vw)]  duration-500 relative 
   
   `}>
