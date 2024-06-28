@@ -12,6 +12,7 @@ import { BellIcon } from '@heroicons/react/24/outline';
 
 import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 import PrelineScript from "./_components/PrelineScript";
+import Modal from "react-modal";
 import path from 'path'
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,6 +28,7 @@ import { headers } from 'next/headers'
 import { get } from 'lodash'
 import notifyParser from './_common/notifyParser'
 import { read } from 'fs'
+import ImageZoomModal from './_components/ImageZoomModal'
 
 // import { CookiesProvider } from 'next-client-cookies/server';
 
@@ -38,6 +40,7 @@ const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
   display: 'auto',
 })
+Modal.setAppElement('#body')
 
 export default function RootLayout({
   children,
@@ -297,7 +300,7 @@ export default function RootLayout({
 
 
 
-
+  
 
 
 
@@ -311,7 +314,7 @@ export default function RootLayout({
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={pretendard.className}>
+      <body className={pretendard.className} id="body">
 
 
 
@@ -597,6 +600,9 @@ export default function RootLayout({
         {children}
         <PrelineScript />
         <ToastContainer />
+        <ImageZoomModal onRequestClose={()=>{}} 
+         
+        />
       </body>
 
     </html>

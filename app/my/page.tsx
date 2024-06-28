@@ -208,7 +208,7 @@ export default function MyPage() {
                                                                 }
                                                                 
                                                         `}
-                                                                
+
                                                             >
                                                                 <div className="flex flex-col items-center justify-center flex-shrink-0 text-lg font-semibold w-[80px]">
                                                                     {
@@ -361,7 +361,7 @@ export default function MyPage() {
 
                             </div>
                         </div>
-                        <div className="w-full px-6 py-8">
+                        <div className="flex-col w-full px-6 py-8">
                             <div className="my-0 text-2xl font-semibold">
                                 내 상품
                             </div>
@@ -455,36 +455,37 @@ export default function MyPage() {
                                                 }
                                             </div>
                                 }
-                                <div className="flex flex-row justify-end w-full mt-4">
-                                    <button
-                                        type="button"
-                                        className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
+
+                            </div>
+                            <div className="flex flex-row justify-end w-full mt-4">
+                                <button
+                                    type="button"
+                                    className={`inline-flex items-center px-3 py-2 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-1 hover:bg-primary disabled:opacity-50 disabled:pointer-events-none
                            
                                 `}
-                                        onClick={
-                                            (e) => {
+                                    onClick={
+                                        (e) => {
 
-                                                router.push('/market/new')
-                                            }
+                                            router.push('/market/new')
                                         }
+                                    }
+                                >
+                                    새 상품 등록
+                                    <svg
+                                        className="flex-shrink-0 size-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width={24}
+                                        height={24}
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
                                     >
-                                        새 상품 등록
-                                        <svg
-                                            className="flex-shrink-0 size-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            width={24}
-                                            height={24}
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth={2}
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        >
-                                            <path d="m9 18 6-6-6-6" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                        <path d="m9 18 6-6-6-6" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>

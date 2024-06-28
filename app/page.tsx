@@ -8,6 +8,7 @@ import { useAuth } from "./_store/useAuth";
 import { set } from "lodash";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import React from "react";
+import { useImageModal } from "./_store/useImageModal";
 
 // const fetchData = async () => {
 //   const response = await fetch("http://127.0.0.1", {
@@ -59,7 +60,7 @@ export default function Home() {
   const pfRef = React.useRef<HTMLDivElement>(null);
 
 
-  
+
 
   const [delayedSelectedCategory, setDelayedSelectedCategory] = useState<any>();
   let categoryListRef = useRef(null);
@@ -98,6 +99,8 @@ export default function Home() {
     setSelectedSubCategory('');
   }, [selectedCategory]);
 
+
+
   return (
     <main className="flex flex-col items-center justify-between min-h-screen">
       <div className={`h-[50px] sticky top-[0px]  w-full text-gray-700 bg-white border-b-2  transition duration-500 flex flex-row items-center px-10 gap-[80px]
@@ -117,9 +120,15 @@ export default function Home() {
       />
 
 
-      <div className="w-[calc(100%-72px)] h-[calc(100vh-80px-32px)]  mx-10 mt-4  my-auto relative">
+      <div className="w-[calc(100%-72px)] h-[calc(100vh-80px-32px)]  mx-10 mt-4  my-auto relative"
+             onClick={() => {
+             
+            }}
+      
+      >
         <img src="/images/main_image.jpg" alt="hero"
           className="absolute top-0 left-0 object-cover object-center w-full h-full rounded-2xl z-[-1]"
+
         />
         <div className="absolute top-0 left-0 mt-6 ml-10">
           <div className="relative flex mt-3 sm:mt-8" id="mainPageSearchBar">
@@ -140,10 +149,10 @@ export default function Home() {
         </div>
       </div>
       <div className="relative flex flex-row justify-center w-full mt-6 mb-6" ref={categoryListRef}>
-        <div className=" w-[calc(100%-72px)] flex flex-row flex-wrap justify-center gap-3">
+        <div className=" w-[calc(100%-72px)] flex flex-row flex-wrap justify-center gap-9">
           {
             categoryData.map((category, index) => (
-              <div className={`w-[calc(33.3%-8px)] h-[calc(90vh-100px)] hover:scale-[1.03] duration-500 relative 
+              <div className={`w-[calc(33.3%-24px)] h-[calc(90vh-100px)] hover:scale-[1.03] duration-500 relative 
                 ${selectedCategory ? "-translate-y-10 opacity-0 duration-700 z-[1] cursor-auto" : "z-[500]"}
               `}
                 key={category.title}
@@ -153,9 +162,12 @@ export default function Home() {
                   onClick={() => {
                     if (selectedCategory) return;
                     setSelectedCategory(category)
+
+
+                  
                   }}
                 />
-                <div className="absolute text-lg font-semibold text-white bottom-3 left-6">
+                <div className="absolute text-lg font-semibold text-white bottom-3 left-6 drop-shadow-lg">
                   {category.title}
                 </div>
               </div>
@@ -257,7 +269,7 @@ export default function Home() {
             {
               [1, 2, 3, 4, 5, 6].map((i, index) => (
                 <div className="flex flex-col"
-                 
+
                   key={index}
                   ref={index === 0 ? pfRef : null
 

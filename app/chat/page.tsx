@@ -17,6 +17,7 @@ import { Cookies } from "react-cookie";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { useImageModal } from "../_store/useImageModal";
 
 
 
@@ -28,6 +29,7 @@ export default function MyPage() {
     // const data = await Data();
     // console.log(data);
     const { checkAuth, isLogin, profileImage, nickname, id, accountType, chattingList, setChattingList, selectedChattingRoom, setSelectedChattingRoom, chattingRoomList, setChattingRoomList, setChatCount, chatCount } = useAuth();
+    const { modalImage, setModalImage } = useImageModal();
 
     const [goodsList, setGoodsList] = useState(undefined) as any;
     const [dealList, setDealList] = useState(undefined) as any;
@@ -48,6 +50,15 @@ export default function MyPage() {
         const formData = new FormData();
 
         formData.append('files', file);
+
+        setChattingList([...chattingList, {
+            "sender": "me",
+            "message": URL.createObjectURL(file),
+            "type": "image",
+            "created_at": Date.now()
+        }]);
+
+
 
         let res = await fetch(Config().baseUrl + '/image/', {
             method: 'POST',
@@ -72,12 +83,7 @@ export default function MyPage() {
             "message": chattingImage.id
         });
 
-        setChattingList([...chattingList, {
-            "sender": "me",
-            "message": chatting.data.message,
-            "type": "image",
-            "created_at": Date.now()
-        }]);
+
 
 
     }
@@ -447,7 +453,11 @@ export default function MyPage() {
                                                                     <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
                                                                         {chatting.message}
                                                                     </div> : chatting.type == "image" ?
-                                                                        <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl " />
+                                                                        <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl "
+                                                                            onClick={() => {
+                                                                                setModalImage(chatting.message);
+                                                                            }}
+                                                                        />
                                                                         : <div></div>
 
                                                             }
@@ -484,7 +494,11 @@ export default function MyPage() {
                                                                         <div className="max-w-[75%] px-3 py-2 text-gray-800 border-gray-200 border shadow-sm  rounded-2xl break-all whitespace-pre-wrap">
                                                                             {chatting.message}
                                                                         </div> : chatting.type == "image" ?
-                                                                            <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl " />
+                                                                            <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl "
+                                                                                onClick={() => {
+                                                                                    setModalImage(chatting.message);
+                                                                                }}
+                                                                            />
                                                                             : <div></div>
 
                                                                 }
