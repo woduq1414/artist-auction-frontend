@@ -17,6 +17,7 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useAuth } from "@/app/_store/useAuth";
 import { toast } from "react-toastify";
+import { useImageModal } from "@/app/_store/useImageModal";
 
 
 
@@ -33,6 +34,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [tempProfileImage, setTempProfileImage] = useState(undefined) as any;
     const [tempProfileImageTitle, setTempProfileImageTitle] = useState(undefined) as any;
     const [isUploadingProfileImage, setIsUploadingProfileImage] = useState(false) as any;
+
+    const { modalImage, setModalImage } = useImageModal();
 
     let profileImageUploaderRef = React.createRef<HTMLInputElement>();
     let uploadProfileImageButtonRef = React.createRef<HTMLButtonElement>();
@@ -288,10 +291,16 @@ export default function Page({ params }: { params: { slug: string } }) {
                                             deal.request_image_list.map((x: { url: string | undefined; }) => {
                                                 return <img
                                                     key={x.url}
-                                                    className="h-[150px]"
+                                                    className="h-[150px] cursor-pointer"
                                                     src={
                                                         x.url
                                                     }
+                                                    onClick={()=> {
+                                                        if(x.url){
+                                                            setModalImage(x.url)
+                                                        }
+                                                       
+                                                    }}
                                                 />
                                             })
                                         ) : "참고 이미지가 없습니다."

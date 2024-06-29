@@ -225,7 +225,7 @@ export default function MyPage() {
         if (artistId) {
 
             let targetProfile = await getProfile("artist", artistId)
-
+            await getChattingList(artistId);
             setSelectedChattingRoom({
                 "targetId": queryString.get("artistId"),
                 "targetNickname": targetProfile.nickname,
@@ -236,7 +236,7 @@ export default function MyPage() {
 
         } else if (companyId) {
             let targetProfile = await getProfile("company", companyId)
-
+            await getChattingList(companyId);
             setSelectedChattingRoom({
                 "targetId": queryString.get("companyId"),
                 "targetNickname": targetProfile.nickname,
@@ -453,7 +453,7 @@ export default function MyPage() {
                                                                     <div className="max-w-[75%] px-3 py-2 text-white shadow-sm bg-primary rounded-2xl break-all whitespace-pre-wrap">
                                                                         {chatting.message}
                                                                     </div> : chatting.type == "image" ?
-                                                                        <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl "
+                                                                        <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl cursor-pointer"
                                                                             onClick={() => {
                                                                                 setModalImage(chatting.message);
                                                                             }}
@@ -494,7 +494,7 @@ export default function MyPage() {
                                                                         <div className="max-w-[75%] px-3 py-2 text-gray-800 border-gray-200 border shadow-sm  rounded-2xl break-all whitespace-pre-wrap">
                                                                             {chatting.message}
                                                                         </div> : chatting.type == "image" ?
-                                                                            <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl "
+                                                                            <img src={chatting.message} className="max-w-[min(300px,30%)] rounded-2xl cursor-pointer "
                                                                                 onClick={() => {
                                                                                     setModalImage(chatting.message);
                                                                                 }}

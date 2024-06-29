@@ -24,7 +24,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     // const data = await Data();
     // console.log(data);
-    const { checkAuth, isLogin, profileImage, nickname, id } = useAuth();
+    const { checkAuth, isLogin, profileImage, nickname, id, accountType } = useAuth();
 
     const [profile, setProfile] = useState(undefined) as any;
     const [isMe, setIsMe] = useState(false) as any;
@@ -95,93 +95,117 @@ export default function Page({ params }: { params: { slug: string } }) {
       </div> */}
             <div className="w-[80%] mx-auto h-full">
                 <div className="flex flex-row w-[100%] mt-10 h-full bg-white min-h-[80vh] shadow-md">
-                    <div className="w-[350px]  flex-shrink-0 bg-slate-50 flex flex-col items-center">
-                        <div className="relative inline-block mt-[2.75rem]">
-                            <img className="inline-block w-[120px] h-[120px] rounded-full" src={
-                                profile && profile.profile_image ? profile.profile_image.media.path : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+                    <div className="w-[350px]  flex-shrink-0 bg-slate-50 flex flex-col items-center justify-between pb-5">
+                        <div className="flex flex-col items-center w-full">
+                            <div className="relative inline-block mt-[2.75rem]">
+                                <img className="inline-block w-[120px] h-[120px] rounded-full" src={
+                                    profile && profile.profile_image ? profile.profile_image.media.path : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
 
-                            } alt="Image Description" />
-                            <div className={`absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900
+                                } alt="Image Description" />
+                                <div className={`absolute bottom-0 z-50 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer end-0 ring-1 ring-white dark:ring-neutral-900
                             ${!isMe && `hidden`
-                                }
+                                    }
                             `}
-                                onClick={openProfileImageUploader}
-                            >
-                                <PencilIcon className="w-3 h-3 text-gray-500" />
-                            </div>
-                            <div className={`absolute top-0 w-[120px] h-[120px] rounded-full flex items-center justify-center  start-0 ring-1 ring-white dark:ring-neutral-900
+                                    onClick={openProfileImageUploader}
+                                >
+                                    <PencilIcon className="w-3 h-3 text-gray-500" />
+                                </div>
+                                <div className={`absolute top-0 w-[120px] h-[120px] rounded-full flex items-center justify-center  start-0 ring-1 ring-white dark:ring-neutral-900
                           duration-300 bg-gray-500 opacity-0 bg-opacity-30  text-sm font-semibold hover:opacity-100 cursor-pointer text-white
                           ${!isMe && `hidden`
-                                }
-                          `
-                            }
-                                onClick={openProfileImageUploader}
-                            >
-                                프로필 사진 변경
-                            </div>
-                            <input
-                                id="profileImageUploader"
-                                type="file"
-                                style={{ display: 'none' }}
-                                ref={profileImageUploaderRef}
-
-                                accept="image/*"
-                                onChange={async (e) => {
-                                    const fileList = (e.target as HTMLInputElement)?.files;
-                                    if (!fileList) return;
-
-                                    for (let i = 0; i < fileList.length; i++) {
-                                        const file = fileList[i];
-                                        if (file) {
-
-                                            const reader = new FileReader();
-                                            reader.onload = function (e2) {
-                                                const src = e2.target?.result;
-                                                console.log(src);
-
-                                                setTempProfileImage(src as string);
-                                                setTempProfileImageTitle(file.name);
-
-                                                cropperModalOpenRef.current?.click();
-
-
-
-
-                                            };
-                                            reader.readAsDataURL(file);
-
-                                        }
                                     }
-
+                          `
                                 }
-                                }
-                            />
+                                    onClick={openProfileImageUploader}
+                                >
+                                    프로필 사진 변경
+                                </div>
+                                <input
+                                    id="profileImageUploader"
+                                    type="file"
+                                    style={{ display: 'none' }}
+                                    ref={profileImageUploaderRef}
 
-                        </div>
-                        <div className="">
-                            {profile ? <div className="mt-6 text-2xl font-bold">{profile.nickname}</div> : <Skeleton
-                                className="mt-6"
-                                width={100} height={20} />}
-                        </div>
-                        <div className="w-full">
-                            {profile ? <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{profile.description}</div> : <Skeleton
-                                className="mx-8 mt-6 "
-                                width={350 - 64}
-                                height={100} />}
-                        </div>
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                        const fileList = (e.target as HTMLInputElement)?.files;
+                                        if (!fileList) return;
 
-                        <button type="button" className={`inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800
+                                        for (let i = 0; i < fileList.length; i++) {
+                                            const file = fileList[i];
+                                            if (file) {
+
+                                                const reader = new FileReader();
+                                                reader.onload = function (e2) {
+                                                    const src = e2.target?.result;
+                                                    console.log(src);
+
+                                                    setTempProfileImage(src as string);
+                                                    setTempProfileImageTitle(file.name);
+
+                                                    cropperModalOpenRef.current?.click();
+
+
+
+
+                                                };
+                                                reader.readAsDataURL(file);
+
+                                            }
+                                        }
+
+                                    }
+                                    }
+                                />
+
+                            </div>
+                            <div className="">
+                                {profile ? <div className="mt-6 text-2xl font-bold">{profile.nickname}</div> : <Skeleton
+                                    className="mt-6"
+                                    width={100} height={20} />}
+                            </div>
+                            <div className="w-full">
+                                {profile ? (
+                                    profile.description ? <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{profile.description}</div>
+                                        : <div className="px-3 py-3 mx-8 mt-2 text-[0.9rem] font-medium text-gray-800 bg-slate-100">{"자기 소개가 없습니다."}</div>
+                                ) : <Skeleton
+                                    className="mx-8 mt-6 "
+                                    width={350 - 64}
+                                    height={100} />}
+                            </div>
+
+                            <button type="button" className={`inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800
                         ${!isMe && `hidden`
-                            }
+                                }
                         `}
 
-                            onClick={() => {
-                                router.push(`/profile/edit`)
-                            }}
-                        >
-                            프로필 수정
-                            <PencilSquareIcon className="w-4 h-4" />
-                        </button>
+                                onClick={() => {
+                                    router.push(`/profile/edit`)
+                                }}
+                            >
+                                프로필 수정
+                                <PencilSquareIcon className="w-4 h-4" />
+                            </button>
+
+                        </div>
+
+                        {
+                            !isMe && profile && profile.account_type != accountType && <button type="button" className="items-center justify-center block px-4 py-3 w-[80%] text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                                onClick={() => {
+                                    if(profile.account_type === 'artist') {
+                                        router.push(`/chat?artistId=${profile.id}`)
+                                    } else {
+                                        router.push(`/chat?companyId=${profile.id}`)
+                                    }
+                                }}
+                            >
+                                {
+                                    profile.account_type === 'artist' ? "아티스트에게 1:1 문의" : "의뢰인에게 1:1 문의"
+                                }
+
+                            </button>
+                        }
+
 
                     </div>
                     <div className="w-full px-6 py-8">
