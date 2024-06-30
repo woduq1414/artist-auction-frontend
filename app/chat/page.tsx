@@ -654,7 +654,15 @@ export default function MyPage() {
 
 
                                                             onChange={async (e) => {
+                                                       
                                                                 if (e.target.files && e.target.files.length > 0) {
+                                                                    let maxSize = 100 * 1024 * 1024; //* 100MB 사이즈 제한
+                                                                    let fileSize = e.target.files[0].size; //업로드한 파일용량
+                                                                    if (fileSize > maxSize) {
+                                                                        alert("파일 사이즈가 100MB를 초과했습니다.");
+                                                                        return;
+                                                                    }
+
                                                                     sendFile(e.target.files[0], "file");
                                                                 }
 

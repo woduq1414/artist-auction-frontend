@@ -615,6 +615,7 @@ const RegisterPage: React.FC = () => {
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="이메일을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
+                                            autoComplete='new-password'
                                             onChange={handleChangeEmail}
                                         />
                                         {
@@ -627,6 +628,7 @@ const RegisterPage: React.FC = () => {
                                             <label
                                                 htmlFor="inline-input-label-with-helper-text"
                                                 className="block text-lg font-semibold "
+                                                
                                             >
                                                 비밀번호
                                             </label>
@@ -636,6 +638,7 @@ const RegisterPage: React.FC = () => {
                                                 className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="비밀번호를 입력해주세요."
                                                 aria-describedby="hs-inline-input-helper-text"
+                                                autoComplete='new-password'
                                                 onChange={(e) => {
                                                     setPassword(e.target.value);
                                                     if (e.target.value === '') {
