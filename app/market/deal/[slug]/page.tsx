@@ -217,7 +217,9 @@ export default function Page({ params }: { params: { slug: string } }) {
                                 </div>
                                 <div className="flex-shrink-0">
                                     <div className={`flex flex-row gap-2
-                                                                        ${accountType === 'artist' ? 'hidden' : ''}
+                                                                        ${accountType === 'company' && (
+                                                                            deal.status === 'pending'
+                                                                        )? '' : 'hidden'}
                                                                         `}>
                                         <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 ">
                                             <div className={`p-3 rounded-full cursor-pointer bg-gray-200
@@ -347,21 +349,25 @@ export default function Page({ params }: { params: { slug: string } }) {
                                             "artist": {
                                                 "pending": false,
                                                 "accept": true,
+                                                "paid": true
                                             },
                                             "company": {
                                                 "pending": true,
                                                 "accept": false,
+                                                "paid": true
                                             }
                                         }
 
                                         let activeButtonTextDict: { [key: string]: { [key: string]: string } } = {
                                             "artist": {
                                                 "pending": "거래 수락",
-                                                "accept": "결제 대기 중"
+                                                "accept": "결제 대기 중",
+                                                "paid": "결제 완료"
                                             },
                                             "company": {
                                                 "pending": "수락 대기 중",
-                                                "accept": "결제 진행"
+                                                "accept": "결제 진행",
+                                                "paid": "결제 완료"
                                             }
                                         }
 

@@ -29,6 +29,8 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     const [deal, setDeal] = useState<any>(undefined);
 
+
+
     async function getDeal() {
         const res = await fetch(Config().baseUrl + '/artist/goods/deal/' + params.slug + "?isEdit=true",
             {

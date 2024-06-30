@@ -40,7 +40,12 @@ const pretendard = localFont({
   src: '../fonts/PretendardVariable.woff2',
   display: 'auto',
 })
-Modal.setAppElement('#body')
+try {
+  Modal.setAppElement('#body')
+} catch (error) {
+  
+}
+
 
 export default function RootLayout({
   children,
@@ -105,7 +110,7 @@ export default function RootLayout({
   }, [chatCount])
 
   function connectSSERequest() {
-    // return;
+    return;
     const sse = new EventSource(Config().baseUrl.replace("/api/v1", "") + '/sse/notify',
       {
         headers: {
