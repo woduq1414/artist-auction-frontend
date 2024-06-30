@@ -192,7 +192,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                         {
                             !isMe && profile && profile.account_type != accountType && <button type="button" className="items-center justify-center block px-4 py-3 w-[80%] text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
                                 onClick={() => {
-                                    if(profile.account_type === 'artist') {
+                                    if (profile.account_type === 'artist') {
                                         router.push(`/chat?artistId=${profile.id}`)
                                     } else {
                                         router.push(`/chat?companyId=${profile.id}`)
@@ -222,16 +222,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                                     >
                                         소개
                                     </button>
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center px-1 py-2 text-gray-500 border-b-2 border-transparent text-md hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
-                                        id="tabs-with-underline-item-2"
-                                        data-hs-tab="#tabs-with-underline-2"
-                                        aria-controls="tabs-with-underline-2"
-                                        role="tab"
-                                    >
-                                        포트폴리오
-                                    </button>
+                                    {
+                                        profile && profile.account_type === 'artist' && <button
+                                            type="button"
+                                            className="inline-flex items-center px-1 py-2 text-gray-500 border-b-2 border-transparent text-md hs-tab-active:font-semibold hs-tab-active:border-primary hs-tab-active:text-primary gap-x-2 whitespace-nowrap hover:text-primary focus:outline-none focus:text-primary disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:text-blue-500"
+                                            id="tabs-with-underline-item-2"
+                                            data-hs-tab="#tabs-with-underline-2"
+                                            aria-controls="tabs-with-underline-2"
+                                            role="tab"
+                                        >
+                                            포트폴리오
+                                        </button>
+                                    }
 
                                 </nav>
                             </div>

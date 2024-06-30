@@ -441,12 +441,11 @@ const EditProfilePage: React.FC = () => {
                                     <label
                                         htmlFor="inline-input-label-with-helper-text"
                                         className={`block text-lg font-semibold mb-2
-                                            ${accountType !== 'artist' ? 'hidden' : ''
-                                            }
+                                            
                                             `}
                                     >
                                         {
-                                            accountType === 'artist' ? '한 줄 소개' : ''
+                                            accountType === 'artist' ? '한 줄 소개' : '한 줄 소개'
                                         }
                                     </label>
                                     <input
@@ -454,8 +453,6 @@ const EditProfilePage: React.FC = () => {
                                         id="inline-input-label-with-helper-text"
                                         className={`block w-full max-w-2xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none 
                                             
-                                            ${accountType !== 'artist' ? 'hidden' : ''
-                                            }
                                             mb-2
                                             `}
                                         placeholder={accountType == 'artist' ? '한 줄 소개를 입력해주세요.' : '의뢰인(회사) 한 줄 소개를 입력해주세요.'

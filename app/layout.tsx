@@ -167,7 +167,9 @@ export default function RootLayout({
           const message = JSON.parse(data.description).message;
           const newChattingRoomList = chattingRoomListStateRef.current.map((chattingRoom: any) => {
             if (from === chattingRoom.targetId) {
-              const lastMessage = message.type === "text" ? message : "사진을 보냈습니다.";
+              const lastMessage = message.type === "text" ? message : (
+                message.type === "image" ? "사진을 보냈습니다." : "파일을 보냈습니다."
+              );
                   
               return {
                 ...chattingRoom,

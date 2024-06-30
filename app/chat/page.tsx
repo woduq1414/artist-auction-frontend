@@ -6,7 +6,8 @@ import { useCategory } from "../_store/useCategory";
 import { useEffect, useState } from "react";
 
 import { ArrowLeftIcon, ArrowRightIcon, MagnifyingGlassIcon, PaperClipIcon, PencilIcon, PencilSquareIcon, Squares2X2Icon, TrashIcon } from "@heroicons/react/24/solid";
-import { QueueListIcon } from "@heroicons/react/24/solid";
+import { QueueListIcon, } from "@heroicons/react/24/solid";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import Config from "@/config/config.export";
 import { get, set } from "lodash";
 import Skeleton from "react-loading-skeleton";
@@ -40,12 +41,13 @@ export default function MyPage() {
 
     const [isFetchingChattingList, setIsFetchingChattingList] = useState(false) as any;
 
+    const chattingImageUploaderRef = React.createRef<HTMLInputElement>();
     const chattingFileUploaderRef = React.createRef<HTMLInputElement>();
 
 
     let chatContainerRef = React.createRef<HTMLDivElement>();
 
-    async function sendImage(file: any) {
+    async function sendFile(file: any, type: string = "image") {
 
         const formData = new FormData();
 
@@ -54,33 +56,47 @@ export default function MyPage() {
         setChattingList([...chattingList, {
             "sender": "me",
             "message": URL.createObjectURL(file),
-            "type": "image",
+            "type": type,
             "created_at": Date.now()
         }]);
 
 
+        let res;
+        if (type === "image") {
+            res = await fetch(Config().baseUrl + '/image/', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                },
+                body: formData
+            })
 
-        let res = await fetch(Config().baseUrl + '/image/', {
-            method: 'POST',
-            headers: {
-                "Authorization": "Bearer " + new Cookies().get('accessToken')
-            },
-            body: formData
-        })
+        } else if (type === "file") {
+            res = await fetch(Config().baseUrl + '/file/', {
+                method: 'POST',
+                headers: {
+                    "Authorization": "Bearer " + new Cookies().get('accessToken')
+                },
+                body: formData
+            })
+        } else {
+            return;
+        }
+
 
         if (res.status !== 200) return;
 
         let data = await res.json();
 
-        let chattingImage = {
-            url: data.data[0].media.link,
+        let chattingFile = {
+            url: type === "image" ? data.data[0].media.link : data.data[0].link,
             id: data.data[0].id
         }
 
 
         let chatting = await addChatting(selectedChattingRoom.targetId, {
-            "type": "image",
-            "message": chattingImage.id
+            "type": type,
+            "message": chattingFile.id
         });
 
 
@@ -292,7 +308,9 @@ export default function MyPage() {
             }
             const newChattingRoomList = chattingRoomList.map((chattingRoom: any) => {
                 if (selectedChattingRoom && chattingRoom.targetId === selectedChattingRoom.targetId) {
-                    const lastMessage = chattingList[chattingList.length - 1].type === "text" ? chattingList[chattingList.length - 1].message : "사진을 보냈습니다.";
+                    const lastMessage = chattingList[chattingList.length - 1].type === "text" ? chattingList[chattingList.length - 1].message : (
+                        chattingList[chattingList.length - 1].type === "image" ? "사진을 보냈습니다." : "파일을 보냈습니다."
+                    );
                     return {
                         ...chattingRoom,
                         "lastMessage": lastMessage
@@ -405,7 +423,7 @@ export default function MyPage() {
                                 for (let i = 0; i < items.length; i++) {
                                     if (items[i].type.indexOf("image") !== -1) {
                                         const blob = items[i].getAsFile();
-                                        sendImage(blob);
+                                        sendFile(blob);
 
                                         break;
                                     }
@@ -458,7 +476,34 @@ export default function MyPage() {
                                                                                 setModalImage(chatting.message);
                                                                             }}
                                                                         />
-                                                                        : <div></div>
+                                                                        : <div className="flex flex-row items-center pl-3 cursor-pointer bg-slate-100 rounded-2xl"
+                                                                            onClick={() => {
+
+                                                                                fetch(chatting.message.url, {
+                                                                                    method: 'GET',
+                                                                                }).then(response => {
+
+                                                                                    response.blob().then(blob => {
+                                                                                        const url = window.URL.createObjectURL(blob);
+                                                                                        const a = document.createElement('a');
+                                                                                        a.href = url;
+                                                                                        a.download = chatting.message.name
+                                                                                        a.click();
+                                                                                    });
+
+                                                                                });
+
+
+                                                                            }
+                                                                            }
+                                                                        >
+                                                                            <PaperClipIcon className="w-4 h-4 text-gray-600" />
+                                                                            <div className="py-2 pl-2 pr-4 text-gray-800 rounded-2xl">
+                                                                                {
+                                                                                    chatting.message.name
+                                                                                }
+                                                                            </div>
+                                                                        </div>
 
                                                             }
                                                             {/* End Card */}
@@ -499,7 +544,34 @@ export default function MyPage() {
                                                                                     setModalImage(chatting.message);
                                                                                 }}
                                                                             />
-                                                                            : <div></div>
+                                                                            : <div className="flex flex-row items-center pl-3 cursor-pointer bg-slate-100 rounded-2xl"
+                                                                                onClick={() => {
+
+                                                                                    fetch(chatting.message.url, {
+                                                                                        method: 'GET',
+                                                                                    }).then(response => {
+
+                                                                                        response.blob().then(blob => {
+                                                                                            const url = window.URL.createObjectURL(blob);
+                                                                                            const a = document.createElement('a');
+                                                                                            a.href = url;
+                                                                                            a.download = chatting.message.name
+                                                                                            a.click();
+                                                                                        });
+
+                                                                                    });
+
+
+                                                                                }
+                                                                                }
+                                                                            >
+                                                                                <PaperClipIcon className="w-4 h-4 text-gray-600" />
+                                                                                <div className="py-2 pl-2 pr-4 text-gray-800 rounded-2xl">
+                                                                                    {
+                                                                                        chatting.message.name
+                                                                                    }
+                                                                                </div>
+                                                                            </div>
 
                                                                 }
                                                                 {/* End Card */}
@@ -551,24 +623,45 @@ export default function MyPage() {
                                                             }
                                                         }}
                                                     />
-                                                    <PaperClipIcon className="absolute top-[45%] translate-y-[-50%] right-5 w-5 h-5 text-gray-600 cursor-pointer" onClick={() => {
-                                                        console.log('upload file');
-                                                        chattingFileUploaderRef.current?.click();
-                                                    }} />
-                                                    <input
-                                                        id="chattingFileUploader"
-                                                        type="file"
-                                                        style={{ display: 'none' }}
-                                                        ref={chattingFileUploaderRef}
+                                                    <div className="flex flex-row">
+                                                        <PhotoIcon className="absolute top-[45%] translate-y-[-50%] right-[3rem] w-5 h-5 text-gray-600 cursor-pointer" onClick={() => {
+                                                            console.log('upload image');
+                                                            chattingImageUploaderRef.current?.click();
+                                                        }} />
+                                                        <input
+                                                            id="chattingImageUploader"
+                                                            type="file"
+                                                            style={{ display: 'none' }}
+                                                            ref={chattingImageUploaderRef}
 
-                                                        accept="image/*"
-                                                        onChange={async (e) => {
-                                                            if (e.target.files && e.target.files.length > 0) {
-                                                                sendImage(e.target.files[0]);
-                                                            }
+                                                            accept="image/*"
+                                                            onChange={async (e) => {
+                                                                if (e.target.files && e.target.files.length > 0) {
+                                                                    sendFile(e.target.files[0], "image");
+                                                                }
 
-                                                        }}
-                                                    />
+                                                            }}
+                                                        />
+                                                        <PaperClipIcon className="absolute top-[45%] translate-y-[-50%] right-5 w-5 h-5 text-gray-600 cursor-pointer" onClick={() => {
+                                                            console.log('upload file');
+                                                            chattingFileUploaderRef.current?.click();
+                                                        }} />
+                                                        <input
+                                                            id="chattingFileUploader"
+                                                            type="file"
+                                                            style={{ display: 'none' }}
+                                                            ref={chattingFileUploaderRef}
+
+
+                                                            onChange={async (e) => {
+                                                                if (e.target.files && e.target.files.length > 0) {
+                                                                    sendFile(e.target.files[0], "file");
+                                                                }
+
+                                                            }}
+                                                        />
+                                                    </div>
+
                                                 </div>
                                             </div>
                                             <div className="flex-shrink">
