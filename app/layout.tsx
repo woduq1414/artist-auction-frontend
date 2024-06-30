@@ -341,7 +341,9 @@ export default function RootLayout({
               `}>
               <input className="w-[15rem] max-w-[80vw] h-10  text-sm rounded-l-[5px] placeholder:font-medium
                 sm:text-sm sm:h-14 border border-gray-300 focus:w-[20rem] focus:outline-none 
-                " type="text" placeholder={searchBarPlaceHolder} />
+                " type="text" placeholder={searchBarPlaceHolder} autoComplete="new-password"
+                id="searchBar"
+                />
               <button className="w-8 h-10 sm:h-14 bg-black rounded-r-[5px] flex justify-center items-center
                 sm:w-14
                 ">

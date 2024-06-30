@@ -326,14 +326,14 @@ const EditProfilePage: React.FC = () => {
 
                                     <div className='flex flex-col w-full max-w-xl gap-2'>
                                         <label
-                                            htmlFor="inline-input-label-with-helper-text"
+                                            htmlFor="inline-input-label-with-helper-text-email"
                                             className="block text-lg font-semibold "
                                         >
                                             이메일
                                         </label>
                                         <input
                                             type="text"
-                                            id="inline-input-label-with-helper-text"
+                                            id="inline-input-label-with-helper-text-email"
                                             className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                             placeholder="이메일을 입력해주세요."
                                             aria-describedby="hs-inline-input-helper-text"
@@ -358,6 +358,7 @@ const EditProfilePage: React.FC = () => {
                                                 className="block w-full max-w-xl px-4 py-3 border border-gray-200 rounded-lg text-md focus:border-primary focus:ring-primary disabled:opacity-50 disabled:pointer-events-none "
                                                 placeholder="비밀번호를 입력해주세요."
                                                 aria-describedby="hs-inline-input-helper-text"
+                                                autoComplete="new-password"
                                                 value={password}
                                                 onChange={(e) => {
                                                     setPassword(e.target.value);
