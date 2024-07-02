@@ -63,7 +63,12 @@ const AuthPage: React.FC = () => {
             color: 'bg-white',
             border: 'border border-gray-200',
             onClick: () => {
-                alert('준비중입니다.')
+                const google_client_id = "442100877182-1gc9rpdmhb7nlfgcabkm06m49ilqpn5f.apps.googleusercontent.com";
+                const redirect_uri = Config().baseUrl + '/auth/social/google';
+
+                const googleURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${google_client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=email%20profile`
+
+                window.location.href = googleURL
             }
         }
     ]

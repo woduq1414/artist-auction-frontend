@@ -133,6 +133,14 @@ const RegisterPage: React.FC = () => {
                 let userInfo = JSON.parse(decoded);
 
                 setSocialLoginType(userInfo.loginType);
+                console.log(userInfo);
+                if (userInfo.name){
+                    setName(userInfo.name);
+                }
+                if (userInfo.email){
+                    setEmail(userInfo.email);
+                }
+
                 setSocialLoginId(userInfo.accessToken);
 
                 if (userInfo.loginType != 'password') {
@@ -617,6 +625,7 @@ const RegisterPage: React.FC = () => {
                                             aria-describedby="hs-inline-input-helper-text"
                                             autoComplete='new-password'
                                             onChange={handleChangeEmail}
+                                            value={email}
                                         />
                                         {
                                             errorBuilder(emailError)
@@ -690,6 +699,7 @@ const RegisterPage: React.FC = () => {
                                             }
                                             aria-describedby="hs-inline-input-helper-text"
                                             onChange={(e) => setName(e.target.value)}
+                                            value = {name}
                                         />
 
                                     </div>
