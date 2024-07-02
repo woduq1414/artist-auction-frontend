@@ -166,6 +166,11 @@ export default function MyPage() {
         );
         const data = await res.json();
 
+        if (data.status !== 200) {
+
+            setIsFetchingChattingList(false);
+            return;
+        }
         setChattingList(data.data.content);
 
 
@@ -654,7 +659,7 @@ export default function MyPage() {
 
 
                                                             onChange={async (e) => {
-                                                       
+
                                                                 if (e.target.files && e.target.files.length > 0) {
                                                                     let maxSize = 100 * 1024 * 1024; //* 100MB 사이즈 제한
                                                                     let fileSize = e.target.files[0].size; //업로드한 파일용량
