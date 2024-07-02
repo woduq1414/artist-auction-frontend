@@ -53,16 +53,18 @@ export default function MyPage() {
 
         formData.append('files', file);
 
-        setChattingList([...chattingList, {
-            "sender": "me",
-            "message": URL.createObjectURL(file),
-            "type": type,
-            "created_at": Date.now()
-        }]);
+        console.log(URL.createObjectURL(file));
+
 
 
         let res;
         if (type === "image") {
+            setChattingList([...chattingList, {
+                "sender": "me",
+                "message": URL.createObjectURL(file),
+                "type": type,
+                "created_at": Date.now()
+            }]);
             res = await fetch(Config().baseUrl + '/image/', {
                 method: 'POST',
                 headers: {
@@ -72,6 +74,15 @@ export default function MyPage() {
             })
 
         } else if (type === "file") {
+            setChattingList([...chattingList, {
+                "sender": "me",
+                "message": {
+                    "url": URL.createObjectURL(file),
+                    "name": file.name
+                },
+                "type": type,
+                "created_at": Date.now()
+            }]);
             res = await fetch(Config().baseUrl + '/file/', {
                 method: 'POST',
                 headers: {
@@ -172,7 +183,7 @@ export default function MyPage() {
             return;
         }
         setChattingList(data.data.content);
-     
+
 
 
         setIsFetchingChattingList(false);
