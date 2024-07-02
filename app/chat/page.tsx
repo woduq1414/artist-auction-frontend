@@ -166,12 +166,13 @@ export default function MyPage() {
         );
         const data = await res.json();
 
-        if (data.status !== 200) {
+        if (res.status !== 200) {
 
             setIsFetchingChattingList(false);
             return;
         }
         setChattingList(data.data.content);
+     
 
 
         setIsFetchingChattingList(false);
