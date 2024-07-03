@@ -451,7 +451,7 @@ const GoodsDealFormPage: React.FC<{
                                                         //         <TrashIcon className='w-5 h-5 text-white' />
                                                         //     </div>
                                                         // </div>
-                                                        <div className="flex flex-row items-center px-3 bg-slate-200 rounded-xl text-md">
+                                                        <div className="flex flex-row items-center px-3 bg-slate-200 rounded-xl text-md" key={file}>
                                                             <XMarkIcon className='w-6 h-6 mr-2 text-gray-500 cursor-pointer' 
                                                             onClick={()=>{
                                                                 setRequestFileList(requestFileList.filter((_, i) => i !== index));

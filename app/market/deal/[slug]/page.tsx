@@ -324,6 +324,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         {
                                             deal.request_file_list.map((x: { url: string, title: string }) => {
                                                 return <div className="flex flex-row items-center pl-3 cursor-pointer bg-slate-100 rounded-2xl"
+                                                key = {x.url}
                                                     onClick={() => {
 
                                                         fetch(x.url, {
