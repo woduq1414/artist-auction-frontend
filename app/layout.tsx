@@ -110,7 +110,7 @@ export default function RootLayout({
   }, [chatCount])
 
   function connectSSERequest() {
-    // return;
+    return;
     const sse = new EventSource(Config().baseUrl.replace("/api/v1", "") + '/sse/notify',
       {
         headers: {

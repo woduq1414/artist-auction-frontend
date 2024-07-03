@@ -288,7 +288,7 @@ export default function MyPage() {
                                                                 <div className="flex flex-row items-center justify-center flex-shrink-0 gap-5 mr-2">
                                                                     <div className="flex flex-col items-end ">
                                                                         <div className="text-lg font-medium ">
-                                                                            희망 거래가 <span className="text-2xl font-bold">{item.price.toLocaleString()}</span> 만원
+                                                                            희망 거래가 <span className="text-2xl font-bold">{(item.price / 10000).toLocaleString()}</span> 만원
                                                                         </div>
                                                                         <div className="text-sm font-medium text-gray-500">
                                                                             최소 거래가 {(item.artist_goods.price / 10000).toLocaleString()} 만원

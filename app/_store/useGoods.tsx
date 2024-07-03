@@ -18,6 +18,8 @@ interface Goods {
   price : number;
   category : string;
 
+  priceData : any;
+
   getGoods: (artistGoodsId : string, isEdit : boolean) => Promise<string>;
   setTitle: (title: string) => void;
   setContent: (content: string) => void;
@@ -31,6 +33,7 @@ interface Goods {
 export const useGoods = create<Goods>((set) => ({
   isFetchFinished : false,
   id : "",
+  priceData : {},
   reset : () => set({
     title : undefined,
     description : undefined,
@@ -78,6 +81,13 @@ export const useGoods = create<Goods>((set) => ({
         profile_image : data.artist.profile_image,
         description : data.artist.description
       },
+      priceData : {
+        price : data.price,
+        maxPrice : data.max_price,
+        averagePrice : data.price_data.average_price,
+        priceByDay : data.price_data.price_by_day,
+        dayList : data.price_data.day_list,
+      }
       
     })
 

@@ -45,7 +45,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   const { accountType } = useAuth();
 
-  const { backgroundList, getGoods, title, description, content, artist, reset } = useGoods();
+  const { backgroundList, getGoods, title, description, content, artist, reset, priceData } = useGoods();
   useEffect(() => {
     reset();
     fetchGoods();
@@ -73,7 +73,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     // console.log(currentScrollY, reviewRef.current.offsetTop, priceRef.current.offsetTop, contentRef.current.offsetTop, currentSection);
     // console.log(-(mainRef.current.clientHeight - currentScrollY - window.innerHeight));
 
-    if(reviewRef.current === null || priceRef.current === null || contentRef.current === null) return;
+    if (reviewRef.current === null || priceRef.current === null || contentRef.current === null) return;
 
     if (currentScrollY + 126 >= reviewRef.current.offsetTop || -(mainRef.current.clientHeight - currentScrollY - window.innerHeight) >= 78) {
       setCurrentSection(2);
@@ -122,7 +122,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     });
 
     if (backgroundList.length > 0 && tempTitle != '') {
-      console.log(backgroundList,   "!!")
+      console.log(backgroundList, "!!")
       import('preline/preline').then((module) => {
 
         const { HSStaticMethods, HSCarousel } = module;
@@ -134,13 +134,13 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
 
-        
+
         setTimeout(() => {
           console.log(tempTitle, "!!!")
-       
+
           // HSCarousel.autoInit();
           // document.querySelectorAll('[data-hs-carousel]').forEach((el) => new HSCarousel(el as HTMLElement));
- 
+
         }, 0);
 
 
@@ -171,26 +171,26 @@ export default function Page({ params }: { params: { slug: string } }) {
       <>
         {/* Slider */}
         <div id="carousel"
-      
+
           className="relative "
-          
+
 
         >
           <div className={`relative  overflow-x-hidden  min-h-[500px] h-[500px] bg-red 
             ${backgroundList.length == 0 ? 'bg-slate-100 ' : 'bg-white'}
           `}  >
             <div className="absolute top-0 bottom-0 flex transition-transform duration-700 start-0 flex-nowrap"
-            style={{
-              transform: `translateX(-${carouselIndex * 100}vw)`
-        
-            }}
+              style={{
+                transform: `translateX(-${carouselIndex * 100}vw)`
+
+              }}
             >
 
               {
                 title && backgroundList.map((background: any | undefined, index: any) => {
                   return (
                     <div className="w-[100vw]" key={index}  >
-                 
+
                       <div className={"flex justify-center h-[480px] "} {...handlers}>
                         <div className="relative top-[20px] 
                         w-full h-[480px]
@@ -239,7 +239,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             ${backgroundList.length == 0 ? 'hidden' : ''}
             `}
             ref={carouselNextRef}
-            onClick={()=>{
+            onClick={() => {
               setCarouselIndex((carouselIndex + 1) % backgroundList.length);
             }}
           >
@@ -267,12 +267,12 @@ export default function Page({ params }: { params: { slug: string } }) {
                 return (
                   <span key={index} className={`bg-opacity-50 border-8 border-gray-400 border-opacity-50 rounded-full cursor-pointer
                   ${carouselIndex == index ? ' bg-black border-black bg-opacity-80' : ''
-                  }
+                    }
                   
                   size-5 `}
-                  onClick={() => {
-                    setCarouselIndex(index);
-                  }}
+                    onClick={() => {
+                      setCarouselIndex(index);
+                    }}
                   />
 
                 );
@@ -386,8 +386,8 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
 
-            <div className="mt-5 text-lg leading-10 text-left whitespace-pre-line" ref={contentRef} 
-            id="goodsContent"
+            <div className="mt-5 text-lg leading-10 text-left whitespace-pre-line" ref={contentRef}
+              id="goodsContent"
             >
               {
                 content ? <div dangerouslySetInnerHTML={
@@ -406,9 +406,9 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <div className="flex flex-col flex-shrink-0 gap-2 mr-[2rem] justify-center w-[350px] items-center border-r-2 border-gray-200">
                       <img className="w-[125px] rounded-full " src={
                         artist.profile_image != null ?
-                        artist.profile_image.media.path
-                        : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
-                      
+                          artist.profile_image.media.path
+                          : "https://st3.depositphotos.com/9998432/13335/v/450/depositphotos_133351928-stock-illustration-default-placeholder-man-and-woman.jpg"
+
                       } alt="Image Description" />
                       <h4 className="text-lg font-light text-gray-600">@{artist.nickname}</h4>
                     </div>
@@ -423,11 +423,11 @@ export default function Page({ params }: { params: { slug: string } }) {
                       </div>
                       <div className="flex items-center justify-end w-full">
                         <button type="button" className="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
-                        onClick={()=>{
-                          router.push(
-                            "/profile/artist/" + artist.id
-                          )
-                        }}
+                          onClick={() => {
+                            router.push(
+                              "/profile/artist/" + artist.id
+                            )
+                          }}
                         >
                           포트폴리오로 이동
                           <ArrowRightIcon className="w-4 h-4" />
@@ -450,18 +450,26 @@ export default function Page({ params }: { params: { slug: string } }) {
                   <div className="flex flex-col flex-shrink-0 gap-10 mr-[2rem] justify-center">
                     <div className="flex flex-row items-center justify-center">
                       <h3 className="mr-3 text-2xl font-light">시작가</h3>
-                      <h3 className="text-4xl font-semibold">150,000</h3>
+                      <h3 className="text-4xl font-semibold">{
+                        priceData.price.toLocaleString('ko-KR')
+                      }</h3>
                       <h3 className="ml-2 text-2xl font-light">원</h3>
                     </div>
                     <div className="flex flex-row items-center justify-center">
                       <h3 className="mr-3 text-2xl font-light">최고가</h3>
-                      <h3 className="text-4xl font-semibold">270,000</h3>
+                      <h3 className="text-4xl font-semibold">
+                        {priceData.maxPrice.toLocaleString('ko-KR')}
+                      </h3>
                       <h3 className="ml-2 text-2xl font-light">원</h3>
                     </div>
-                    <div className="flex flex-col items-start gap-2">
-                      <h3 className="mr-3 font-light text-gray-800 text-md">최근 거래 성사일 : 2024. 05. 27.</h3>
-                      <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : 220,000원</h3>
-                    </div>
+                    {priceData.averagePrice && <div className="flex flex-col items-start gap-2">
+                      <h3 className="mr-3 font-light text-gray-800 text-md">최근 거래 성사일 : {
+                        priceData.dayList[priceData.dayList.length - 1]
+                        }</h3>
+                      <h3 className="mr-3 font-light text-gray-800 text-md">평균 거래가 : {
+                        priceData.averagePrice.toLocaleString('ko-KR')
+                      } 원</h3>
+                    </div>}
                   </div>
 
                   <div className="flex-grow">
@@ -472,7 +480,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                       series={[
                         {
                           name: "거래가",
-                          data: [150000, 180000, 240000, 270000, 220000, 220000, 260000],
+                          data: priceData.priceByDay
                         },
 
                       ]}
@@ -489,7 +497,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                         },
                         xaxis: {
-                          categories: ["5/10", "5/16", "5/17", "5/22", "5/24", "5/26", "5/27"],
+                          categories: priceData.dayList,
                         },
 
                         yaxis: {
@@ -498,6 +506,8 @@ export default function Page({ params }: { params: { slug: string } }) {
                               return value.toLocaleString('ko-KR') + "원";
                             }
                           },
+                          tickAmount: priceData.priceByDay.length === 2 ? 2 : 5,
+
                         },
 
                         theme: {
@@ -518,31 +528,29 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
             <div className={`sticky flex gap-3 my-2 top-[calc(100vh-70px)] z-50 bg-white py-3 flex-row items-center
-              ${
-                accountType == 'artist' ? 'invisible' : ''
+              ${accountType == 'artist' ? 'invisible' : ''
               }
               `}>
               <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
-              onClick={()=>{
-                router.push(
-                  "/chat?artistId=" + artist.id
-                )
-              }}
+                onClick={() => {
+                  router.push(
+                    "/chat?artistId=" + artist.id
+                  )
+                }}
               >
                 아티스트에게 1:1 문의
               </button>
 
               <button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
-              onClick={()=>{
-                if(accountType == 'company'){
-                  router.push(`/market/${
-                    slug
-                  }/deal/new`)
-                }else{
-                  toast.error("거래를 진행할 수 있는 권한이 없습니다.")                  
-                }
-              }}
-              
+                onClick={() => {
+                  if (accountType == 'company') {
+                    router.push(`/market/${slug
+                      }/deal/new`)
+                  } else {
+                    toast.error("거래를 진행할 수 있는 권한이 없습니다.")
+                  }
+                }}
+
               >
                 거래 진행
               </button>

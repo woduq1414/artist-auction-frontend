@@ -618,11 +618,11 @@ const GoodsDealFormPage: React.FC<{
                                                         } else {
                                                             setDealPriceError({ type: "good", message: `` });
                                                         }
-                                                        setDealPrice(removedCommaValue);
+                                                        setDealPrice(removedCommaValue * 10000);
                                                     }
 
                                                 }}
-                                                value={dealPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                                value={(dealPrice / 10000).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                             />
                                             <div className="absolute inset-y-0 z-20 flex items-center pointer-events-none start-0 ps-4">
                                                 <svg
@@ -666,7 +666,7 @@ const GoodsDealFormPage: React.FC<{
                                                 거래 가격
                                             </div>
                                             <div>
-                                                <span className='text-xl font-bold'>{(dealPrice * 10000).toLocaleString()}</span> 원
+                                                <span className='text-xl font-bold'>{(dealPrice * 1).toLocaleString()}</span> 원
                                             </div>
                                         </div>
                                         <div className='flex flex-row items-center justify-between text-md'>
@@ -674,7 +674,7 @@ const GoodsDealFormPage: React.FC<{
                                                 부가 가치세 (10%)
                                             </div>
                                             <div>
-                                                <span className='text-xl font-bold'>{(dealPrice * 1000).toLocaleString()}</span> 원
+                                                <span className='text-xl font-bold'>{(dealPrice * 0.1).toLocaleString()}</span> 원
                                             </div>
                                         </div>
 
@@ -683,7 +683,7 @@ const GoodsDealFormPage: React.FC<{
                                                 합계
                                             </div>
                                             <div>
-                                                <span className='text-2xl font-bold'>{(dealPrice * 11000).toLocaleString()}</span> 원
+                                                <span className='text-2xl font-bold'>{(dealPrice * 1.1).toLocaleString()}</span> 원
                                             </div>
                                         </div>
                                     </div>

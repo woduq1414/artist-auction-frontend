@@ -121,7 +121,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         // ------  결제 UI 렌더링 ------
         // @docs https://docs.tosspayments.com/reference/widget-sdk#renderpaymentmethods선택자-결제-금액-옵션
-        const paymentMethodsWidget = paymentWidget.renderPaymentMethods(selector, { value: deal.price * 11000 }, { variantKey: "DEFAULT" });
+        const paymentMethodsWidget = paymentWidget.renderPaymentMethods(selector, { value: deal.price * 1.1 }, { variantKey: "DEFAULT" });
         setPaymentAmount(deal.price * 11000);
 
         // ------  이용약관 UI 렌더링 ------
@@ -144,7 +144,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         // ------ 금액 업데이트 ------
         // @docs https://docs.tosspayments.com/reference/widget-sdk#updateamount결제-금액
-        paymentMethodsWidget.updateAmount(deal.price * 11000);
+        paymentMethodsWidget.updateAmount(deal.price * 1.1);
     }, [deal]);
 
     return (
@@ -240,7 +240,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                         거래 가격
                                                     </div>
                                                     <div>
-                                                        <span className='text-xl font-bold'>{(deal.price * 10000).toLocaleString()}</span> 원
+                                                        <span className='text-xl font-bold'>{(deal.price * 1.0).toLocaleString()}</span> 원
                                                     </div>
                                                 </div>
                                                 <div className='flex flex-row items-center justify-between text-md'>
@@ -248,7 +248,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                         부가 가치세 (10%)
                                                     </div>
                                                     <div>
-                                                        <span className='text-xl font-bold'>{(deal.price * 1000).toLocaleString()}</span> 원
+                                                        <span className='text-xl font-bold'>{(deal.price * 0.1).toLocaleString()}</span> 원
                                                     </div>
                                                 </div>
 
@@ -257,7 +257,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                         합계
                                                     </div>
                                                     <div>
-                                                        <span className='text-2xl font-bold'>{(deal.price * 11000).toLocaleString()}</span> 원
+                                                        <span className='text-2xl font-bold'>{(deal.price * 1.1).toLocaleString()}</span> 원
                                                     </div>
                                                 </div>
                                             </div>
