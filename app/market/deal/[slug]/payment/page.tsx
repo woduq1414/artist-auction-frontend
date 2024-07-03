@@ -19,7 +19,7 @@ import MarketFormPage from "@/app/_components/MarketFormPage";
 import Config from "@/config/config.export";
 import { Cookies } from "react-cookie";
 import NewDealPage from "@/app/market/[slug]/deal/new/page";
-import GoodsDealFormPage from "@/app/_components/GoodsDealFormPage";
+
 import { PaymentWidgetInstance, loadPaymentWidget, ANONYMOUS } from "@tosspayments/payment-widget-sdk";
 import { useAuth } from "@/app/_store/useAuth";
 import { useQuery } from "@tanstack/react-query";

@@ -68,6 +68,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 description={deal.description}
 
                 exampleImageList={deal.request_image_list}
+                requestFileList={deal.request_file_list}
 
                 price={deal.price}
                 isEdit={true}

@@ -10,16 +10,18 @@ export default function SuccessPage() {
 
     const searchParams = useSearchParams();
     const [responseData, setResponseData] = useState(null);
+
+    const [isError, setIsError] = useState(false);
     const { title, mainImage, artist, getGoods } = useGoods();
     useEffect(() => {
 
-        if(!searchParams.get("orderId") || !searchParams.get("amount") || !searchParams.get("paymentKey") || !searchParams.get("paymentType")){
+        if (!searchParams.get("orderId") || !searchParams.get("amount") || !searchParams.get("paymentKey") || !searchParams.get("paymentType")) {
             return;
         }
-        if(searchParams.get("artistGoodsId")){
+        if (searchParams.get("artistGoodsId")) {
             getGoods(searchParams.get("artistGoodsId") as string, false);
         }
-     
+
         const requestData = {
             orderId: searchParams.get("orderId"),
             amount: searchParams.get("amount"),
@@ -52,9 +54,12 @@ export default function SuccessPage() {
                     payment_type: requestData.paymentType
                 })
             })
-            // if (!res.ok) {
-            //     throw new Error('결제 확인에 실패했습니다.');
-            // }
+            if (!res.ok) {
+                setIsError(true);
+                return;
+            }
+
+
             return res.json();
 
         }
@@ -72,7 +77,10 @@ export default function SuccessPage() {
                     <div className="w-full max-w-2xl absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] shadow-md rounded-xl px-6 py-6 bg-slate-50 text-center
                     flex flex-col gap-3 items-left
                     ">
-                        <div className="mb-4 text-2xl font-semibold text-center">결제 성공</div>
+                        <div className="mb-4 text-2xl font-semibold text-center">{
+                            isError ? "결제 실패" : "결제 성공"
+                        
+                        }</div>
                         <div className='flex flex-row w-full max-w-2xl px-2 py-3 text-xl font-semibold text-center bg-slate-100'>
 
                             <div className='flex-shrink-0'>

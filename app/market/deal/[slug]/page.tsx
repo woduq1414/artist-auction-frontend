@@ -18,6 +18,7 @@ import "cropperjs/dist/cropper.css";
 import { useAuth } from "@/app/_store/useAuth";
 import { toast } from "react-toastify";
 import { useImageModal } from "@/app/_store/useImageModal";
+import { PaperClipIcon } from "@heroicons/react/24/outline";
 
 
 
@@ -218,8 +219,8 @@ export default function Page({ params }: { params: { slug: string } }) {
                                 <div className="flex-shrink-0">
                                     <div className={`flex flex-row gap-2
                                                                         ${accountType === 'company' && (
-                                                                            deal.status === 'pending'
-                                                                        )? '' : 'hidden'}
+                                            deal.status === 'pending'
+                                        ) ? '' : 'hidden'}
                                                                         `}>
                                         <div className="flex flex-row items-start justify-center flex-shrink-0 gap-3 ">
                                             <div className={`p-3 rounded-full cursor-pointer bg-gray-200
@@ -276,20 +277,21 @@ export default function Page({ params }: { params: { slug: string } }) {
                                     프로젝트 설명
 
                                 </div>
-                                <div className="w-full px-4 py-2 text-lg bg-slate-100">
+                                <div className="w-full px-4 py-2 text-lg whitespace-pre-wrap bg-slate-100">
                                     {
                                         deal.description
                                     }
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-2 mt-8">
-                                <div className="text-2xl font-semibold">
-                                    참고 이미지
+                            {deal.request_image_list && deal.request_image_list.length > 0 &&
 
-                                </div>
-                                <div className="flex w-full">
-                                    {
-                                        deal.request_image_list ? (
+                                <div className="flex flex-col gap-2 mt-8">
+                                    <div className="text-2xl font-semibold">
+                                        참고 이미지
+
+                                    </div>
+                                    <div className="flex w-full">
+                                        {
                                             deal.request_image_list.map((x: { url: string | undefined; }) => {
                                                 return <img
                                                     key={x.url}
@@ -297,18 +299,64 @@ export default function Page({ params }: { params: { slug: string } }) {
                                                     src={
                                                         x.url
                                                     }
-                                                    onClick={()=> {
-                                                        if(x.url){
+                                                    onClick={() => {
+                                                        if (x.url) {
                                                             setModalImage(x.url)
                                                         }
-                                                       
+
                                                     }}
                                                 />
                                             })
-                                        ) : "참고 이미지가 없습니다."
-                                    }
+
+                                        }
+
+                                    </div>
                                 </div>
-                            </div>
+                            }
+
+                            {
+                                deal.request_file_list && deal.request_file_list.length > 0 && <div className="flex flex-col gap-2 mt-8">
+                                    <div className="text-2xl font-semibold">
+                                        첨부 파일
+
+                                    </div>
+                                    <div className="flex w-full gap-3">
+                                        {
+                                            deal.request_file_list.map((x: { url: string, title: string }) => {
+                                                return <div className="flex flex-row items-center pl-3 cursor-pointer bg-slate-100 rounded-2xl"
+                                                    onClick={() => {
+
+                                                        fetch(x.url, {
+                                                            method: 'GET',
+                                                        }).then(response => {
+
+                                                            response.blob().then(blob => {
+                                                                const url = window.URL.createObjectURL(blob);
+                                                                const a = document.createElement('a');
+                                                                a.href = url;
+                                                                a.download = x.title
+                                                                a.click();
+                                                            });
+
+                                                        });
+
+
+                                                    }
+                                                    }
+                                                >
+                                                    <PaperClipIcon className="w-4 h-4 text-gray-600" />
+                                                    <div className="py-2 pl-2 pr-4 text-gray-800 rounded-2xl">
+                                                        {
+                                                            x.title
+                                                        }
+                                                    </div>
+                                                </div>
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            }
+
                             <div className="flex flex-col gap-2 mt-8">
                                 <div className="text-2xl font-semibold">
                                     희망 거래가
@@ -377,25 +425,27 @@ export default function Page({ params }: { params: { slug: string } }) {
                                         return (<button type="button" className="inline-flex items-center justify-center w-full px-4 py-3 text-sm font-semibold text-white border border-transparent rounded-lg bg-primary gap-x-2 disabled:opacity-50 disabled:pointer-events-none"
                                             disabled={disabledStatus}
                                             onClick={async () => {
-                                                if (deal.status !== "pending") {
-                                                    return;
-                                                }
-                                                let res = await fetch(Config().baseUrl + '/artist/goods/deal/' + params.slug + "/accept", {
-                                                    method: 'PUT',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                        'Accept': 'application/json',
-                                                        "Authorization": "Bearer " + new Cookies().get('accessToken')
-                                                    },
+                                                if (deal.status == "pending") {
+                                                   
+                                                    let res = await fetch(Config().baseUrl + '/artist/goods/deal/' + params.slug + "/accept", {
+                                                        method: 'PUT',
+                                                        headers: {
+                                                            'Content-Type': 'application/json',
+                                                            'Accept': 'application/json',
+                                                            "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                        },
 
-                                                })
+                                                    })
 
-                                                if (res.status === 201) {
-                                                    window.location.reload()
-                                                } else {
-                                                    toast.error(
-                                                        "알 수 없는 이유로 실패하였습니다."
-                                                    )
+                                                    if (res.status === 201) {
+                                                        window.location.reload()
+                                                    } else {
+                                                        toast.error(
+                                                            "알 수 없는 이유로 실패하였습니다."
+                                                        )
+                                                    }
+                                                }else if(deal.status == "accept"){
+                                                    router.push('/market/deal/' + params.slug + '/payment')
                                                 }
                                             }}
 

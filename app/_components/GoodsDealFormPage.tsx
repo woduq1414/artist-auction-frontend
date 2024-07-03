@@ -13,7 +13,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import CustomEditor from '@/app/_components/CustomEditor';
-import { CheckCircleIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 // import { HSSelect, HSSelect } from 'preline';
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -35,6 +35,7 @@ import Skeleton from 'react-loading-skeleton';
 const GoodsDealFormPage: React.FC<{
     title?: string, description?: string,
     price?: number, exampleImageList?: any[],
+    requestFileList?: any[],
     isEdit?: boolean, artistGoodsId: string, id?: string
 }> = (props) => {
     const slug = props.artistGoodsId;
@@ -91,12 +92,16 @@ const GoodsDealFormPage: React.FC<{
     const [tempMainImage, setTempMainImage] = useState<string>('');
     const [exampleImageList, setExampleImageList] = useState<any[]>(props.exampleImageList || []);
 
+    const [requestFileList, setRequestFileList] = useState<any[]>(props.requestFileList || []);
+
     const cropperRef = useRef<ReactCropperElement>(null);
     const [cropperModalInstance, setCropperModalInstance] = useState<any>(null);
 
     const cropperModalOpenRef = useRef<any>(null);
 
     const exampleImageUploaderRef = useRef<any>(null);
+
+    const requestFileUploaderRef = useRef<any>(null);
 
     let thirdStepperContentRef = useRef<any>(null);
 
@@ -408,6 +413,132 @@ const GoodsDealFormPage: React.FC<{
                                                             id: image.id
                                                         }))]);
 
+                                                    
+                                                    }
+                                                    }
+                                                />
+                                                <PlusIcon className='w-10 h-10 m-auto text-gray-400' />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='flex flex-col w-full max-w-xl'>
+                                        <label
+                                            htmlFor="inline-input-label-with-helper-text"
+                                            className="block text-lg font-semibold"
+                                        >
+                                            첨부 파일 등록
+                                        </label>
+
+                                        <p
+                                            className="mt-2 text-gray-500 text-md dark:text-neutral-500"
+                                            id="hs-inline-input-helper-text2"
+                                        >
+                                            3개까지 등록 가능합니다. (각 파일은 100MB 이하)
+                                        </p>
+
+                                        <div className='flex flex-row flex-wrap gap-3 mt-2'>
+
+                                            {
+                                                requestFileList.length >= 1 && (
+                                                    requestFileList.map((file, index) => (
+                                                        // <div key={index} className='relative flex items-center justify-center bg-white shadow-md cursor-pointer hover:bg-gray-50 rounded-xl'>
+                                                        //     <img src={exampleImageList[index].src} alt="" className='object-cover h-[130px] w-fit rounded-xl' />
+                                                        //     <div className="absolute inset-0 z-10 flex items-center justify-center duration-300 bg-gray-500 opacity-0 bg-opacity-30 rounded-xl text-smfont-semibold hover:opacity-100"
+                                                        //         onClick={() => {
+                                                        //             setExampleImageList(exampleImageList.filter((_, i) => i !== index));
+                                                        //         }}
+                                                        //     >
+                                                        //         <TrashIcon className='w-5 h-5 text-white' />
+                                                        //     </div>
+                                                        // </div>
+                                                        <div className="flex flex-row items-center px-3 bg-slate-200 rounded-xl text-md">
+                                                            <XMarkIcon className='w-6 h-6 mr-2 text-gray-500 cursor-pointer' 
+                                                            onClick={()=>{
+                                                                setRequestFileList(requestFileList.filter((_, i) => i !== index));
+                                                            }}
+                                                            />
+                                                            <div className='flex flex-row items-center gap-2'>
+                                                                <div className='pr-3 text-gray-700'>
+                                                                    {file.name}
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                    )
+                                                )
+                                            }
+                                            <button type="button" data-hs-overlay="#cropperModal"
+                                                className='hidden'
+                                                ref={cropperModalOpenRef}
+                                            >
+                                                Open modal
+                                            </button>
+                                            <div className={`px-3 py-2 border-2 border-gray-400 border-dashed bg-white hover:bg-gray-50 cursor-pointer
+                                        flex justify-center items-center rounded-xl ${requestFileList.length >= 3 ? 'hidden' : ' '}`} onClick={
+                                                    () => {
+                                                        // console.log(cropperModalInstance);
+                                                        // cropperModalInstance?.open();
+
+
+                                                        requestFileUploaderRef.current.click();
+
+                                                    }
+                                                }>
+                                                <>
+
+
+                                                </>
+
+                                                <input
+                                                    id="requestFileUploader"
+                                                    type="file"
+                                                    style={{ display: 'none' }}
+                                                    ref={requestFileUploaderRef}
+                                                    multiple
+                                                    onChange={async (e) => {
+                                                        let fileList = (e.target as HTMLInputElement)?.files;
+                                                        let imageList: { src: string | ArrayBuffer | null | undefined; }[] = [];
+                                                        if (!fileList) return;
+                                                        let newFileList
+                                                        if (fileList.length + requestFileList.length > 3) {
+                                                            newFileList = Array.from(fileList).slice(0, 3 - requestFileList.length);
+                                                        } else {
+                                                            newFileList = Array.from(fileList);
+                                                        }
+
+
+                                                        let formData = new FormData();
+                                                        for (let i = 0; i < newFileList.length; i++) {
+                                                            formData.append('files', newFileList[i]);
+                                                        }
+                                                        submitButtonRef.current.disabled = true;
+
+
+
+                                                        let res = await fetch(Config().baseUrl + '/file/', {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                "Authorization": "Bearer " + new Cookies().get('accessToken')
+                                                            },
+                                                            body: formData
+                                                        })
+                                                        submitButtonRef.current.disabled = false;
+
+
+
+                                                        console.log(res);
+
+                                                        if (res.status !== 200) return;
+
+                                                        let data = await res.json();
+
+                                                        setRequestFileList([...requestFileList, ...data.data.map((file: any) => ({
+                                                            url: file.link,
+                                                            id: file.id,
+                                                            name : file.title
+                                                        }))]);
+
                                                         // const promises = Array.from(newFileList).map((file) => {
                                                         //     return new Promise((resolve, reject) => {
                                                         //         const reader = new FileReader();
@@ -459,11 +590,10 @@ const GoodsDealFormPage: React.FC<{
                                                     }
                                                     }
                                                 />
-                                                <PlusIcon className='w-10 h-10 m-auto text-gray-400' />
+                                                <PlusIcon className='w-6 h-6 m-auto text-gray-400' />
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className='flex flex-col w-full max-w-xl gap-2'>
                                         <label
                                             htmlFor="inline-input-label-with-helper-text"
@@ -664,7 +794,8 @@ const GoodsDealFormPage: React.FC<{
                                                     price: dealPrice,
                                                     artist_goods_id: slug,
                                                     request_image_list: exampleImageList.map((image) => image.id),
-                                                    id : props.id
+                                                    request_file_list: requestFileList.map((file) => file.id),
+                                                    id: props.id
                                                 }
                                                 res = await fetch(Config().baseUrl + '/artist/goods/deal', {
                                                     method: 'PUT',
@@ -683,6 +814,7 @@ const GoodsDealFormPage: React.FC<{
                                                     price: dealPrice,
                                                     artist_goods_id: slug,
                                                     request_image_list: exampleImageList.map((image) => image.id),
+                                                    request_file_list: requestFileList.map((file) => file.id)
 
                                                 }
                                                 res = await fetch(Config().baseUrl + '/artist/goods/deal', {
@@ -713,9 +845,9 @@ const GoodsDealFormPage: React.FC<{
 
                                                 });
                                                 window.location.href = '/my';
-                                            } else if(res.status === 201){
+                                            } else if (res.status === 201) {
                                                 window.location.href = '/my';
-                                            }else{
+                                            } else {
                                                 submitButtonRef.current.disabled = false;
                                                 toast.error('등록에 실패했습니다.', {
                                                     position: "top-right",
